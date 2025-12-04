@@ -26,4 +26,68 @@ int main() {
         SDL_Quit();
         return 1;
     }
+    SDL_Surface* surface = SDL_LoadBMP("chessboard.bmp");
+    if (surface == nullptr) {
+        cout << "ERROR:could not open BMP file\n";
+    }
+    //5)Texture
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(
+        renderer, surface);
+    if (texture == nullptr) {
+        cout << "ERROR:could not generate texture from surface\n";
+        SDL_DestroySurface(surface);
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return -1;
+    }
+
+    bool running = true;
+    SDL_Event event;
+
+    while (running) {
+        // Events verarbeiten
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_EVENT_QUIT) {
+                running = false;
+            }
+
+
+            // Renderer löschen (Hintergrundfarbe)
+            SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255); // Dunkelgrauer Hintergrund
+            SDL_RenderClear(renderer);
+
+            // Schachbrett-Bild zeichnen
+            if (texture) {
+                // Zielrechteck (kann angepasst werden)
+                SDL_FRect dest;
+                dest.x = 0;    // Linker Rand
+                dest.y = 0;    // Oberer Rand
+                dest.w = width;   // Volle Fensterbreite
+                dest.h = height;  // Volle Fensterhöhe
+
+                // ODER: Zentriert mit fester Größe:
+                // dest.x = (width - 600) / 2;   // Zentriert bei 600x600
+                // dest.y = (height - 600) / 2;
+                // dest.w = 600;
+                // dest.h = 600;
+
+                SDL_RenderTexture(renderer, texture, nullptr, &dest);
+            }
+
+            // Renderer aktualisieren
+            SDL_RenderPresent(renderer);
+
+            // Kurze Pause (nicht nötig, aber gut für CPU)
+            SDL_Delay(16); // ~60 FPS
+        }
+    }
+
+    // 4)Cleanup&close
+    SDL_DestroySurface(surface);
+    SDL_DestroyTexture(texture);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+
 }
