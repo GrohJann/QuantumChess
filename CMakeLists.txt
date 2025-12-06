@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 4.0)
 
-
 # --- Fetch SDL3 ---------------------------------------------------------------
 include(FetchContent)
 
@@ -24,9 +23,12 @@ project(QuantumChess)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(QuantumChess src/main.cpp
-        src/Client_Netwerk.cpp
-        src/SDL.cpp
+        src/GUI/SDL.cpp
+        src/GUI/SDL_Test.cpp
+        src/GUI/SDL_Test.h
+        src/Network/Client_Network.cpp
+        src/Network/Client_Network.h
 )
 
 
-target_link_libraries(HKA_Dijkstra PRIVATE SDL3::SDL3)
+target_link_libraries(QuantumChess PRIVATE SDL3::SDL3)
