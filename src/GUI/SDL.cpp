@@ -2,6 +2,8 @@
 #include <vector>
 #include <iostream>
 
+#include "../GUI/SDL.h"
+
 using namespace std;
 
 int runSDL() {

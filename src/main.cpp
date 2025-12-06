@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "GUI/SDL.cpp"
-#include "GUI/SDL_Test.cpp"
+#include "GUI/SDL.h"
+#include "GUI/SDL_Test.h"
 #include "Network/Client_Network.h"
 
 

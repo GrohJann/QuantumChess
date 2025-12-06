@@ -1,19 +1,17 @@
 /**
  * @file SDL_Test.cpp
- * @brief TODO: Add a short description of what this file does.
+ * @brief A test implementation of the chessboard gui
  *
- * @author ruvaak
+ * @author GrohJann
  * @date 05/12/2025
  */
 
 #include <iostream>
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_init.h>
 
-#include "../SDL_Test.h"
+#include "../GUI/SDL_Test.h"
 
 struct AppState {
-    char* title;
+    const char* title;
     SDL_Window* window;
     SDL_Renderer* renderer;
     bool redraw = true;
@@ -25,7 +23,7 @@ struct AppState {
  * @return SDL_APP_FAILURE to terminate with an error, SDL_APP_SUCCESS to
  *         terminate with success, SDL_APP_CONTINUE to continue.
  */
-static SDL_AppResult AppInit(void **appstate) {
+SDL_AppResult AppInit(void **appstate) {
     // allocate memory for AppState struct
     if (!(*appstate = SDL_malloc(sizeof(AppState)))) {
         return SDL_APP_FAILURE;
@@ -55,7 +53,7 @@ static SDL_AppResult AppInit(void **appstate) {
  * @return SDL_APP_FAILURE to terminate with an error, SDL_APP_SUCCESS to
  *         terminate with success, SDL_APP_CONTINUE to continue.
  */
-static SDL_AppResult AppIterate(void *appstate) {
+SDL_AppResult AppIterate(void *appstate) {
     auto* state = static_cast<AppState*>(appstate);
 
     if (state->redraw) {
@@ -76,7 +74,7 @@ static SDL_AppResult AppIterate(void *appstate) {
 }
 
 // TODO: add javadoc
-static int drawChessboard(SDL_Window* window, SDL_Renderer* renderer) {
+int drawChessboard(SDL_Window* window, SDL_Renderer* renderer) {
     int w, h;
     constexpr int boardFields = 8;
     SDL_GetWindowSize(window, &w, &h);
@@ -113,7 +111,7 @@ static int drawChessboard(SDL_Window* window, SDL_Renderer* renderer) {
 * @return SDL_APP_FAILURE to terminate with an error, SDL_APP_SUCCESS to
  *        terminate with success, SDL_APP_CONTINUE to continue.
  */
-static SDL_AppResult AppEvent(void *appstate, SDL_Event* event) {
+SDL_AppResult AppEvent(void *appstate, SDL_Event* event) {
     auto* state = static_cast<AppState*>(appstate);
 
     switch (event->type) {
@@ -140,7 +138,7 @@ static SDL_AppResult AppEvent(void *appstate, SDL_Event* event) {
 * @param result SDL_APP_FAILURE to terminate with an error, SDL_APP_SUCCESS to
  *              terminate with success, SDL_APP_CONTINUE to continue.
  */
-static void AppQuit(void *appstate, SDL_AppResult result) {
+void AppQuit(void *appstate, SDL_AppResult result) {
     //Cleanup here
     const auto* state = static_cast<AppState*>(appstate);
     SDL_DestroyRenderer(state->renderer);
@@ -156,7 +154,7 @@ static void AppQuit(void *appstate, SDL_AppResult result) {
  * Pseudo main function to run an SDL Window
  * @return error code
  */
-static int run() {
+int run() {
     // init SDL
     void* appstate = nullptr;
     SDL_AppResult result = AppInit(&appstate);

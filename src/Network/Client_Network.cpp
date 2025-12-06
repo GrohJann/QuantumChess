@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <cstring>
 
-#include "../Client_Network.h"
+#include "../Network/Client_Network.h"
 
 #ifdef _WIN32 // only run on windows
 

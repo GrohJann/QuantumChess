@@ -28,6 +28,7 @@ add_executable(QuantumChess src/main.cpp
         src/GUI/SDL_Test.h
         src/Network/Client_Network.cpp
         src/Network/Client_Network.h
+        src/GUI/SDL.h
 )
 
 
