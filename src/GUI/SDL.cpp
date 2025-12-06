@@ -4,15 +4,15 @@
 
 using namespace std;
 
-int main() {
+int runSDL() {
     if (!SDL_Init(SDL_INIT_VIDEO)) {            //SDL_INIT_VIDEO initialisiert den Grafikteil von SDL
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
     }
 
-    //Hier kann man die Groeße des Fensters einstellen
+    //Hier kann man die Groeï¿½e des Fensters einstellen
     int width = 1200;
     int height = 1000;
-    SDL_Window* window = SDL_CreateWindow("Karte", width, height, SDL_WINDOW_RESIZABLE); ///Fenster wird erzeugt (Größe veränderbar)
+    SDL_Window* window = SDL_CreateWindow("Karte", width, height, SDL_WINDOW_RESIZABLE); ///Fenster wird erzeugt (Grï¿½ï¿½e verï¿½nderbar)
     if (!window) {
         SDL_Log("Fehler beim Fenster erstellen: %s", SDL_GetError());
         SDL_Quit();
@@ -26,7 +26,7 @@ int main() {
         SDL_Quit();
         return 1;
     }
-    SDL_Surface* surface = SDL_LoadBMP("chessboard.bmp");
+    SDL_Surface* surface = SDL_LoadBMP("./assets/chessboard.bmp");
     if (surface == nullptr) {
         cout << "ERROR:could not open BMP file\n";
     }
@@ -53,7 +53,7 @@ int main() {
             }
 
 
-            // Renderer löschen (Hintergrundfarbe)
+            // Renderer lï¿½schen (Hintergrundfarbe)
             SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255); // Dunkelgrauer Hintergrund
             SDL_RenderClear(renderer);
 
@@ -64,9 +64,9 @@ int main() {
                 dest.x = 0;    // Linker Rand
                 dest.y = 0;    // Oberer Rand
                 dest.w = width;   // Volle Fensterbreite
-                dest.h = height;  // Volle Fensterhöhe
+                dest.h = height;  // Volle Fensterhï¿½he
 
-                // ODER: Zentriert mit fester Größe:
+                // ODER: Zentriert mit fester Grï¿½ï¿½e:
                 // dest.x = (width - 600) / 2;   // Zentriert bei 600x600
                 // dest.y = (height - 600) / 2;
                 // dest.w = 600;
@@ -78,7 +78,7 @@ int main() {
             // Renderer aktualisieren
             SDL_RenderPresent(renderer);
 
-            // Kurze Pause (nicht nötig, aber gut für CPU)
+            // Kurze Pause (nicht nï¿½tig, aber gut fï¿½r CPU)
             SDL_Delay(16); // ~60 FPS
         }
     }
@@ -90,4 +90,5 @@ int main() {
     SDL_DestroyWindow(window);
     SDL_Quit();
 
+    return 0;
 }
