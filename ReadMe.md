@@ -32,3 +32,7 @@ TBD
   - [ ] add quantum chess moves
     - [ ] split
     - [ ] merge
+
+
+# Requirements
+- winsock (on windows)
