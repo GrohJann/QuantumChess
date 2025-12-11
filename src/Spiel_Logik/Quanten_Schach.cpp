@@ -1,6 +1,8 @@
 
 
 #include <iostream>
+
+#include "Quanten_Schach.h"
 #include "Figuren.h"
 #include "Bauer.h"
 #include "Dame.h"
@@ -31,7 +33,7 @@ void Startaufstellung_Bauern(vector <Bauer> &bauern, Figuren* (&Spielfeld)[8][8]
 			
 		}
 		Spielfeld[b.Get_Spalte() - 1][b.Get_Zeile() - 1] = &b;
-		bauern.push_back(b); // Vektor überhaupt notwendig
+		bauern.push_back(b); // Vektor ï¿½berhaupt notwendig
 	}
 }
 void Startaufstellung_Springer(vector <Springer> &springer, Figuren* (&Spielfeld)[8][8]) {
@@ -230,7 +232,7 @@ void Spielfeld_Initialisieren(Figuren* (&Spielfeld)[8][8]) {
 	
 	
 }
-int main()
+int logik_main()
 {
 	bool weiss[8][8];
 	bool schwarz[8][8];
@@ -279,7 +281,7 @@ int main()
 	Initialisieren_Feld_Gesamt(gesamt);
 
 
-
+	return 0;
 }
 
 

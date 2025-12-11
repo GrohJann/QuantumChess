@@ -7,6 +7,8 @@
  */
 
 #include <iostream>
+//#include <SDL3/SDL_iostream.h>
+#include <SDL3/SDL_image.h>
 
 #include "../GUI/SDL_Test.h"
 
@@ -20,8 +22,7 @@ struct AppState {
 /**
  * Initializes an SDL3 Window
  * @param appstate AppState struct to store information of the apps state in
- * @return SDL_APP_FAILURE to terminate with an error, SDL_APP_SUCCESS to
- *         terminate with success, SDL_APP_CONTINUE to continue.
+ * @return SDL_APP_FAILURE to terminate with an error or SDL_APP_CONTINUE to continue.
  */
 SDL_AppResult AppInit(void **appstate) {
     // allocate memory for AppState struct
@@ -74,7 +75,7 @@ SDL_AppResult AppIterate(void *appstate) {
 }
 
 // TODO: add javadoc
-int drawChessboard(SDL_Window* window, SDL_Renderer* renderer) {
+bool drawChessboard(SDL_Window* window, SDL_Renderer* renderer) {
     int w, h;
     constexpr int boardFields = 8;
     SDL_GetWindowSize(window, &w, &h);
@@ -86,8 +87,8 @@ int drawChessboard(SDL_Window* window, SDL_Renderer* renderer) {
     SDL_RenderClear(renderer);
 
     // render squares
-    for (int row = 0; row < 8; row++) {
-        for (int col = 0; col < 8; col++) {
+    for (int row = 0; row < boardFields; row++) {
+        for (int col = 0; col < boardFields; col++) {
 
             // Alternate colors
             if ((row + col) % 2 == 0)
@@ -97,11 +98,41 @@ int drawChessboard(SDL_Window* window, SDL_Renderer* renderer) {
 
             SDL_FRect rect = {col * squareSize, row * squareSize, squareSize, squareSize};
 
-            SDL_RenderFillRect(renderer, &rect);
+            bool success = SDL_RenderFillRect(renderer, &rect);
+
+/********************************************************/
+            if ( row == 0 && (col == 0 || col == boardFields - 1) ) {
+                //SDL_IOStream* io = SDL_IOFromFile("assets/rook_b.svg", "rb");
+                /*if (!io) {
+                    SDL_Log("Cannot open test.svg: %s", SDL_GetError());
+                    return 1;
+                }*/
+
+                // Load and rasterize SVG to desired size (e.g., 256×256)
+                //SDL_Surface *surf = IMG_LoadSizedSVG_IO(io, 256, 256);
+                SDL_Surface *surface = IMG_Load("assets/rook_w.png");
+                /* if (!surf) {
+                     SDL_Log("SVG load failed: %s", SDL_GetError());
+                     return 1;
+                 }*/
+
+                // Convert to texture
+                SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surface);
+
+                SDL_DestroySurface(surface);
+                //SDL_CloseIO(io);
+
+                SDL_RenderTexture(renderer, tex, nullptr, &rect);
+            }
+/*******************************************************/
+
+            if (!success) {
+                return false;
+            }
         }
     }
 
-    return 0;
+    return true;
 }
 
 /**

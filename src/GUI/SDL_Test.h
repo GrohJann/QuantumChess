@@ -19,7 +19,7 @@ SDL_AppResult AppIterate(void *appstate);
 SDL_AppResult AppEvent(void *appstate, SDL_Event* event);
 void AppQuit(void *appstate, SDL_AppResult result);
 
-int drawChessboard(SDL_Window* window, SDL_Renderer* renderer);
+bool drawChessboard(SDL_Window* window, SDL_Renderer* renderer);
 
 int run();
 

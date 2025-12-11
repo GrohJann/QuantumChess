@@ -36,3 +36,7 @@ TBD
 
 # Requirements
 - winsock (on windows)
+
+# Licenses
+The chess-pieces are licenced under [CC-BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/deed.en)
+and authored by [Cburnett](https://commons.wikimedia.org/wiki/User:Cburnett)
