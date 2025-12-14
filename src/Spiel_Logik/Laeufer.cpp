@@ -1,3 +1,4 @@
+#include "Figuren.h"
 #include "Laeufer.h"
 
 #include <vector>
@@ -15,7 +16,7 @@ int Laeufer::Get_Spalte() {
 int Laeufer::Get_Zeile() {
 	return zeile;
 }*/
-vector <int[2]> Laeufer::Get_Moegliche_Felder() {
+vector <array<int, 2>> Laeufer::Get_Moegliche_Felder() {
 
 	return moegliche_felder;
 }

@@ -19,9 +19,9 @@ int main(int argc, char* argv[]) {
         } else if (arg == "network") {
             std::cout << "Running in Network mode" << std::endl;
             return startClient();
-        } else if (arg == "logic") {
+        }else if (arg == "logic") {
             std::cout << "Running in Logic mode" << std::endl;
-            //return logik_main();
+            return run_logic();
         } else {
             std::cout << "Unknown mode" << std::endl;
         }

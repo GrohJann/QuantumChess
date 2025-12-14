@@ -1,3 +1,4 @@
+#include "Figuren.h"
 #include "Koenig.h"
 #include <vector>
 using namespace std;
@@ -14,7 +15,7 @@ int Koenig::Get_Spalte() {
 int Koenig::Get_Zeile() {
 	return zeile;
 }*/
-vector <int[2]> Koenig::Get_Moegliche_Felder() {
+vector <array<int, 2>> Koenig::Get_Moegliche_Felder() {
 
 	return moegliche_felder;
 }

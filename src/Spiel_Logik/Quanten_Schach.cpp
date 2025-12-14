@@ -1,7 +1,6 @@
 
 
 #include <iostream>
-
 #include "Quanten_Schach.h"
 #include "Figuren.h"
 #include "Bauer.h"
@@ -232,7 +231,7 @@ void Spielfeld_Initialisieren(Figuren* (&Spielfeld)[8][8]) {
 	
 	
 }
-int logik_main()
+int run_logic()
 {
 	bool weiss[8][8];
 	bool schwarz[8][8];

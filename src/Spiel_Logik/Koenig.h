@@ -1,8 +1,8 @@
 #pragma once
-#include "Figuren.h"
 #include <vector>
 #include <array>
-using namespace std;
+class Figuren;
+
 class Koenig : public Figuren
 {
 
@@ -11,7 +11,7 @@ public:
 	//bool Get_Farbe();
 	//int Get_Spalte();
 	//int Get_Zeile();
-	virtual vector <int[2]> Get_Moegliche_Felder();
+	virtual std::vector<std::array<int, 2>> Get_Moegliche_Felder();
 
 	//void Set_Geschlagen(bool neuer_zustand);
 	//void Set_Farbe(bool neue_farbe);
@@ -27,6 +27,6 @@ private:
 	//
 	//int spalte;
 	//int  zeile;
-	vector <int[2]>  moegliche_felder; // Stelle 0 = Spalte // Stelle 1 = Zeile
+	std::vector<std::array<int, 2>>  moegliche_felder; // Stelle 0 = Spalte // Stelle 1 = Zeile
 };
 

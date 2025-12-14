@@ -1,4 +1,7 @@
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.26)
+
+project(QuantumChess)
+
 
 # --- Fetch SDL3 ---------------------------------------------------------------
 include(FetchContent)
@@ -32,8 +35,6 @@ endif()
 
 # ------------------------------------------------------------------------------
 
-
-
 project(QuantumChess)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -45,27 +46,36 @@ add_executable(QuantumChess src/main.cpp
         src/Network/Client_Network.cpp
         src/Network/Client_Network.h
         src/GUI/SDL.h
-        #src/Spiel_Logik/Bauer.cpp
-        #src/Spiel_Logik/Bauer.h
-        #src/Spiel_Logik/Dame.cpp
-        #src/Spiel_Logik/Dame.h
+        src/Spiel_Logik/Bauer.cpp
+        src/Spiel_Logik/Bauer.h
+        src/Spiel_Logik/Dame.cpp
+        src/Spiel_Logik/Dame.h
         src/Spiel_Logik/Figuren.cpp
         src/Spiel_Logik/Figuren.h
-        #src/Spiel_Logik/Koenig.cpp
-        #src/Spiel_Logik/Koenig.h
-        #src/Spiel_Logik/Laeufer.cpp
-        #src/Spiel_Logik/Laeufer.h
-        #src/Spiel_Logik/Quanten_Schach.cpp
-        #src/Spiel_Logik/Quanten_Schach.h
-        #src/Spiel_Logik/Springer.cpp
-        #src/Spiel_Logik/Springer.h
-        #src/Spiel_Logik/Turm.cpp
-        #src/Spiel_Logik/Turm.h
+        src/Spiel_Logik/Koenig.cpp
+        src/Spiel_Logik/Koenig.h
+        src/Spiel_Logik/Laeufer.cpp
+        src/Spiel_Logik/Laeufer.h
+        src/Spiel_Logik/Quanten_Schach.cpp
+        src/Spiel_Logik/Quanten_Schach.h
+        src/Spiel_Logik/Springer.cpp
+        src/Spiel_Logik/Springer.h
+        src/Spiel_Logik/Turm.cpp
+        src/Spiel_Logik/Turm.h
 )
+
+if (WIN32)
+    add_custom_command(TARGET QuantumChess POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:SDL3::SDL3>
+            $<TARGET_FILE:SDL3_image::SDL3_image>
+            $<TARGET_FILE_DIR:QuantumChess>
+    )
+endif()
 
 
 target_link_libraries(QuantumChess
         PRIVATE
-            SDL3::SDL3
-            SDL3_image::SDL3_image
+        SDL3::SDL3
+        SDL3_image::SDL3_image
 )

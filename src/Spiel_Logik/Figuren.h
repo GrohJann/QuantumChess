@@ -2,7 +2,6 @@
 #pragma once
 #include <vector>
 #include <array>
-using namespace std;
 class Figuren
 {
 public:
@@ -11,7 +10,7 @@ public:
 	virtual int Get_Spalte();
 	virtual int Get_Zeile();
 	virtual bool Get_Gezogen();
-	vector <int[2]> Get_Moegliche_Felder();
+	std::vector<std::array<int, 2>> Get_Moegliche_Felder();
 	virtual void Set_Geschlagen(bool neuer_zustand);
 	virtual void Set_Farbe(bool neue_farbe);
 	virtual void Set_Spalte(int neue_Spalte);

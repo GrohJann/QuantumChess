@@ -1,3 +1,4 @@
+#include "Figuren.h"
 #include "Springer.h"
 #include <vector>
 #include <array>
@@ -15,7 +16,7 @@ int Springer::Get_Spalte() {
 int Springer::Get_Zeile() {
 	return zeile;
 }
-vector <int[2]> Springer::Get_Moegliche_Felder() {
+vector <array<int, 2>> Springer::Get_Moegliche_Felder() {
 
 	return moegliche_felder;
 }
@@ -42,7 +43,7 @@ void Springer::Set_Moegliche_Felder() {// bearbeiten
 
 	// zeile +- 2 und spalte +- 1
 	// zeile +- 1 und spalte +-2
-	// vorausgesetzt  zeile und spalte wird nicht kleiner als 1 oder größer als 8
+	// vorausgesetzt  zeile und spalte wird nicht kleiner als 1 oder grï¿½ï¿½er als 8
 	// Stelle 0 = Spalte // Stelle 1 = Zeile
 
 	
