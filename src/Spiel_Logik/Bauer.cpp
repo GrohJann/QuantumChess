@@ -15,7 +15,7 @@ int Bauer::Get_Spalte() {
 int Bauer::Get_Zeile() {
 	return zeile;
 }*/
-vector <int[2]> Bauer::Get_Moegliche_Felder() {
+vector <array<int, 2>> Bauer::Get_Moegliche_Felder() {
 
 	return moegliche_felder;
 }

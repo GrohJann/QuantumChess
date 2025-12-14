@@ -15,7 +15,7 @@ int Dame::Get_Spalte() {
 int Dame::Get_Zeile() {
 	return zeile;
 }*/
-vector <int[2]> Dame::Get_Moegliche_Felder() {
+vector <array<int, 2>> Dame::Get_Moegliche_Felder() {
 
 	return moegliche_felder;
 }

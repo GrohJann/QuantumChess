@@ -1,6 +1,9 @@
 #pragma once
 #include <vector>
 #include <array>
+
+class Figuren;
+
 class Springer : public Figuren
 {
 public:
@@ -8,7 +11,7 @@ public:
 	bool Get_Farbe();
 	int Get_Spalte();
 	int Get_Zeile();
-	vector <int[2]> Get_Moegliche_Felder();
+	std::vector<std::array<int, 2>> Get_Moegliche_Felder();
 
 	void Set_Geschlagen(bool neuer_zustand);
 	void Set_Farbe(bool neue_farbe);
@@ -24,7 +27,7 @@ private:
 	//
 	int spalte;
 	int  zeile;
-	vector <int[2]>  moegliche_felder; // Stelle 0 = Spalte // Stelle 1 = Zeile
+	std::vector<std::array<int, 2>>  moegliche_felder; // Stelle 0 = Spalte // Stelle 1 = Zeile
 
 };
 

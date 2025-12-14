@@ -3,6 +3,7 @@
 #include "GUI/SDL.h"
 #include "GUI/SDL_Test.h"
 #include "Network/Client_Network.h"
+#include "Spiel_Logik/Quanten_Schach.h"
 
 
 int main(int argc, char* argv[]) {
@@ -18,6 +19,9 @@ int main(int argc, char* argv[]) {
         } else if (arg == "network") {
             std::cout << "Running in Network mode" << std::endl;
             return startClient();
+        }else if (arg == "logic") {
+            std::cout << "Running in Logic mode" << std::endl;
+            return run_logic();
         } else {
             std::cout << "Unknown mode" << std::endl;
         }
