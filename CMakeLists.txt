@@ -19,7 +19,7 @@ endif()
 # --- Fetch SDL3_image ---------------------------------------------------------
 # Enable common image formats
 set(SDL3IMAGE_PNG  ON)
-set(SDL3IMAGE_JPG  ON)
+#set(SDL3IMAGE_JPG  ON)
 FetchContent_Declare(SDL3_image
         GIT_REPOSITORY https://github.com/libsdl-org/SDL_image
         GIT_TAG release-3.2.4

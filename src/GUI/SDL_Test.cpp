@@ -7,15 +7,25 @@
  */
 
 #include <iostream>
-//#include <SDL3/SDL_iostream.h>
-#include <SDL3/SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 
 #include "../GUI/SDL_Test.h"
+
+struct FigureTextures {
+    SDL_Texture* rookTexture;
+    SDL_Texture* knightTexture;
+    SDL_Texture* bishopTexture;
+    SDL_Texture* queenTexture;
+    SDL_Texture* kingTexture;
+    SDL_Texture* pawnTexture;
+};
 
 struct AppState {
     const char* title;
     SDL_Window* window;
     SDL_Renderer* renderer;
+    FigureTextures whiteFigures;
+    FigureTextures blackFigures;
     bool redraw = true;
 };
 
@@ -44,8 +54,63 @@ SDL_AppResult AppInit(void **appstate) {
     if (!(state->renderer = SDL_CreateRenderer(state->window, NULL)))
         return SDL_APP_FAILURE;
 
+    // make figure Textures
+    if (!CreateFigureTextures(state->renderer, &state->whiteFigures, &state->blackFigures))
+
     std::cout << "Program loaded!" << std::endl;
     return SDL_APP_CONTINUE;
+}
+
+// TODO: add javadoc
+bool CreateFigureTextures(SDL_Renderer* renderer, FigureTextures* whiteFigures, FigureTextures* blackFigures) {
+    // create white figure textures
+    if (!(whiteFigures -> rookTexture = GetFigureTexture("../assets/rook_w.svg", renderer)))
+        return false;
+    if (!(whiteFigures -> knightTexture = GetFigureTexture("../assets/knight_w.svg", renderer)))
+        return false;
+    if (!(whiteFigures -> bishopTexture = GetFigureTexture("../assets/bishop_w.svg", renderer)))
+        return false;
+    if (!(whiteFigures -> queenTexture = GetFigureTexture("../assets/queen_w.svg", renderer)))
+        return false;
+    if (!(whiteFigures -> kingTexture = GetFigureTexture("../assets/king_w.svg", renderer)))
+        return false;
+    if (!(whiteFigures -> pawnTexture = GetFigureTexture("../assets/pawn_w.svg", renderer)))
+        return false;
+
+    // create black figure textures
+    if (!(blackFigures -> rookTexture = GetFigureTexture("../assets/rook_b.svg", renderer)))
+        return false;
+    if (!(blackFigures -> knightTexture = GetFigureTexture("../assets/knight_b.svg", renderer)))
+        return false;
+    if (!(blackFigures -> bishopTexture = GetFigureTexture("../assets/bishop_b.svg", renderer)))
+        return false;
+    if (!(blackFigures -> queenTexture = GetFigureTexture("../assets/queen_b.svg", renderer)))
+        return false;
+    if (!(blackFigures -> kingTexture = GetFigureTexture("../assets/king_b.svg", renderer)))
+        return false;
+    if (!(blackFigures -> pawnTexture = GetFigureTexture("../assets/pawn_b.svg", renderer)))
+        return false;
+
+    return true;
+}
+
+// TODO: add javadoc
+SDL_Texture* GetFigureTexture(const char* file, SDL_Renderer* renderer) {
+    SDL_IOStream* io = SDL_IOFromFile(file, "rb");
+    if (!io) {
+        SDL_Log("Cannot open test.svg: %s", SDL_GetError());
+        return NULL;
+    }
+
+    // Load and rasterize SVG to desired size
+    SDL_Surface *surface = IMG_LoadSizedSVG_IO(io, 256, 256); // TODO: make size adjustable
+    if (!(surface)) {
+         SDL_Log("SVG load failed: %s", SDL_GetError());
+         return NULL;
+     }
+
+    // Convert to texture
+    return SDL_CreateTextureFromSurface(renderer, surface);
 }
 
 /**
@@ -65,7 +130,7 @@ SDL_AppResult AppIterate(void *appstate) {
         SDL_RenderClear(state->renderer);
 
         // draw chessboard
-        drawChessboard(state->window, state->renderer);
+        drawChessboard(state);
 
         // swap frame buffer
         SDL_RenderPresent(state->renderer);
@@ -75,16 +140,16 @@ SDL_AppResult AppIterate(void *appstate) {
 }
 
 // TODO: add javadoc
-bool drawChessboard(SDL_Window* window, SDL_Renderer* renderer) {
+bool drawChessboard(AppState* state) {
     int w, h;
     constexpr int boardFields = 8;
-    SDL_GetWindowSize(window, &w, &h);
+    SDL_GetWindowSize(state -> window, &w, &h);
 
     // get size of squares
     const float squareSize = (w * 1.0f) / (boardFields * 1.0f);
 
     // render Background
-    SDL_RenderClear(renderer);
+    SDL_RenderClear(state -> renderer);
 
     // render squares
     for (int row = 0; row < boardFields; row++) {
@@ -92,37 +157,43 @@ bool drawChessboard(SDL_Window* window, SDL_Renderer* renderer) {
 
             // Alternate colors
             if ((row + col) % 2 == 0)
-                SDL_SetRenderDrawColor(renderer, 240, 240, 240, 255);
+                SDL_SetRenderDrawColor(state->renderer, 236, 236, 208, 255);
             else
-                SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
+                SDL_SetRenderDrawColor(state->renderer, 119, 149, 87, 255);
 
             SDL_FRect rect = {col * squareSize, row * squareSize, squareSize, squareSize};
 
-            bool success = SDL_RenderFillRect(renderer, &rect);
+            bool success = SDL_RenderFillRect(state->renderer, &rect);
 
 /********************************************************/
-            if ( row == 0 && (col == 0 || col == boardFields - 1) ) {
-                //SDL_IOStream* io = SDL_IOFromFile("assets/rook_b.svg", "rb");
-                /*if (!io) {
-                    SDL_Log("Cannot open test.svg: %s", SDL_GetError());
-                    return 1;
-                }*/
-
-                // Load and rasterize SVG to desired size (e.g., 256×256)
-                //SDL_Surface *surf = IMG_LoadSizedSVG_IO(io, 256, 256);
-                SDL_Surface *surface = IMG_Load("assets/rook_w.png");
-                /* if (!surf) {
-                     SDL_Log("SVG load failed: %s", SDL_GetError());
-                     return 1;
-                 }*/
-
-                // Convert to texture
-                SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surface);
-
-                SDL_DestroySurface(surface);
-                //SDL_CloseIO(io);
-
-                SDL_RenderTexture(renderer, tex, nullptr, &rect);
+            if ( row == 0 ) {
+                if (col == 0 || col == boardFields - 1) {
+                    SDL_RenderTexture(state->renderer, state->blackFigures.rookTexture, nullptr, &rect);
+                }else if (col == 1 || col == boardFields - 2) {
+                    SDL_RenderTexture(state->renderer, state->blackFigures.knightTexture, nullptr, &rect);
+                } else if (col == 2 || col == boardFields - 3) {
+                    SDL_RenderTexture(state->renderer, state->blackFigures.bishopTexture, nullptr, &rect);
+                } else if (col == 3) {
+                    SDL_RenderTexture(state->renderer, state->blackFigures.queenTexture, nullptr, &rect);
+                } else if (col == 4) {
+                    SDL_RenderTexture(state->renderer, state->blackFigures.kingTexture, nullptr, &rect);
+                }
+            } else if (row == 1) {
+                SDL_RenderTexture(state->renderer, state->blackFigures.pawnTexture, nullptr, &rect);
+            } else if (row == 6) {
+                SDL_RenderTexture(state->renderer, state->whiteFigures.pawnTexture, nullptr, &rect);
+            }else if (row == 7) {
+                if (col == 0 || col == boardFields - 1) {
+                    SDL_RenderTexture(state->renderer, state->whiteFigures.rookTexture, nullptr, &rect);
+                }else if (col == 1 || col == boardFields - 2) {
+                    SDL_RenderTexture(state->renderer, state->whiteFigures.knightTexture, nullptr, &rect);
+                } else if (col == 2 || col == boardFields - 3) {
+                    SDL_RenderTexture(state->renderer, state->whiteFigures.bishopTexture, nullptr, &rect);
+                } else if (col == 3) {
+                    SDL_RenderTexture(state->renderer, state->whiteFigures.queenTexture, nullptr, &rect);
+                } else if (col == 4) {
+                    SDL_RenderTexture(state->renderer, state->whiteFigures.kingTexture, nullptr, &rect);
+                }
             }
 /*******************************************************/
 

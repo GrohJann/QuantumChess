@@ -13,13 +13,17 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_init.h>
 
+struct FigureTextures;
+struct AppState;
 
 SDL_AppResult AppInit(void **appstate);
 SDL_AppResult AppIterate(void *appstate);
 SDL_AppResult AppEvent(void *appstate, SDL_Event* event);
 void AppQuit(void *appstate, SDL_AppResult result);
 
-bool drawChessboard(SDL_Window* window, SDL_Renderer* renderer);
+bool CreateFigureTextures(SDL_Renderer* renderer, FigureTextures* whiteFigures, FigureTextures* blackFigures);
+SDL_Texture* GetFigureTexture(const char* file, SDL_Renderer* renderer);
+bool drawChessboard(AppState* state);
 
 int run();
 
