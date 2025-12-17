@@ -1,48 +1,86 @@
-#include "Figuren.h"
 #include "Turm.h"
+#include "Brett.h"
 #include <vector>
 using namespace std;
 
-bool Turm::Get_Geschlagen() {
-	return geschlagen;
-}
-bool Turm::Get_Farbe() {
-	return schwarz;
-}
-int Turm::Get_Spalte() {
-	return spalte;
-}
-int Turm::Get_Zeile() {
-	return zeile;
-}
- vector <array<int, 2>> Turm::Get_Moegliche_Felder() {
+
+vector <Moegliches_Feld> Turm::Get_Moegliche_Felder() {
 
 	return moegliche_felder;
 }
 
-void Turm::Set_Geschlagen(bool neuer_zustand) {
-	geschlagen = neuer_zustand;
-}
-void Turm::Set_Farbe(bool neue_farbe) {
-	geschlagen = neue_farbe;
-}
-void Turm::Set_Spalte(int neue_spalte) {
-	spalte = neue_spalte;
-}
-void Turm::Set_Zeile(int neue_zeile) {
-	zeile = neue_zeile;
-}
- void Turm::Set_Moegliche_Felder() {
+void Turm::Set_Moegliche_Felder(Brett& spielfeld) {
 
-	for (int i = 1; i < 9; i++) {//vertikal
-		if (i != zeile) {	
-			moegliche_felder.push_back({spalte,i});
+	int s = spalte;
+	for (s; s > 0; s--) { //links Bewegung
+		Moegliches_Feld F;
+		F.spalte = s;
+		F.zeile = zeile;
+		if (spielfeld.Felder[s - 1][zeile - 1] == nullptr) {
+			moegliche_felder.push_back(F);
+		}
+		if (s != spalte && spielfeld.Felder[s - 1][zeile - 1] != nullptr) {
+			if (spielfeld.Felder[s - 1][zeile - 1]->Get_Farbe() == weiss) {
+				break;
+			}
+			else if (spielfeld.Felder[s - 1][zeile - 1]->Get_Farbe() != weiss) {
+				moegliche_felder.push_back(F);
+				break;
+			}
 		}
 	}
-	for (int i = 1; i < 9; i++) { // horizontal
-		if (i !=spalte) {
-			moegliche_felder.push_back({ i, zeile });
+	s = spalte;
+	for (s; s < 9; s++) { //rechts Bewegung
+		Moegliches_Feld F;
+		F.spalte = s;
+		F.zeile = zeile;
+		if (spielfeld.Felder[s - 1][zeile - 1] == nullptr) {
+			moegliche_felder.push_back(F);
+		}
+		if (s != spalte && spielfeld.Felder[s - 1][zeile - 1] != nullptr) {
+			if (spielfeld.Felder[s - 1][zeile - 1]->Get_Farbe() == weiss) {
+				break;
+			}
+			else if (spielfeld.Felder[s - 1][zeile - 1]->Get_Farbe() != weiss) {
+				moegliche_felder.push_back(F);
+				break;
+			}
 		}
 	}
-	
+	int z = zeile;
+	for (z; z < 9; z++) { //aufwärts
+		Moegliches_Feld F;
+		F.spalte = spalte;
+		F.zeile = z;
+		if (spielfeld.Felder[spalte - 1][z - 1] == nullptr) {
+			moegliche_felder.push_back(F);
+		}
+		if (z != spalte && spielfeld.Felder[spalte - 1][z - 1] != nullptr) {
+			if (spielfeld.Felder[spalte - 1][z - 1]->Get_Farbe() == weiss) {
+				break;
+			}
+			else if (spielfeld.Felder[spalte - 1][z - 1]->Get_Farbe() != weiss) {
+				moegliche_felder.push_back(F);
+				break;
+			}
+		}
+	}
+	z = zeile;
+	for (z; z > 0; z--) { //abwärts
+		Moegliches_Feld F;
+		F.spalte = s;
+		F.zeile = zeile;
+		if (spielfeld.Felder[spalte - 1][z - 1] == nullptr) {
+			moegliche_felder.push_back(F);
+		}
+		if (z != spalte && spielfeld.Felder[spalte - 1][z - 1] != nullptr) {
+			if (spielfeld.Felder[spalte - 1][z - 1]->Get_Farbe() == weiss) {
+				break;
+			}
+			else if (spielfeld.Felder[spalte - 1][z - 1]->Get_Farbe() != weiss) {
+				moegliche_felder.push_back(F);
+				break;
+			}
+		}
+	}
 }
