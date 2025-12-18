@@ -1,6 +1,7 @@
 
 
 #include <iostream>
+#include <SDL3/SDL.h>
 #include "Brett.h"
 #include "Figuren.h"
 #include "Bauer.h"
@@ -9,6 +10,7 @@
 #include "Laeufer.h"
 #include "Springer.h"
 #include "Turm.h"
+
 
 
 using namespace std;
@@ -30,21 +32,24 @@ void Startaufstellung_Bauern(vector <Bauer>& bauern, Brett& spielfeld) {
 		Bauer b;
 		b.Set_Geschlagen(false);
 		b.Set_Gezogen(false);
+		b.Set_Name('b');
 		if (i <= 8) {
-			b.Set_Farbe(true);
+			b.Set_Farbe(true); // true = weiss
 			b.Set_Zeile(2);
 			b.Set_Spalte(i);
+			b.Set_Dateipfad("Weisser Bauer");
 		}
 		else {
 			b.Set_Farbe(false);
 			b.Set_Zeile(7);
 			b.Set_Spalte(i - 8);
+			b.Set_Dateipfad("Schwarze Bauer");
 
 		}
-		bauern.push_back(b); // Vektor überhaupt notwendig	
+		bauern.push_back(b); 	
 	}
 	for (int i = 0; i < bauern.size(); i++) {
-		spielfeld.Felder[bauern[i].Get_Spalte() - 1][bauern[i].Get_Zeile() - 1] = &bauern[i];
+		spielfeld.Felder  [bauern[i].Get_Spalte() - 1]  [bauern[i].Get_Zeile() - 1]   = &bauern[i];
 	}
 }
 void Startaufstellung_Springer(vector <Springer>& springer, Brett& spielfeld) {
@@ -52,9 +57,11 @@ void Startaufstellung_Springer(vector <Springer>& springer, Brett& spielfeld) {
 	for (int i = 1; i < 5; i++) {
 		Springer S;
 		S.Set_Geschlagen(false);
+		S.Set_Name('S');
 		if (i <= 2) {
-			S.Set_Farbe(false);
+			S.Set_Farbe(true);
 			S.Set_Zeile(1);
+			S.Set_Dateipfad("Weisser Springer");
 			switch (i)
 			{
 			case 1:
@@ -65,11 +72,11 @@ void Startaufstellung_Springer(vector <Springer>& springer, Brett& spielfeld) {
 				S.Set_Spalte(7);
 				break;
 			}
-
 		}
 		else {
-			S.Set_Farbe(true);
+			S.Set_Farbe(false);
 			S.Set_Zeile(8);
+			S.Set_Dateipfad("Schwarzer Springer");
 			switch (i)
 			{
 			case 3:
@@ -93,9 +100,11 @@ void Startaufstellung_Laeufer(vector <Laeufer>& laeufer, Brett& spielfeld) {
 	for (int i = 1; i < 5; i++) {
 		Laeufer L;
 		L.Set_Geschlagen(false);
+		L.Set_Name('L');
 		if (i <= 2) {
-			L.Set_Farbe(false);
+			L.Set_Farbe(true);
 			L.Set_Zeile(1);
+			L.Set_Dateipfad("Weisser Laeufer");
 			switch (i)
 			{
 			case 1:
@@ -108,8 +117,9 @@ void Startaufstellung_Laeufer(vector <Laeufer>& laeufer, Brett& spielfeld) {
 			}
 		}
 		else {
-			L.Set_Farbe(true);
+			L.Set_Farbe(false);
 			L.Set_Zeile(8);
+			L.Set_Dateipfad("Schwarzer Laeufer");
 			switch (i)
 			{
 			case 3:
@@ -134,9 +144,11 @@ void Startaufstellung_Tuerme(vector <Turm>& tuerme, Brett& spielfeld) {
 		Turm T;
 		T.Set_Geschlagen(false);
 		T.Set_Gezogen(false);
+		T.Set_Name('T');
 		if (i <= 2) {
-			T.Set_Farbe(false);
+			T.Set_Farbe(true);
 			T.Set_Zeile(1);
+			T.Set_Dateipfad("Weisser Turm");
 			switch (i)
 			{
 			case 1:
@@ -149,8 +161,9 @@ void Startaufstellung_Tuerme(vector <Turm>& tuerme, Brett& spielfeld) {
 			}
 		}
 		else {
-			T.Set_Farbe(true);
+			T.Set_Farbe(false);
 			T.Set_Zeile(8);
+			T.Set_Dateipfad("Schwarzer Turm");
 			switch (i)
 			{
 			case 3:
@@ -173,13 +186,16 @@ void Startaufstellung_Damen(vector <Dame>& damen, Brett& spielfeld) {
 		Dame D;
 		D.Set_Geschlagen(false);
 		D.Set_Spalte(4);
+		D.Set_Name('D');
 		if (i == 1) {
-			D.Set_Farbe(false);
+			D.Set_Farbe(true);
 			D.Set_Zeile(1);
+			D.Set_Dateipfad("Weisse Dame");
 		}
 		else {
-			D.Set_Farbe(true);
+			D.Set_Farbe(false);
 			D.Set_Zeile(8);
+			D.Set_Dateipfad("Schwarze Dame");
 		}
 		damen.push_back(D);
 	}
@@ -192,14 +208,17 @@ void Startaufstellung_Koenige(vector <Koenig>& koenige, Brett& spielfeld) {
 		Koenig K;
 		K.Set_Geschlagen(false);
 		K.Set_Gezogen(false);
+		K.Set_Name('K');
 		K.Set_Spalte(5);
 		if (i == 1) {
-			K.Set_Farbe(false);
+			K.Set_Farbe(true);
 			K.Set_Zeile(1);
+			K.Set_Dateipfad("Weisser Koenig");
 		}
 		else {
-			K.Set_Farbe(true);
+			K.Set_Farbe(false);
 			K.Set_Zeile(8);
+			K.Set_Dateipfad("Schwarzer Koenig");
 		}
 		koenige.push_back(K);
 	}
@@ -229,17 +248,19 @@ int main()
 
 
 
+
+
 	for (int i = 0; i < 8; i++) {//Zeile
 		
 		for (int j = 0; j < 8; j++) { // Spalte
 			
 			if (Spielfeld.Felder[j][i] != nullptr) {
-				int a;
-				int b;
-				a = Spielfeld.Felder[j][i]->Get_Spalte();
-				b = Spielfeld.Felder[j][i]->Get_Zeile();
+				char  a;
+				char  b;
+				a = Spielfeld.Felder[j][i]->Get_Name();
+				//b = Spielfeld.Felder[j][i]->Get_Zeile();
 				cout << a;
-				cout << b;
+				//cout << b;
 				cout << "   ";
 			}			
 		}
@@ -248,19 +269,31 @@ int main()
 
 	for (int i = 0; i < 8; i++) {//Zeile
 		for (int j = 0; j < 8; j++) { // Spalte
-
+			
 			if (Spielfeld.Felder[j][i] != nullptr) {
+				
+
 				Spielfeld.Felder[j][i]->Set_Moegliche_Felder(Spielfeld);
-				auto felder = Spielfeld.Felder[j][i]->Get_Moegliche_Felder();
+				
+				vector <Moegliches_Feld> felder = Spielfeld.Felder[j][i]->Get_Moegliche_Felder();
 				if (felder.size() != 0)
 				{
-					cout << "Spalte:" << j+1 << "     ";
-					cout << "Zeile:" << i+1 << endl;
+					cout << Spielfeld.Felder[j][i]->Get_Name();
+					for (int k = 0; k < felder.size(); k++) {
+						cout << " Feld: " << felder[k].spalte << felder[k].zeile << "    " ;
+					}
+					cout << endl;
 				}
 			}
 		}
 		cout << endl;
 	}
+
+
+
+
+
+	
 
 }
 

@@ -9,7 +9,7 @@ using namespace std;
 }
 
 
-void Koenig::Set_Moegliche_Felder(Brett& spielfeld) {
+void Koenig::Set_Moegliche_Felder(Brett spielfeld) {
 
 	for (int s = -1; s < 1; s++) {
 		for (int z = -1; z < 1; z++) {

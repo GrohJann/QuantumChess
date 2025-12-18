@@ -7,10 +7,10 @@ using namespace std;
 class Turm : public Figuren
 {
 private:
-	vector <Moegliches_Feld>  moegliche_felder;
+	//vector <Moegliches_Feld>  moegliche_felder;
 public:
 
-	virtual vector <Moegliches_Feld> Get_Moegliche_Felder();
-	virtual void Set_Moegliche_Felder(Brett& spielfeld);
+	//virtual vector <Moegliches_Feld> Get_Moegliche_Felder();
+	virtual void Set_Moegliche_Felder(Brett spielfeld);
 };
 

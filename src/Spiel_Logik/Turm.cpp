@@ -4,12 +4,12 @@
 using namespace std;
 
 
-vector <Moegliches_Feld> Turm::Get_Moegliche_Felder() {
+/*vector <Moegliches_Feld> Turm::Get_Moegliche_Felder() {
 
 	return moegliche_felder;
-}
+}*/
 
-void Turm::Set_Moegliche_Felder(Brett& spielfeld) {
+void Turm::Set_Moegliche_Felder(Brett spielfeld) {
 
 	int s = spalte;
 	for (s; s > 0; s--) { //links Bewegung

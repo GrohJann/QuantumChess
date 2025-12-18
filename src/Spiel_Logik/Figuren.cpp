@@ -1,9 +1,20 @@
 #include "Brett.h"
 #include "Figuren.h"
+
 #include <vector>
 #include <string>
 using namespace std;
 
+
+SDL_Texture* Figuren::Get_Texture() {
+	return texture_ptr;
+}
+string Figuren::Get_Dateipfad() {
+	return dateipfad;
+}
+char Figuren::Get_Name() {
+	return name;
+}
 bool Figuren::Get_Geschlagen() {
 	return geschlagen;
 }
@@ -23,12 +34,14 @@ vector <Moegliches_Feld> Figuren::Get_Moegliche_Felder() {
 	return moegliche_felder;
 }
 
-
+void Figuren::Set_Name(char neuer_name) {
+	name = neuer_name;
+}
 void Figuren::Set_Geschlagen(bool neuer_zustand) {
 	geschlagen = neuer_zustand;
 }
 void Figuren::Set_Farbe(bool neue_farbe) {
-	geschlagen = neue_farbe;
+	weiss = neue_farbe;
 }
 void Figuren::Set_Spalte(int neue_spalte) {
 	spalte = neue_spalte;
@@ -39,6 +52,16 @@ void Figuren::Set_Zeile(int neue_zeile) {
 void Figuren::Set_Gezogen(bool neuer_zustand) {
 	gezogen = neuer_zustand;
 }
-void Figuren::Set_Moegliche_Felder(Brett& spielfeld) {
+void Figuren::Set_Moegliche_Felder(Brett spielfeld) {
 	return;
 }
+
+void Figuren::Set_Dateipfad(string neuer_dateipfad) {
+	dateipfad = neuer_dateipfad;
+}
+
+void Figuren::Set_Texture(SDL_Texture* neue_texture_ptr) {
+	texture_ptr = neue_texture_ptr;
+}
+
+

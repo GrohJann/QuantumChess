@@ -4,13 +4,10 @@
 using namespace std;
 
 
-vector <Moegliches_Feld> Dame::Get_Moegliche_Felder() {
-
-	return moegliche_felder;
-}
 
 
-void Dame::Set_Moegliche_Felder(Brett& spielfeld) {
+
+void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 	// Laeufer
 	for (int i = 1; i < 8; i++) { // 45°
 		Moegliches_Feld F;
@@ -70,7 +67,7 @@ void Dame::Set_Moegliche_Felder(Brett& spielfeld) {
 	}
 	for (int i = 1; i < 8; i++) { // 315°
 		Moegliches_Feld F;
-		if (spalte + i <= 8 && zeile + i >= 1) { // feld aufm Brett
+		if (spalte + i <= 8 && zeile - i >= 1) { // feld aufm Brett
 			if (spielfeld.Felder[spalte + i - 1][zeile - i - 1] == nullptr) {
 				F.spalte = spalte + i;
 				F.zeile = zeile - i;

@@ -1,59 +1,47 @@
+#include <iostream>
 #include "Springer.h"
 #include <vector>
 #include <array>
 using namespace std;
 
-vector <Moegliches_Feld> Springer::Get_Moegliche_Felder() {
-
-	return moegliche_felder;
-}
-
-void Springer::Set_Moegliche_Felder(Brett& spielfeld) {// bearbeiten
-
-	/*int zeile = Get_Zeile();
-	int spalte = Get_Spalte();
-
-	// zeile +- 2 und spalte +- 1
-	// zeile +- 1 und spalte +-2
-	// vorausgesetzt  zeile und spalte wird nicht kleiner als 1 oder größer als 8
-	// Stelle 0 = Spalte // Stelle 1 = Zeile
 
 
+void Springer::Set_Moegliche_Felder(Brett spielfeld) {// bearbeiten
 
-	if (spalte + 2 <= 8) { // zug nach oben rechts
-
-		if (zeile + 2 <= 8) {
-			moegliche_felder.push_back({ spalte + 1, zeile + 2 });
-			moegliche_felder.push_back({ spalte + 2, zeile + 1 });
+	bool eine_spalte = false;
+	bool zwei_spalten = true;
+	for (int s = -2; s < 3; s++) {
+		
+		if (spalte + s >= 1 && spalte + s <= 8 && s != 0 ) {
+			for (int z = -1; z < 2; z++) {
+				
+				int a = z;
+				if (eine_spalte && !zwei_spalten) {
+					a = 2 * z;
+				}
+				if (zeile + a >= 1 && zeile + a <= 8 && z != 0) {
+					if (spielfeld.Felder[spalte + s - 1][zeile + a - 1] == nullptr) {
+						Moegliches_Feld F;
+						F.spalte = spalte + s;
+						F.zeile = zeile + a;
+						moegliche_felder.push_back(F);
+					}
+					else if (spielfeld.Felder[spalte + s - 1][zeile + z - 1]->Get_Farbe() != weiss) {
+						Moegliches_Feld F;
+						F.spalte = spalte + s;
+						F.zeile = zeile + a;
+						moegliche_felder.push_back(F);
+					}
+				}
+			}
 		}
-		else if (zeile + 1 <= 8) {
-			moegliche_felder.push_back({ spalte + 2, zeile + 1 });
+		if (s == -2) {
+			eine_spalte = true;
+			zwei_spalten = false;
 		}
-		else if (zeile - 2 >= 1) {
-			moegliche_felder.push_back({ spalte + 1, zeile - 2 });
-			moegliche_felder.push_back({ spalte + 2, zeile - 1 });
-		}
-		else if (zeile - 1 >= 1) {
-			moegliche_felder.push_back({ spalte + 2, zeile - 1 });
+		if (s == 1) {
+			eine_spalte = false;
+			zwei_spalten = true;
 		}
 	}
-	// überarbeiten
-
-	if (spalte - 2 >= 1) { // zug nach unten rechts
-
-		if (zeile + 2 <= 8) {
-			moegliche_felder.push_back({ spalte - 1, zeile + 2 });
-			moegliche_felder.push_back({ spalte - 2, zeile + 1 });
-		}
-		else if (zeile + 1 <= 8) {
-			moegliche_felder.push_back({ spalte - 2, zeile + 1 });
-		}
-		else if (zeile - 2 >= 1) {
-			moegliche_felder.push_back({ spalte - 1, zeile - 2 });
-			moegliche_felder.push_back({ spalte - 2, zeile - 1 });
-		}
-		else if (zeile - 1 >= 1) {
-			moegliche_felder.push_back({ spalte - 2, zeile - 1 });
-		}
-	}*/
 }
