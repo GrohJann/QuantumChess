@@ -7,6 +7,7 @@ class Figuren;
 class Springer : public Figuren
 {
 public:
+	using Figuren::Figuren; // verwende den Constructor der Figuren-Klassse
 	bool Get_Geschlagen();
 	bool Get_Farbe();
 	int Get_Spalte();
@@ -20,13 +21,13 @@ public:
 	void Set_Moegliche_Felder();
 
 private:
-	bool geschlagen = false;
-	bool schwarz = false;
+	//bool geschlagen = false;
+	//bool schwarz = false;
 	// bool gewaehlt = false;
 	// float wahrscheinlichkeit = 1;
 	//
-	int spalte;
-	int  zeile;
+	//int spalte;
+	//int  zeile;
 	std::vector<std::array<int, 2>>  moegliche_felder; // Stelle 0 = Spalte // Stelle 1 = Zeile
 
 };

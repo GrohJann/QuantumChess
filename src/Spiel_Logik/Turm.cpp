@@ -7,7 +7,7 @@ bool Turm::Get_Geschlagen() {
 	return geschlagen;
 }
 bool Turm::Get_Farbe() {
-	return schwarz;
+	return istWeiss;
 }
 int Turm::Get_Spalte() {
 	return spalte;

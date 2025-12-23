@@ -7,6 +7,7 @@ class Koenig : public Figuren
 {
 
 public:
+	using Figuren::Figuren; // verwende den Constructor der Figuren-Klassse
 	//bool Get_Geschlagen();
 	//bool Get_Farbe();
 	//int Get_Spalte();

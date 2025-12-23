@@ -8,7 +8,7 @@ bool Springer::Get_Geschlagen() {
 	return geschlagen;
 }
 bool Springer::Get_Farbe() {
-	return schwarz;
+	return istWeiss;
 }
 int Springer::Get_Spalte() {
 	return spalte;

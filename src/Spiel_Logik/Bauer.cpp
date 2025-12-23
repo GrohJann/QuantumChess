@@ -36,14 +36,14 @@ void Bauer::Set_Zeile(int neue_zeile) {
 
 void Bauer::Set_Moegliche_Felder() {
 
-	if (gezogen && !schwarz && zeile  <= 8) {
+	if (gezogen && !istWeiss && zeile  <= 8) {
 		for (int s = -1; s < 2; s++) {
 			if (spalte + s >= 1 && spalte + s <= 8) {
 				moegliche_felder.push_back({ spalte + s , zeile + 1 });
 			}
 		}
 	}
-	if (!gezogen && !schwarz) {
+	if (!gezogen && !istWeiss) {
 		for (int s = -1; s < 2; s++) {
 			if (spalte + s >= 1 && spalte + s <= 8) {
 				moegliche_felder.push_back({ spalte + s , zeile + 1 });
@@ -52,14 +52,14 @@ void Bauer::Set_Moegliche_Felder() {
 		moegliche_felder.push_back({ spalte, zeile + 2 });	
 	}
 
-	if (gezogen && schwarz && zeile  >= 1) {
+	if (gezogen && istWeiss && zeile  >= 1) {
 		for (int s = -1; s < 2; s++) {
 			if (spalte + s >= 1 && spalte + s <= 8) {
 				moegliche_felder.push_back({ spalte + s , zeile - 1 });
 			}
 		}
 	}
-	if (!gezogen && schwarz) {
+	if (!gezogen && istWeiss) {
 		for (int s = -1; s < 2; s++) {
 			if (spalte + s >= 1 && spalte + s <= 8) {
 				moegliche_felder.push_back({ spalte + s , zeile - 1 });
