@@ -7,9 +7,24 @@
  */
 
 #include <iostream>
+#include <algorithm>
 #include <SDL3_image/SDL_image.h>
 
 #include "../GUI/SDL_Test.h"
+
+enum mode {
+    NORMAL,
+    SPLIT,
+    MERGE
+};
+
+struct QuantumChessSquare {
+    // TODO: odd id
+    Figuren* chessPice;
+    // FIXME: remove if unnecessary
+    //bool isWhite;
+    float probability;
+};
 
 struct FigureTextures {
     SDL_Texture* rookTexture;
@@ -20,12 +35,24 @@ struct FigureTextures {
     SDL_Texture* pawnTexture;
 };
 
+struct Pos {
+    float x;
+    float y;
+};
+
 struct AppState {
     const char* title;
     SDL_Window* window;
     SDL_Renderer* renderer;
     FigureTextures whiteFigures;
     FigureTextures blackFigures;
+    Board board;
+    mode moveMode = NORMAL;
+    bool whiteTurn = true;
+    bool btn_down = false;
+    //bool clicked = false;
+    Pos mousePos;
+    vector<Pos> selectedTiles;
     bool redraw = true;
 };
 
@@ -54,11 +81,124 @@ SDL_AppResult AppInit(void **appstate) {
     if (!(state->renderer = SDL_CreateRenderer(state->window, NULL)))
         return SDL_APP_FAILURE;
 
+    // enable use of alpha channel
+    SDL_SetRenderDrawBlendMode(state->renderer, SDL_BLENDMODE_BLEND);
+
+    // save mouse pos to prevent null-pointer exception
+    SDL_GetMouseState(&state->mousePos.x, &state->mousePos.y);
+
     // make figure Textures
     if (!CreateFigureTextures(state->renderer, &state->whiteFigures, &state->blackFigures))
+        return SDL_APP_FAILURE;
+
+    //InitChessBoard(*state->board);
+    state->board = InitChessBoard();
 
     std::cout << "Program loaded!" << std::endl;
     return SDL_APP_CONTINUE;
+}
+
+/**
+ * Initializes the Chessboard
+ * @param board 2D Array of QuantumChess structs with type std::array<std::array<QuantumChessSquare*, 8>, 8>
+ */
+/*void InitChessBoard(Board& board) {
+    for (int row = 0; row < board.size(); row++) {
+        for (int col = 0; col < board.size(); col++) {
+            if (row == 0 || row == 7) {
+                if (col == 0 || col == 7) {
+                    const bool isWhite = row>3;
+                    auto f = Turm(isWhite, row, col);
+                    auto square = QuantumChessSquare{&f, isWhite, 1.0f};
+                    board[row][col] = &square;
+                } else if (col == 1 || col == 6) {
+                    const bool isWhite = row>3;
+                    auto f = Springer(isWhite, row, col);
+                    auto square = QuantumChessSquare{&f, isWhite, 1.0f};
+                    board[row][col] = &square;
+                } else if (col == 2 || col == 5) {
+                    const bool isWhite = row>3;
+                    auto f = Laeufer(isWhite, row, col);
+                    auto square = QuantumChessSquare{&f, isWhite, 1.0f};
+                    board[row][col] = &square;
+                } else if (col == 3) {
+                    const bool isWhite = row>3;
+                    if (isWhite) {
+                        auto f = Dame(isWhite, row, col);
+                        auto square = QuantumChessSquare{&f, isWhite, 1.0f};
+                        board[row][col] = &square;
+                    } else {
+                        auto f = Koenig(isWhite, row, col);
+                        auto square = QuantumChessSquare{&f, isWhite, 1.0f};
+                        board[row][col] = &square;
+                    }
+                } else if (col == 4) {
+                    const bool isWhite = row>3;
+                    if (isWhite) {
+                        auto f = Koenig(isWhite, row, col);
+                        auto square = QuantumChessSquare{&f, isWhite, 1.0f};
+                        board[row][col] = &square;
+                    } else {
+                        auto f = Dame(isWhite, row, col);
+                        auto square = QuantumChessSquare{&f, isWhite, 1.0f};
+                        board[row][col] = &square;
+                    }
+                }
+            } else if (row == 1 || row == 6) {
+                const bool isWhite = row>3;
+                auto f = Bauer(isWhite, row, col);
+                auto square = QuantumChessSquare{&f, isWhite, 1.0f};
+                board[row][col] = &square;
+            } else {
+                board[row][col] = nullptr;
+                break;
+            }
+        }
+    }
+}*/
+Board InitChessBoard() {
+    Board board{};
+
+    for (int row = 0; row < 8; ++row) {
+        for (int col = 0; col < 8; ++col) {
+            const bool isWhite = row > 3;
+            auto* square = new QuantumChessSquare{};
+
+            if (row == 0 || row == 7) {
+                if (col == 0 || col == 7) {
+                    square->chessPice = new Turm(isWhite, row, col);
+                } else if (col == 1 || col == 6) {
+                    square->chessPice = new Springer(isWhite, row, col);
+                } else if (col == 2 || col == 5) {
+                    square->chessPice = new Laeufer(isWhite, row, col);
+                } else if (col == 3) {
+                    if (isWhite)
+                        square->chessPice = new Dame(isWhite, row, col);
+                    else
+                        square->chessPice = new Koenig(isWhite, row, col);
+                } else if (col == 4) {
+                    if (isWhite)
+                        square->chessPice = new Koenig(isWhite, row, col);
+                    else
+                        square->chessPice = new Dame(isWhite, row, col);
+                }
+                // FIXME: remove if unnecessary
+                //square->isWhite = isWhite;
+                square->probability = 1.0f;
+                board[row][col] = square;
+            } else if (row == 1 || row == 6) {
+                square->chessPice = new Bauer(isWhite, row, col);
+                // FIXME: remove if unnecessary
+                //square->isWhite = isWhite;
+                square->probability = 1.0f;
+                board[row][col] = square;
+            } else {
+                board[row][col] = nullptr;
+            }
+        }
+    }
+
+    return board;
 }
 
 // TODO: add javadoc
@@ -165,37 +305,63 @@ bool drawChessboard(AppState* state) {
 
             bool success = SDL_RenderFillRect(state->renderer, &rect);
 
-/********************************************************/
-            if ( row == 0 ) {
-                if (col == 0 || col == boardFields - 1) {
-                    SDL_RenderTexture(state->renderer, state->blackFigures.rookTexture, nullptr, &rect);
-                }else if (col == 1 || col == boardFields - 2) {
-                    SDL_RenderTexture(state->renderer, state->blackFigures.knightTexture, nullptr, &rect);
-                } else if (col == 2 || col == boardFields - 3) {
-                    SDL_RenderTexture(state->renderer, state->blackFigures.bishopTexture, nullptr, &rect);
-                } else if (col == 3) {
-                    SDL_RenderTexture(state->renderer, state->blackFigures.queenTexture, nullptr, &rect);
-                } else if (col == 4) {
-                    SDL_RenderTexture(state->renderer, state->blackFigures.kingTexture, nullptr, &rect);
-                }
-            } else if (row == 1) {
-                SDL_RenderTexture(state->renderer, state->blackFigures.pawnTexture, nullptr, &rect);
-            } else if (row == 6) {
-                SDL_RenderTexture(state->renderer, state->whiteFigures.pawnTexture, nullptr, &rect);
-            }else if (row == 7) {
-                if (col == 0 || col == boardFields - 1) {
-                    SDL_RenderTexture(state->renderer, state->whiteFigures.rookTexture, nullptr, &rect);
-                }else if (col == 1 || col == boardFields - 2) {
-                    SDL_RenderTexture(state->renderer, state->whiteFigures.knightTexture, nullptr, &rect);
-                } else if (col == 2 || col == boardFields - 3) {
-                    SDL_RenderTexture(state->renderer, state->whiteFigures.bishopTexture, nullptr, &rect);
-                } else if (col == 3) {
-                    SDL_RenderTexture(state->renderer, state->whiteFigures.queenTexture, nullptr, &rect);
-                } else if (col == 4) {
-                    SDL_RenderTexture(state->renderer, state->whiteFigures.kingTexture, nullptr, &rect);
+/*********************** Handle Clicks *********************************/
+            for (auto [x, y]: state->selectedTiles) {
+                if (pointInRect(&x, &y, &rect)) {
+                    SDL_SetRenderDrawColor(state->renderer, 230, 98, 253, 150);
+                    success = success && SDL_RenderFillRect(state->renderer, &rect);
+                    //state->clicked = false;
                 }
             }
-/*******************************************************/
+            /*if (state->clicked && pointInRect(&state->mousePos.x, &state->mousePos.y, &rect)) {
+                SDL_SetRenderDrawColor(state->renderer, 230, 98, 253, 150);
+                success = success && SDL_RenderFillRect(state->renderer, &rect);
+                state->clicked = false;
+            }*/
+/************************************************************************/
+            // TODO: move to seperate function and make variable
+/*********************** Draw Chess Figures *********************************/
+            if (state->board[row][col] != nullptr) {
+                Figuren* piece = state->board[row][col]->chessPice;
+                if (dynamic_cast<Turm*>(piece)) {
+                    SDL_Texture* texture = piece->Get_Farbe() ?
+                                state->whiteFigures.rookTexture :
+                                state->blackFigures.rookTexture;
+                    SDL_SetTextureAlphaMod(texture, static_cast<Uint8>(255.0f*state->board[row][col]->probability));
+                    SDL_RenderTexture(state->renderer, texture, nullptr, &rect);
+                } else if (dynamic_cast<Springer*>(piece)) {
+                    SDL_Texture* texture = piece->Get_Farbe() ?
+                                state->whiteFigures.knightTexture :
+                                state->blackFigures.knightTexture;
+                    SDL_SetTextureAlphaMod(texture, static_cast<Uint8>(255.0f*state->board[row][col]->probability));
+                    SDL_RenderTexture(state->renderer, texture, nullptr, &rect);
+                } else if (dynamic_cast<Laeufer*>(piece)) {
+                    SDL_Texture* texture = piece->Get_Farbe() ?
+                                state->whiteFigures.bishopTexture :
+                                state->blackFigures.bishopTexture;
+                    SDL_SetTextureAlphaMod(texture, static_cast<Uint8>(255.0f*state->board[row][col]->probability));
+                    SDL_RenderTexture(state->renderer, texture, nullptr, &rect);
+                } else if (dynamic_cast<Dame*>(piece)) {
+                    SDL_Texture* texture = piece->Get_Farbe() ?
+                                state->whiteFigures.queenTexture :
+                                state->blackFigures.queenTexture;
+                    SDL_SetTextureAlphaMod(texture, static_cast<Uint8>(255.0f*state->board[row][col]->probability));
+                    SDL_RenderTexture(state->renderer, texture, nullptr, &rect);
+                } else if (dynamic_cast<Koenig*>(piece)) {
+                    SDL_Texture* texture = piece->Get_Farbe() ?
+                                state->whiteFigures.kingTexture :
+                                state->blackFigures.kingTexture;
+                    SDL_SetTextureAlphaMod(texture, static_cast<Uint8>(255.0f*state->board[row][col]->probability));
+                    SDL_RenderTexture(state->renderer, texture, nullptr, &rect);
+                } else if (dynamic_cast<Bauer*>(piece)) {
+                    SDL_Texture* texture = piece->Get_Farbe() ?
+                                state->whiteFigures.pawnTexture :
+                                state->blackFigures.pawnTexture;
+                    SDL_SetTextureAlphaMod(texture, static_cast<Uint8>(255.0f*state->board[row][col]->probability));
+                    SDL_RenderTexture(state->renderer, texture, nullptr, &rect);
+                }
+            }
+/****************************************************************************/
 
             if (!success) {
                 return false;
@@ -204,6 +370,20 @@ bool drawChessboard(AppState* state) {
     }
 
     return true;
+}
+
+/**
+ * Checks whether the given point is located inside the area of an SDL_FRect
+ * @param x x coordinate of the point
+ * @param y y coordinate of the point
+ * @param rect SDL_FRect to check against
+ * @return true when the given point is inside the SDL_FRect, otherwise false
+ */
+bool pointInRect(const float* x, const float* y, const SDL_FRect* rect) {
+    return *x >= rect->x &&
+           *x <= rect->x + rect->w &&
+           *y >= rect->y &&
+           *y <= rect->y + rect->h;
 }
 
 /**
@@ -217,21 +397,130 @@ SDL_AppResult AppEvent(void *appstate, SDL_Event* event) {
     auto* state = static_cast<AppState*>(appstate);
 
     switch (event->type) {
-    case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED: {
-        int w, h;
-        SDL_GetWindowSize(state->window, &w, &h);
-        const int size = (w < h) ? w : h; // take the smaller dimension
-        SDL_SetWindowSize(state->window, size, size);
-        state->redraw = true;
-        break;
-    }
-    case SDL_EVENT_QUIT:
-        return SDL_APP_SUCCESS;
-    default:    // ignore all events not listed above
-        break;
+        case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED: {
+            int w, h;
+            SDL_GetWindowSize(state->window, &w, &h);
+            const int size = (w < h) ? w : h; // take the smaller dimension
+            SDL_SetWindowSize(state->window, size, size);
+            state->redraw = true;
+            break;
+        }
+        case SDL_EVENT_MOUSE_BUTTON_DOWN:
+            if (event->button.button == SDL_BUTTON_LEFT)
+                state->btn_down = true;
+            break;
+        case SDL_EVENT_MOUSE_BUTTON_UP:
+            if (event->button.button == SDL_BUTTON_LEFT && state->btn_down) {
+                // button pressed
+                state->btn_down = false;
+                SDL_GetMouseState(&state->mousePos.x, &state->mousePos.y);
+                state->redraw = true;
+                //state->clicked = true;
+                switch (state->moveMode) {
+                    case NORMAL:
+                        if (state->selectedTiles.size() >= 1) {
+                            state->selectedTiles.push_back(state->mousePos);
+                            // TODO: check if valid move and move
+                            handleNormalChessMove(state);
+                        } else {
+                            state->selectedTiles.clear();
+                            state->selectedTiles.push_back(state->mousePos);
+                        }
+                        break;
+                    case SPLIT:
+                        // TODO: add quantum split move
+                        if (state->selectedTiles.size() >= 2) {
+                            state->selectedTiles.push_back(state->mousePos);
+                            // TODO: check if valid move and move
+                        } else {
+                            state->selectedTiles.clear();
+                            state->selectedTiles.push_back(state->mousePos);
+                        }
+                        break;
+                    case MERGE:
+                        // TODO: add quantum merge move
+                        if (state->selectedTiles.size() >= 2) {
+                            state->selectedTiles.push_back(state->mousePos);
+                            // TODO: check if valid move and move
+                        } else {
+                            state->selectedTiles.clear();
+                            state->selectedTiles.push_back(state->mousePos);
+                        }
+                        break;
+                }
+            }
+            break;
+        case SDL_EVENT_QUIT:
+            return SDL_APP_SUCCESS;
+        default:    // ignore all events not listed above
+            break;
     }
 
     return SDL_APP_CONTINUE;
+}
+
+// TODO: check player turn
+void handleNormalChessMove(AppState* state) {
+    int w, h;
+    constexpr int boardFields = 8;
+    SDL_GetWindowSize(state -> window, &w, &h);
+    Pos startPos = state->selectedTiles.front();
+    Pos endPos = state->selectedTiles.back();
+    int startRow, startCol, endRow, endCol;
+    Figuren* chessPiece = nullptr;
+    const float squareSize = (w * 1.0f) / (boardFields * 1.0f);
+
+    // todo: rewrite without for loops
+    for (int row = 0; row < boardFields; row++) {
+        for (int col = 0; col < boardFields; col++) {
+            if (state->board[row][col] != nullptr  &&
+                startPos.x >= col * squareSize &&
+                startPos.x <= col * squareSize + squareSize &&
+                startPos.y >= row * squareSize &&
+                startPos.y <= row * squareSize + squareSize ) {
+                    chessPiece = state->board[row][col]->chessPice;
+                    startRow = row;
+                    startCol = col;
+                    //break;
+                }
+            if (endPos.x >= col * squareSize &&
+                endPos.x <= col * squareSize + squareSize &&
+                endPos.y >= row * squareSize &&
+                endPos.y <= row * squareSize + squareSize ) {
+                    endRow = row;
+                    endCol = col;
+                }
+        }
+        //if (chessPiece != nullptr) break;
+    }
+
+    // TODO: check if endRow and endCol are initialized
+    if (chessPiece != nullptr) {
+        if (dynamic_cast<Turm*>(chessPiece)) {
+             // TODO: implement rook
+        } else if (dynamic_cast<Springer*>(chessPiece)) {
+            // TODO: implement knight
+        } else if (dynamic_cast<Laeufer*>(chessPiece)) {
+            // TODO: implement bishop
+        } else if (dynamic_cast<Koenig*>(chessPiece)) {
+            // TODO: implement king
+        } else if (dynamic_cast<Dame*>(chessPiece)) {
+            // TODO: implement queen
+        } else if (dynamic_cast<Bauer*>(chessPiece)) {
+            chessPiece->Set_Moegliche_Felder();
+            std::vector<std::array<int, 2>> possibleMoves = chessPiece->Get_Moegliche_Felder();
+            auto iterator = std::find(possibleMoves.begin(), possibleMoves.end(), std::array<int, 2>{endCol, endRow});
+            if (iterator != possibleMoves.end()) {
+                state->board[endRow][endCol] = state->board[startRow][startCol];
+                state->board[endRow][endCol]->chessPice->Set_Zeile(endRow);
+                state->board[endRow][endCol]->chessPice->Set_Spalte(endCol);
+                state->board[startRow][startCol] = nullptr;
+            }
+        }
+    }
+
+    // delete all selections after you are done
+    state->selectedTiles.clear();
 }
 
 /**
