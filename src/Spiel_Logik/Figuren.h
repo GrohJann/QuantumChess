@@ -17,7 +17,7 @@ protected:
 	bool weiss = true;
 	bool gezogen = false; // Turm Bauer Koenig
 	char name = 'F';
-	
+
 	// bool gewaehlt = false;
 	// float wahrscheinlichkeit = 1;
 	//
@@ -32,8 +32,8 @@ protected:
 
 
 public:
-	
-	
+
+
 	virtual char Get_Name();
 	virtual bool Get_Geschlagen();
 	virtual bool Get_Farbe();
@@ -55,9 +55,8 @@ public:
 	// 
 	virtual void Set_Dateipfad(string neuer_dateipfad);
 	virtual void Set_Texture(SDL_Texture* neuer_texture_ptr);
-	
+
 
 
 
 };
-

@@ -1,5 +1,5 @@
 #include "Brett.h"
-#include "Figuren.h"
+#include "../Figuren.h"
 
 #include <vector>
 #include <string>
@@ -63,5 +63,3 @@ void Figuren::Set_Dateipfad(string neuer_dateipfad) {
 void Figuren::Set_Texture(SDL_Texture* neue_texture_ptr) {
 	texture_ptr = neue_texture_ptr;
 }
-
-

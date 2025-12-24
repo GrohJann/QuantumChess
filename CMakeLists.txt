@@ -39,7 +39,7 @@ endif()
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(QuantumChess src/main.cpp
+add_executable(QuantumChess src/Spiel_Logik/main.cpp
         src/GUI/SDL.cpp
         src/GUI/SDL_Test.cpp
         src/GUI/SDL_Test.h

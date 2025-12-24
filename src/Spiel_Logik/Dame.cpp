@@ -1,4 +1,4 @@
-#include "Dame.h"
+#include "../Dame.h"
 #include "Brett.h"
 #include <vector>
 using namespace std;
@@ -9,7 +9,7 @@ using namespace std;
 
 void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 	// Laeufer
-	for (int i = 1; i < 8; i++) { // 45°
+	for (int i = 1; i < 8; i++) { // 45ï¿½
 		Moegliches_Feld F;
 		if (spalte + i <= 8 && zeile + i <= 8) { // feld aufm Brett
 			if (spielfeld.Felder[spalte + i - 1][zeile + i - 1] == nullptr) {
@@ -27,13 +27,13 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 			}
 		}
 	}
-	for (int i = 1; i < 8; i++) { // 225°
+	for (int i = 1; i < 8; i++) { // 225ï¿½
 		Moegliches_Feld F;
 		if (spalte - i >= 1 && zeile - i >= 1) { // feld aufm Brett
 			if (spielfeld.Felder[spalte - i - 1][zeile - i - 1] == nullptr) {
 				F.spalte = spalte - i;
 				F.zeile = zeile - i;
-				moegliche_felder.push_back(F);		
+				moegliche_felder.push_back(F);
 			}
 			else {
 				if (spielfeld.Felder[spalte - i - 1][zeile - i - 1]->Get_Farbe() != weiss) {
@@ -45,14 +45,14 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 			}
 		}
 	}
-	for (int i = 1; i < 8; i++) { // 135°
+	for (int i = 1; i < 8; i++) { // 135ï¿½
 		Moegliches_Feld F;
 		if (spalte - i >= 1 && zeile + i <= 8) { // feld aufm Brett
 			if (spielfeld.Felder[spalte - i - 1][zeile + i - 1] == nullptr) {
 				F.spalte = spalte - i;
 				F.zeile = zeile + i;
 				moegliche_felder.push_back(F);
-				
+
 			}
 			else {
 				if (spielfeld.Felder[spalte - i - 1][zeile + i - 1]->Get_Farbe() != weiss) {
@@ -65,13 +65,13 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 			}
 		}
 	}
-	for (int i = 1; i < 8; i++) { // 315°
+	for (int i = 1; i < 8; i++) { // 315ï¿½
 		Moegliches_Feld F;
 		if (spalte + i <= 8 && zeile - i >= 1) { // feld aufm Brett
 			if (spielfeld.Felder[spalte + i - 1][zeile - i - 1] == nullptr) {
 				F.spalte = spalte + i;
 				F.zeile = zeile - i;
-				moegliche_felder.push_back(F);	
+				moegliche_felder.push_back(F);
 			}
 			else {
 				if (spielfeld.Felder[spalte + i - 1][zeile - i - 1]->Get_Farbe() != weiss) {
@@ -91,7 +91,7 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 		Moegliches_Feld F;
 		F.spalte = s;
 		F.zeile = zeile;
-		if (spielfeld.Felder[s - 1][zeile - 1] == nullptr) {			
+		if (spielfeld.Felder[s - 1][zeile - 1] == nullptr) {
 			moegliche_felder.push_back(F);
 		}
 		if (s != spalte && spielfeld.Felder[s - 1][zeile - 1] != nullptr) {
@@ -123,7 +123,7 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 		}
 	}
 	int z = zeile;
-	for (z; z < 9; z++) { //aufwärts
+	for (z; z < 9; z++) { //aufwï¿½rts
 		Moegliches_Feld F;
 		F.spalte = spalte;
 		F.zeile = z;
@@ -141,7 +141,7 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 		}
 	}
 	z = zeile;
-	for (z; z > 0; z--) { //abwärts
+	for (z; z > 0; z--) { //abwï¿½rts
 		Moegliches_Feld F;
 		F.spalte = s;
 		F.zeile = zeile;

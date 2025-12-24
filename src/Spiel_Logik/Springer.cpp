@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Springer.h"
+#include "../Springer.h"
 #include <vector>
 #include <array>
 using namespace std;
@@ -11,10 +11,10 @@ void Springer::Set_Moegliche_Felder(Brett spielfeld) {// bearbeiten
 	bool eine_spalte = false;
 	bool zwei_spalten = true;
 	for (int s = -2; s < 3; s++) {
-		
-		if (spalte + s >= 1 && spalte + s <= 8 && s != 0 ) {
+
+		if (spalte + s >= 1 && spalte + s <= 8 && s != 0) {
 			for (int z = -1; z < 2; z++) {
-				
+
 				int a = z;
 				if (eine_spalte && !zwei_spalten) {
 					a = 2 * z;

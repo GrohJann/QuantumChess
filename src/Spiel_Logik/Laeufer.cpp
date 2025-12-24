@@ -1,4 +1,4 @@
-#include "Laeufer.h"
+#include "../Laeufer.h"
 #include "Brett.h"
 #include <vector>
 using namespace std;
@@ -22,7 +22,7 @@ vector <Moegliches_Feld> Laeufer::Get_Moegliche_Felder() {
 
 void Laeufer::Set_Moegliche_Felder(Brett spielfeld) {
 
-	for (int i = 1; i < 8; i++) { // 45°
+	for (int i = 1; i < 8; i++) { // 45ï¿½
 		Moegliches_Feld F;
 		if (spalte + i <= 8 && zeile + i <= 8) { // feld aufm Brett
 			if (spielfeld.Felder[spalte + i - 1][zeile + i - 1] == nullptr) {// feld leer
@@ -40,7 +40,7 @@ void Laeufer::Set_Moegliche_Felder(Brett spielfeld) {
 			}
 		}
 	}
-	for (int i = 1; i < 8; i++) { // 225°
+	for (int i = 1; i < 8; i++) { // 225ï¿½
 		Moegliches_Feld F;
 		if (spalte - i >= 1 && zeile - i >= 1) { // feld aufm Brett
 			if (spielfeld.Felder[spalte - i - 1][zeile - i - 1] == nullptr) {
@@ -58,7 +58,7 @@ void Laeufer::Set_Moegliche_Felder(Brett spielfeld) {
 			}
 		}
 	}
-	for (int i = 1; i < 8; i++) { // 135°
+	for (int i = 1; i < 8; i++) { // 135ï¿½
 		Moegliches_Feld F;
 		if (spalte - i >= 1 && zeile + i <= 8) { // feld aufm Brett
 			if (spielfeld.Felder[spalte - i - 1][zeile + i - 1] == nullptr) {
@@ -78,7 +78,7 @@ void Laeufer::Set_Moegliche_Felder(Brett spielfeld) {
 			}
 		}
 	}
-	for (int i = 1; i < 8; i++) { // 315°
+	for (int i = 1; i < 8; i++) { // 315ï¿½
 		Moegliches_Feld F;
 		if (spalte + i <= 8 && zeile - i >= 1) { // feld aufm Brett
 			if (spielfeld.Felder[spalte + i - 1][zeile - i - 1] == nullptr) {

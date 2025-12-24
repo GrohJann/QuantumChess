@@ -9,3 +9,4 @@ struct Moegliches_Feld
 	int spalte;
 	int zeile;
 };
+

@@ -8,7 +8,7 @@
 #include "Brett.h"
 #include <iostream>
 #include <SDL3/SDL.h>
-#include "SDL_Test.h"
+#include "../SDL_Test.h"
 #include <string>
 #include <vector>
 
@@ -36,10 +36,10 @@ struct figures {
  */
 SDL_AppResult AppInit(void** appstate) {
     // allocate memory for AppState struct
-    if (!(*appstate = SDL_malloc(sizeof(AppState)))) {     //SDL_malloc gibt Zeiger auf reservierten Speicherbreich zurück
-        return SDL_APP_FAILURE;                        //Wenn SDL_malloc nullpointer zurückgibt
+    if (!(*appstate = SDL_malloc(sizeof(AppState)))) {     //SDL_malloc gibt Zeiger auf reservierten Speicherbreich zurï¿½ck
+        return SDL_APP_FAILURE;                        //Wenn SDL_malloc nullpointer zurï¿½ckgibt
     }
-    auto* state = static_cast<AppState*>(*appstate);   //lokaler Zeiger , static_cast, da malloc void* zurückgibt
+    auto* state = static_cast<AppState*>(*appstate);   //lokaler Zeiger , static_cast, da malloc void* zurï¿½ckgibt
     state->title = "Quantum Chess";
 
     if (!SDL_Init(SDL_INIT_VIDEO))
@@ -243,7 +243,7 @@ void calculateFieldFromCoordinates(void* appstate, const float& mouseX, const fl
     SDL_GetWindowSize(state->window, &w, &h);
     constexpr int boardFields = 8;
 
-    float squareSize = w / static_cast<float>(boardFields);     //da Feld quadratisch egal ob Breite oder Höhe
+    float squareSize = w / static_cast<float>(boardFields);     //da Feld quadratisch egal ob Breite oder Hï¿½he
     *selectedRow = 8 - (static_cast<int>(mouseY / squareSize));
     *selectedCol = (static_cast<int>(mouseX / squareSize))+1;
  
@@ -325,7 +325,7 @@ int run(Brett& Spielfeld) {
         float mouseY;
         int selectedRow = 0;
         int selectedCol = 0;
-        int a = selectedRow;     //nur´zum testen
+        int a = selectedRow;     //nurï¿½zum testen
         int b = selectedCol;
 
         while (true) {
