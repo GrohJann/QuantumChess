@@ -72,11 +72,12 @@ SDL_AppResult AppInit(void **appstate) {
     if (!SDL_Init(SDL_INIT_VIDEO))
         return SDL_APP_FAILURE;
 
-    int width = 800;
+    int width = 1000;
     int height = 800;
     if (!(state->window = SDL_CreateWindow(state->title, width, height, SDL_WINDOW_RESIZABLE)))
         return SDL_APP_FAILURE;
-    SDL_SetWindowAspectRatio(state -> window, 1.0f, 1.0f);
+    //TODO: set new aspect ratio
+    //SDL_SetWindowAspectRatio(state -> window, 1.0f, 1.0f);
 
     if (!(state->renderer = SDL_CreateRenderer(state->window, NULL)))
         return SDL_APP_FAILURE;
@@ -269,11 +270,47 @@ SDL_AppResult AppIterate(void *appstate) {
         SDL_SetRenderDrawColor(state->renderer, 0, 0, 0, 255);
         SDL_RenderClear(state->renderer);
 
+        //todo: learn more about pixelformat
+        SDL_Texture* board_texture = SDL_CreateTexture(state->renderer, SDL_PIXELFORMAT_RGBA4444, SDL_TEXTUREACCESS_TARGET, 800, 800);
+        SDL_Texture* move_texture = SDL_CreateTexture(state->renderer, SDL_PIXELFORMAT_RGBA4444, SDL_TEXTUREACCESS_TARGET, 320, 240);
+
+        // Render to Texture 1
+        SDL_SetRenderTarget(state->renderer, board_texture);
+        SDL_SetRenderLogicalPresentation(state->renderer, 800, 800, SDL_LOGICAL_PRESENTATION_LETTERBOX); // Set logical size
+        SDL_SetRenderViewport(state->renderer, NULL); // Use the full texture size as the viewport
+        SDL_RenderClear(state->renderer);
+        // ... draw content for viewport 1 ...
+
+
+
+
         // draw chessboard
         drawChessboard(state);
 
         // swap frame buffer
+        //SDL_RenderPresent(state->renderer);
+
+        // Render to the main window
+        SDL_SetRenderTarget(state->renderer, NULL);
+        SDL_SetRenderLogicalPresentation(state->renderer, 0, 0, SDL_LOGICAL_PRESENTATION_DISABLED); // Disable logical presentation for final screen composition
+        SDL_RenderClear(state->renderer);
+
+        int window_width, window_height;
+        SDL_GetWindowSize(state->window, &window_width, &window_height);
+
+        // Copy Texture 1 to the left half of the window
+        SDL_Rect screen_viewport1 = { 0, 0, window_width / 2, window_height };
+        SDL_SetRenderViewport(state->renderer, &screen_viewport1);
+        SDL_RenderTexture(state->renderer, board_texture, NULL, NULL);
+
+        // Copy Texture 2 to the right half of the window
+        //SDL_Rect screen_viewport2 = { window_width / 2, 0, window_width / 2, window_height };
+        //SDL_SetRenderViewport(state->renderer, &screen_viewport2);
+        //SDL_RenderTexture(state->renderer, viewport2_texture, NULL, NULL);
+
+        // Present the final rendered image
         SDL_RenderPresent(state->renderer);
+
     }
 
     return SDL_APP_CONTINUE;
@@ -398,10 +435,11 @@ SDL_AppResult AppEvent(void *appstate, SDL_Event* event) {
 
     switch (event->type) {
         case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED: {
-            int w, h;
-            SDL_GetWindowSize(state->window, &w, &h);
-            const int size = (w < h) ? w : h; // take the smaller dimension
-            SDL_SetWindowSize(state->window, size, size);
+            // TODO: change behavior when resizing window
+            //int w, h;
+            //SDL_GetWindowSize(state->window, &w, &h);
+            //const int size = (w < h) ? w : h; // take the smaller dimension
+            //SDL_SetWindowSize(state->window, size, size);
             state->redraw = true;
             break;
         }

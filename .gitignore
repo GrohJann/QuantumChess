@@ -48,3 +48,6 @@
 
 # jetbrains ide
 .idea/
+
+# auto generated dirs
+_deps/
