@@ -9,7 +9,7 @@ include(FetchContent)
 set(FETCHCONTENT_UPDATES_DISCONNECTED TRUE)
 FetchContent_Declare(SDL3
         GIT_REPOSITORY https://github.com/libsdl-org/SDL
-        GIT_TAG release-3.2.16
+        GIT_TAG release-3.4.0
 )
 
 FetchContent_GetProperties(SDL3)
@@ -19,33 +19,15 @@ endif()
 
 # ------------------------------------------------------------------------------
 
-# --- Fetch SDL3_image ---------------------------------------------------------
-# Enable common image formats
-set(SDL3IMAGE_PNG  ON)
-#set(SDL3IMAGE_JPG  ON)
-FetchContent_Declare(SDL3_image
-        GIT_REPOSITORY https://github.com/libsdl-org/SDL_image
-        GIT_TAG release-3.2.4
-)
-
-FetchContent_GetProperties(SDL3_image)
-if(NOT SDL3_image_POPULATED)
-    FetchContent_MakeAvailable(SDL3_image)
-endif()
-
-# ------------------------------------------------------------------------------
-
 
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(QuantumChess src/Spiel_Logik/main.cpp
-        src/GUI/SDL.cpp
-        src/GUI/SDL_Test.cpp
-        src/GUI/SDL_Test.h
+add_executable(QuantumChess src/main.cpp #src/main_tmp.cpp
+        #src/GUI/SDL_Test.cpp
+        #src/GUI/SDL_Test.h
         src/Network/Client_Network.cpp
         src/Network/Client_Network.h
-        src/GUI/SDL.h
         src/Spiel_Logik/Bauer.cpp
         src/Spiel_Logik/Bauer.h
         src/Spiel_Logik/Dame.cpp
@@ -56,12 +38,28 @@ add_executable(QuantumChess src/Spiel_Logik/main.cpp
         src/Spiel_Logik/Koenig.h
         src/Spiel_Logik/Laeufer.cpp
         src/Spiel_Logik/Laeufer.h
-        src/Spiel_Logik/Quanten_Schach.cpp
-        src/Spiel_Logik/Quanten_Schach.h
+        #src/Spiel_Logik/Quanten_Schach.cpp
+        #src/Spiel_Logik/Quanten_Schach.h
         src/Spiel_Logik/Springer.cpp
         src/Spiel_Logik/Springer.h
         src/Spiel_Logik/Turm.cpp
         src/Spiel_Logik/Turm.h
+        src/GUI/SDL_Helper.cpp
+        src/GUI/SDL_Helper.h
+        src/GUI/ChesssBoardView.cpp
+        src/GUI/ChesssBoardView.h
+        src/Structs.h
+        src/GameLogic.cpp
+        src/GameLogic.h
+        #src/Spiel_Logik/SDL_Test.cpp
+        #src/Spiel_Logik/SDL_Test.h
+)
+
+add_custom_command(
+        TARGET QuantumChess POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${CMAKE_SOURCE_DIR}/assets
+                $<TARGET_FILE_DIR:QuantumChess>/assets
 )
 
 if (WIN32)
