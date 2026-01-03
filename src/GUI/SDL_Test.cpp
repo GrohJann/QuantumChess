@@ -23,7 +23,7 @@ struct AppState {
  * @return SDL_APP_FAILURE to terminate with an error, SDL_APP_SUCCESS to
  *         terminate with success, SDL_APP_CONTINUE to continue.
  */
-SDL_AppResult AppInit(void **appstate) {
+SDL_AppResult SDL_AppInit(void **appstate) {
     // allocate memory for AppState struct
     if (!(*appstate = SDL_malloc(sizeof(AppState)))) {
         return SDL_APP_FAILURE;
@@ -157,7 +157,7 @@ void AppQuit(void *appstate, SDL_AppResult result) {
 int run() {
     // init SDL
     void* appstate = nullptr;
-    SDL_AppResult result = AppInit(&appstate);
+    SDL_AppResult result = SDL_AppInit(&appstate);
     if (result == SDL_APP_CONTINUE) {
 
         // main loop

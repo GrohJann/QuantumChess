@@ -19,7 +19,7 @@ protected:
 	char name = 'F';
 
 	// bool gewaehlt = false;
-	// float wahrscheinlichkeit = 1;
+	float wahrscheinlichkeit = 1.0f;
 	//
 
 	vector <Moegliches_Feld> moegliche_felder;
@@ -32,7 +32,7 @@ protected:
 
 
 public:
-
+	virtual ~Figuren() = default;
 
 	virtual char Get_Name();
 	virtual bool Get_Geschlagen();
@@ -43,6 +43,7 @@ public:
 	virtual vector <Moegliches_Feld> Get_Moegliche_Felder();
 	virtual string Get_Dateipfad();
 	virtual SDL_Texture* Get_Texture();
+	virtual float Get_Wahrscheinlichkeit();
 
 	virtual void Set_Name(char neuer_name);
 	virtual void Set_Geschlagen(bool neuer_zustand);
@@ -51,6 +52,7 @@ public:
 	virtual void Set_Zeile(int neue_Zeile);
 	virtual void Set_Gezogen(bool neuer_zustand);
 	virtual void Set_Moegliche_Felder(Brett spielfeld);
+	virtual void Set_Wahrscheinlichkeit(float wahrscheinlichkeit);
 
 	// 
 	virtual void Set_Dateipfad(string neuer_dateipfad);

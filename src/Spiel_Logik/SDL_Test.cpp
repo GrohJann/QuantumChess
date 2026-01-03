@@ -8,7 +8,7 @@
 #include "Brett.h"
 #include <iostream>
 #include <SDL3/SDL.h>
-#include "../SDL_Test.h"
+#include "../Spiel_Logik/SDL_Test.h"
 #include <string>
 #include <vector>
 
@@ -34,7 +34,7 @@ struct figures {
  * @return SDL_APP_FAILURE to terminate with an error, SDL_APP_SUCCESS to
  *         terminate with success, SDL_APP_CONTINUE to continue.
  */
-SDL_AppResult AppInit(void** appstate) {
+SDL_AppResult SDL_AppInit(void** appstate) {
     // allocate memory for AppState struct
     if (!(*appstate = SDL_malloc(sizeof(AppState)))) {     //SDL_malloc gibt Zeiger auf reservierten Speicherbreich zur�ck
         return SDL_APP_FAILURE;                        //Wenn SDL_malloc nullpointer zur�ckgibt
@@ -76,7 +76,7 @@ SDL_AppResult AppIterate(void* appstate, Brett& Spielfeld) {
 
         // draw chessboard
         drawChessboard(state->window, state->renderer);
-        RenderTextures(state->window, state->renderer, Spielfeld);
+        RenderChessTextures(state->window, state->renderer, Spielfeld);
 
         // swap frame buffer
         SDL_RenderPresent(state->renderer);
@@ -120,7 +120,7 @@ int drawChessboard(SDL_Window* window, SDL_Renderer* renderer) {
     return 0;
 }
 
-void RenderTextures(SDL_Window* window, SDL_Renderer* renderer, Brett& Spielfeld) {
+void RenderChessTextures(SDL_Window* window, SDL_Renderer* renderer, Brett& Spielfeld) {
     int w, h;
     constexpr int boardFields = 8;
     SDL_GetWindowSize(window, &w, &h);
@@ -142,32 +142,6 @@ void RenderTextures(SDL_Window* window, SDL_Renderer* renderer, Brett& Spielfeld
         }
     }
 }
-
-/*
-void placeFigures(const float squareSize , SDL_Renderer* renderer,const vector<figures>& InfoFigures) {
-    
-    for (int i = 0; i < InfoFigures.size(); i++) {
-        if (InfoFigures[i].texture) {
-            // Berechne die Pixel-Position basierend auf Brettposition
-            float x = figure.boardX * squareSize;        //Hier die Position in Lennys Array umrechnen in X und Y
-            float y = figure.boardY * squareSize;
-
-            // Optional: Bild etwas kleiner als das Feld machen
-            float padding = squareSize * 0.1f; // 10% Abstand
-            float imageSize = squareSize - 2 * padding;
-
-            SDL_FRect dest = {
-                x + padding,
-                y + padding,
-                imageSize,
-                imageSize
-            };
-
-            SDL_RenderTexture(renderer, InfoFigures[i].texture, NULL, &dest);
-        }
-    }
-}
-*/
 
 void createTexture(void* appstate, Brett& Spielfeld) {
     const auto* state = static_cast<AppState*>(appstate);
@@ -191,52 +165,9 @@ void createTexture(void* appstate, Brett& Spielfeld) {
             }
         }
     }
- 
-    
-    // set texture
 }
 
-/*
-void createFigures(vector<figures>& InfoFigures) {
-    
-    InfoFigures = {
-        {"White King",   "C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\w_king_2x.png",   NULL},
-        {"White Queen",  "C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\w_queen_2x.png",  NULL},
-        {"White Bishop", "C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\w_bishop_2x.png", NULL},
-        {"White Knight", "C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\w_knight_2x.png", NULL},
-        {"White Rook",   "C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\w_rook_2x.png",   NULL},
-        {"White Pawn",   "C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\w_pawn_2x.png",   NULL},
-        {"Black King",   "C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\b_king_2x.png",   NULL},
-        {"Black Queen",  "C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\b_queen_2x.png",  NULL},
-        {"Black Bishop", "C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\b_bishop_2x.png", NULL},
-        {"Black Knight", "C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\b_knight_2x.png", NULL},
-        {"Black Rook",   "C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\b_rook_2x.png",   NULL},
-        {"Black Pawn",   "C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\b_pawn_2x.png",   NULL}
-    };
-    
-}
-*/
 
-/*
-void loadTextureWithSDL3(vector<figures>& InfoFigures, void* appstate) {
-    const auto* state = static_cast<AppState*>(appstate);
-
-    for (int i = 0; i < InfoFigures.size(); i++) {
-
-        SDL_Surface* surface = SDL_LoadPNG(InfoFigures[i].path);
-        if (!surface) {
-            cout << "Fehler beim Laden von Figur:" << InfoFigures[i].name << SDL_GetError() << endl;
-        }
-
-        // Textur erstellen
-        InfoFigures[i].texture = SDL_CreateTextureFromSurface(state->renderer, surface);
-        SDL_DestroySurface(surface);
-    }
-
-    
-}
-
-*/
 void calculateFieldFromCoordinates(void* appstate, const float& mouseX, const float& mouseY, int* selectedRow,int* selectedCol) {
     const auto* state = static_cast<AppState*>(appstate);
     int w, h;
@@ -254,6 +185,8 @@ void calculateFieldFromCoordinates(void* appstate, const float& mouseX, const fl
  * Handles SDL events
  * @param appstate AppState struct to store information of the apps state in
  * @param event Pointer of the event to handle
+ * @param mouseX
+ * @param mouseY
 * @return SDL_APP_FAILURE to terminate with an error, SDL_APP_SUCCESS to
  *        terminate with success, SDL_APP_CONTINUE to continue.
  */
@@ -309,12 +242,9 @@ void AppQuit(void* appstate, SDL_AppResult result) {
 int run(Brett& Spielfeld) {
     // init SDL
     void* appstate = nullptr;
-    SDL_AppResult result = AppInit(&appstate);
+    SDL_AppResult result = SDL_AppInit(&appstate);
     if (result == SDL_APP_CONTINUE) {
 
-        //vector<figures> InfoFigures;
-        //createFigures(InfoFigures);
-        //loadTextureWithSDL3(InfoFigures, appstate);
         createTexture(appstate,Spielfeld);                //Datenpfad in Textur
 
         // main loop

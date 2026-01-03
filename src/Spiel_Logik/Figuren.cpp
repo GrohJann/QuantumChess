@@ -1,5 +1,6 @@
-#include "Brett.h"
-#include "../Figuren.h"
+//#include "Brett.h"
+#include "../Structs.h"
+#include "../Spiel_Logik/Figuren.h"
 
 #include <vector>
 #include <string>
@@ -33,6 +34,9 @@ bool Figuren::Get_Gezogen() {
 vector <Moegliches_Feld> Figuren::Get_Moegliche_Felder() {
 	return moegliche_felder;
 }
+float Figuren::Get_Wahrscheinlichkeit() {
+	return wahrscheinlichkeit;
+}
 
 void Figuren::Set_Name(char neuer_name) {
 	name = neuer_name;
@@ -63,3 +67,8 @@ void Figuren::Set_Dateipfad(string neuer_dateipfad) {
 void Figuren::Set_Texture(SDL_Texture* neue_texture_ptr) {
 	texture_ptr = neue_texture_ptr;
 }
+
+void Figuren::Set_Wahrscheinlichkeit(const float wahrscheinlichkeit) {
+	this->wahrscheinlichkeit = wahrscheinlichkeit;
+}
+

@@ -1,6 +1,0 @@
-#ifndef QUANTUMCHESS_SDL_H
-#define QUANTUMCHESS_SDL_H
-
-int runSDL();
-
-#endif //QUANTUMCHESS_SDL_H

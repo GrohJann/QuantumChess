@@ -1,15 +1,15 @@
-#include "SDL_Test.h"
+#include "Spiel_Logik/SDL_Test.h"
 
 #include <iostream>
 #include <SDL3/SDL.h>
-#include "Brett.h"
-#include "Figuren.h"
-#include "Bauer.h"
-#include "Dame.h"
-#include "Koenig.h"
-#include "Laeufer.h"
-#include "Springer.h"
-#include "Turm.h"
+#include "Spiel_Logik/Brett.h"
+#include "Spiel_Logik/Figuren.h"
+#include "Spiel_Logik/Bauer.h"
+#include "Spiel_Logik/Dame.h"
+#include "Spiel_Logik/Koenig.h"
+#include "Spiel_Logik/Laeufer.h"
+#include "Spiel_Logik/Springer.h"
+#include "Spiel_Logik/Turm.h"
 
 void Spielfeld_Reset(Brett& spielfeld) {
 
@@ -30,13 +30,13 @@ void Startaufstellung_Bauern(vector <Bauer>& bauern, Brett& spielfeld) {
 			b.Set_Farbe(true); // true = weiss
 			b.Set_Zeile(2);
 			b.Set_Spalte(i);
-			b.Set_Dateipfad("C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\w_pawn_2x.png");
+			b.Set_Dateipfad("../assets/chess_pieces/pawn_w.png");
 		}
 		else {
 			b.Set_Farbe(false);
 			b.Set_Zeile(7);
 			b.Set_Spalte(i - 8);
-			b.Set_Dateipfad("C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\b_pawn_2x.png");
+			b.Set_Dateipfad("../assets/chess_pieces/pawn_b.png");
 
 		}
 		bauern.push_back(b);
@@ -54,7 +54,7 @@ void Startaufstellung_Springer(vector <Springer>& springer, Brett& spielfeld) {
 		if (i <= 2) {
 			S.Set_Farbe(true);
 			S.Set_Zeile(1);
-			S.Set_Dateipfad("C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\w_knight_2x.png");
+			S.Set_Dateipfad("../assets/chess_pieces/knight_w.png");
 			switch (i)
 			{
 			case 1:
@@ -69,7 +69,7 @@ void Startaufstellung_Springer(vector <Springer>& springer, Brett& spielfeld) {
 		else {
 			S.Set_Farbe(false);
 			S.Set_Zeile(8);
-			S.Set_Dateipfad("C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\b_knight_2x.png");
+			S.Set_Dateipfad("../assets/chess_pieces/knight_b.png");
 			switch (i)
 			{
 			case 3:
@@ -97,7 +97,7 @@ void Startaufstellung_Laeufer(vector <Laeufer>& laeufer, Brett& spielfeld) {
 		if (i <= 2) {
 			L.Set_Farbe(true);
 			L.Set_Zeile(1);
-			L.Set_Dateipfad("C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\w_bishop_2x.png");
+			L.Set_Dateipfad("../assets/chess_pieces/bishop_w.png");
 			switch (i)
 			{
 			case 1:
@@ -112,7 +112,7 @@ void Startaufstellung_Laeufer(vector <Laeufer>& laeufer, Brett& spielfeld) {
 		else {
 			L.Set_Farbe(false);
 			L.Set_Zeile(8);
-			L.Set_Dateipfad("C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\b_bishop_2x.png");
+			L.Set_Dateipfad("../assets/chess_pieces/bishop_b.png");
 			switch (i)
 			{
 			case 3:
@@ -141,7 +141,7 @@ void Startaufstellung_Tuerme(vector <Turm>& tuerme, Brett& spielfeld) {
 		if (i <= 2) {
 			T.Set_Farbe(true);
 			T.Set_Zeile(1);
-			T.Set_Dateipfad("C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\w_rook_2x.png");
+			T.Set_Dateipfad("../assets/chess_pieces/rook_w.png");
 			switch (i)
 			{
 			case 1:
@@ -156,7 +156,7 @@ void Startaufstellung_Tuerme(vector <Turm>& tuerme, Brett& spielfeld) {
 		else {
 			T.Set_Farbe(false);
 			T.Set_Zeile(8);
-			T.Set_Dateipfad("C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\b_rook_2x.png");
+			T.Set_Dateipfad("../assets/chess_pieces/rook_b.png");
 			switch (i)
 			{
 			case 3:
@@ -183,12 +183,12 @@ void Startaufstellung_Damen(vector <Dame>& damen, Brett& spielfeld) {
 		if (i == 1) {
 			D.Set_Farbe(true);
 			D.Set_Zeile(1);
-			D.Set_Dateipfad("C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\w_queen_2x.png");
+			D.Set_Dateipfad("../assets/chess_pieces/queen_w.png");
 		}
 		else {
 			D.Set_Farbe(false);
 			D.Set_Zeile(8);
-			D.Set_Dateipfad("C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\b_queen_2x.png");
+			D.Set_Dateipfad("../assets/chess_pieces/queen_b.png");
 		}
 		damen.push_back(D);
 	}
@@ -206,12 +206,12 @@ void Startaufstellung_Koenige(vector <Koenig>& koenige, Brett& spielfeld) {
 		if (i == 1) {
 			K.Set_Farbe(true);
 			K.Set_Zeile(1);
-			K.Set_Dateipfad("C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\w_king_2x.png");
+			K.Set_Dateipfad("../assets/chess_pieces/king_w.png");
 		}
 		else {
 			K.Set_Farbe(false);
 			K.Set_Zeile(8);
-			K.Set_Dateipfad("C:\\Hochschule\\Informatik 2\\Projekt_2\\Figuren\\b_king_2x.png");
+			K.Set_Dateipfad("../assets/chess_pieces/king_b.png");
 		}
 		koenige.push_back(K);
 	}

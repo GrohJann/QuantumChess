@@ -14,7 +14,7 @@
 #include <SDL3/SDL_init.h>
 
 
-SDL_AppResult AppInit(void **appstate);
+SDL_AppResult SDL_AppInit(void **appstate);
 SDL_AppResult AppIterate(void *appstate);
 SDL_AppResult AppEvent(void *appstate, SDL_Event* event);
 void AppQuit(void *appstate, SDL_AppResult result);

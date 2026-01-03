@@ -1,6 +1,7 @@
 #include <iostream>
-#include "../Bauer.h"
-#include "../Brett.h"
+#include "../Spiel_Logik/Bauer.h"
+//#include "../Spiel_Logik/Brett.h"
+#include "../Structs.h"
 #include <vector>
 #include <array>
 using namespace std;

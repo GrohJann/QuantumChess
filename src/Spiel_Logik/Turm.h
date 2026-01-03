@@ -1,5 +1,5 @@
 #pragma once
-#include "Brett.h"
+//#include "Brett.h"
 #include "Figuren.h"
 #include <vector>
 #include <array>
@@ -10,6 +10,6 @@ private:
 	//vector <Moegliches_Feld>  moegliche_felder;
 public:
 
-	//virtual vector <Moegliches_Feld> Get_Moegliche_Felder();
-	virtual void Set_Moegliche_Felder(Brett spielfeld);
+	//vector <Moegliches_Feld> Get_Moegliche_Felder() override;
+	void Set_Moegliche_Felder(Brett spielfeld) override;
 };

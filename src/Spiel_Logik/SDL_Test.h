@@ -15,14 +15,14 @@
 #include <SDL3/SDL_init.h>
 struct Brett;
 
-SDL_AppResult AppInit(void** appstate);
+SDL_AppResult SDL_AppInit(void** appstate);
 SDL_AppResult AppIterate(void* appstate, Brett& Spielfeld);
 SDL_AppResult AppEvent(void* appstate, SDL_Event* event, float* mouseX, float* mouseY);
 void AppQuit(void* appstate, SDL_AppResult result);
 
 void createTexture(void* appstate, Brett& Spielfeld);
 int drawChessboard(SDL_Window* window, SDL_Renderer* renderer);
-void RenderTextures(SDL_Window* window, SDL_Renderer* renderer, Brett& Spielfeld);
+void RenderChessTextures(SDL_Window* window, SDL_Renderer* renderer, Brett& Spielfeld);
 void calculateFieldFromCoordinates(void* appstate, const float& mouseX, const float& mouseY, int* selectedRow, int* selectedCol);
 int run(Brett& Spielfeld);
 

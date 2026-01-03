@@ -1,5 +1,6 @@
-#include "../Laeufer.h"
-#include "Brett.h"
+#include "../Spiel_Logik/Laeufer.h"
+//#include "Brett.h"
+#include "../Structs.h"
 #include <vector>
 using namespace std;
 
