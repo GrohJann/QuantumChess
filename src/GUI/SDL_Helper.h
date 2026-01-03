@@ -11,7 +11,7 @@
 
 #include "SDL3/SDL_rect.h"
 
-#include "../Structs.h"
+#include "../Model/Structs.h"
 
 
 bool PointInRect(const float* x, const float* y, const SDL_FRect* rect);

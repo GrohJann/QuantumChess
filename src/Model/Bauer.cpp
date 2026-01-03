@@ -1,15 +1,9 @@
 #include <iostream>
-#include "../Spiel_Logik/Bauer.h"
-//#include "../Spiel_Logik/Brett.h"
-#include "../Structs.h"
+#include "../Model/Bauer.h"
+#include "Structs.h"
 #include <vector>
 #include <array>
 using namespace std;
-
-vector <Moegliches_Feld> Bauer::Get_Moegliche_Felder() {
-
-	return moegliche_felder;
-}
 
 
 void Bauer::Set_Moegliche_Felder(Brett spielfeld) {

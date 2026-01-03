@@ -1,15 +1,15 @@
-#include "Spiel_Logik/SDL_Test.h"
+#include "SDL_Test_alt.h"
 
 #include <iostream>
 #include <SDL3/SDL.h>
-#include "Spiel_Logik/Brett.h"
-#include "Spiel_Logik/Figuren.h"
-#include "Spiel_Logik/Bauer.h"
-#include "Spiel_Logik/Dame.h"
-#include "Spiel_Logik/Koenig.h"
-#include "Spiel_Logik/Laeufer.h"
-#include "Spiel_Logik/Springer.h"
-#include "Spiel_Logik/Turm.h"
+#include "Brett.h"
+#include "../Spiel_Logik/Figuren.h"
+#include "../Model/Bauer.h"
+#include "../Spiel_Logik/Dame.h"
+#include "../Model/Koenig.h"
+#include "../Spiel_Logik/Laeufer.h"
+#include "../Spiel_Logik/Springer.h"
+#include "../Spiel_Logik/Turm.h"
 
 void Spielfeld_Reset(Brett& spielfeld) {
 

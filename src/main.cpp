@@ -3,8 +3,8 @@
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL.h>
 
-#include "GameLogic.h"
-#include "Structs.h"
+#include "Logic/GameLogic.h"
+#include "Model/Structs.h"
 #include "GUI/SDL_Helper.h"
 #include "GUI/ChesssBoardView.h"
 //#include "Spiel_Logik/SDL_Test.h"

@@ -3,12 +3,12 @@
 #define QUANTUMCHESS_QUANTEN_SCHACH_H
 
 #include <vector>
-#include "Bauer.h"
-#include "Springer.h"
-#include "Laeufer.h"
-#include "Turm.h"
-#include "Dame.h"
-#include "Koenig.h"
+#include "../Spiel_Logik/Bauer.h"
+#include "../Spiel_Logik/Springer.h"
+#include "../Spiel_Logik/Laeufer.h"
+#include "../Spiel_Logik/Turm.h"
+#include "../Spiel_Logik/Dame.h"
+#include "../Spiel_Logik/Koenig.h"
 
 
 void Startaufstellung_Bauern(std::vector <Bauer> &bauern, Figuren* (&Spielfeld)[8][8]);

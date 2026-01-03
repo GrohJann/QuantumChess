@@ -1,14 +1,8 @@
-#include "../Spiel_Logik/Turm.h"
+#include "../Model/Turm.h"
 //#include "Brett.h"
-#include "../Structs.h"
+#include "Structs.h"
 #include <vector>
 using namespace std;
-
-
-vector <Moegliches_Feld> Turm::Get_Moegliche_Felder() {
-
-	return moegliche_felder;
-}
 
 void Turm::Set_Moegliche_Felder(Brett spielfeld) {
 

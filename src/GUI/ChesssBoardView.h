@@ -1,8 +1,8 @@
 #ifndef QUANTUMCHESS_CHESSSBOARDVIEW_H
 #define QUANTUMCHESS_CHESSSBOARDVIEW_H
 
-#include "../Structs.h"
-#include "../Spiel_Logik/Brett.h"
+#include "../Model/Structs.h"
+#include "../Deprecated/Brett.h"
 
 class Graphics {
 

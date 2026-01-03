@@ -28,29 +28,29 @@ add_executable(QuantumChess src/main.cpp #src/main_tmp.cpp
         #src/GUI/SDL_Test.h
         src/Network/Client_Network.cpp
         src/Network/Client_Network.h
-        src/Spiel_Logik/Bauer.cpp
-        src/Spiel_Logik/Bauer.h
-        src/Spiel_Logik/Dame.cpp
-        src/Spiel_Logik/Dame.h
-        src/Spiel_Logik/Figuren.cpp
-        src/Spiel_Logik/Figuren.h
-        src/Spiel_Logik/Koenig.cpp
-        src/Spiel_Logik/Koenig.h
-        src/Spiel_Logik/Laeufer.cpp
-        src/Spiel_Logik/Laeufer.h
+        src/Model/Bauer.cpp
+        src/Model/Bauer.h
+        src/Model/Dame.cpp
+        src/Model/Dame.h
+        src/Model/Figuren.cpp
+        src/Model/Figuren.h
+        src/Model/Koenig.cpp
+        src/Model/Koenig.h
+        src/Model/Laeufer.cpp
+        src/Model/Laeufer.h
         #src/Spiel_Logik/Quanten_Schach.cpp
         #src/Spiel_Logik/Quanten_Schach.h
-        src/Spiel_Logik/Springer.cpp
-        src/Spiel_Logik/Springer.h
-        src/Spiel_Logik/Turm.cpp
-        src/Spiel_Logik/Turm.h
+        src/Model/Springer.cpp
+        src/Model/Springer.h
+        src/Model/Turm.cpp
+        src/Model/Turm.h
         src/GUI/SDL_Helper.cpp
         src/GUI/SDL_Helper.h
         src/GUI/ChesssBoardView.cpp
         src/GUI/ChesssBoardView.h
-        src/Structs.h
-        src/GameLogic.cpp
-        src/GameLogic.h
+        src/Model/Structs.h
+        src/Logic/GameLogic.cpp
+        src/Logic/GameLogic.h
         #src/Spiel_Logik/SDL_Test.cpp
         #src/Spiel_Logik/SDL_Test.h
 )

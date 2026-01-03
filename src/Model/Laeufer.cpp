@@ -1,25 +1,7 @@
-#include "../Spiel_Logik/Laeufer.h"
-//#include "Brett.h"
-#include "../Structs.h"
+#include "../Model/Laeufer.h"
+#include "Structs.h"
 #include <vector>
 using namespace std;
-
-/*bool Laeufer::Get_Geschlagen() {
-	return geschlagen;
-}
-bool Laeufer::Get_Farbe() {
-	return schwarz;
-}
-int Laeufer::Get_Spalte() {
-	return spalte;
-}
-int Laeufer::Get_Zeile() {
-	return zeile;
-}*/
-vector <Moegliches_Feld> Laeufer::Get_Moegliche_Felder() {
-
-	return moegliche_felder;
-}
 
 void Laeufer::Set_Moegliche_Felder(Brett spielfeld) {
 

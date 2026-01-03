@@ -8,7 +8,7 @@
 #include "Brett.h"
 #include <iostream>
 #include <SDL3/SDL.h>
-#include "../Spiel_Logik/SDL_Test.h"
+#include "../Spiel_Logik/SDL_Test_alt.h"
 #include <string>
 #include <vector>
 

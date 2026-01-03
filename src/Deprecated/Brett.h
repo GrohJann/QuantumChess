@@ -1,5 +1,5 @@
 #pragma once
-#include "Figuren.h"
+#include "../Model/Figuren.h"
 /*
 struct Brett
 {

@@ -143,6 +143,7 @@ void Graphics::RenderChessTextures(SDL_Renderer* renderer, Brett& Spielfeld) {
 void Graphics::RenderSidebar(SDL_Renderer* renderer, ColorScheme color_scheme, const MoveMode move_mode, const MoveBtnTex &move_btn_tex) {
     int w, h;
     SDL_GetCurrentRenderOutputSize(renderer, &w, &h);
+    // TODO check if all three buttons together would be out of bounds
     float sqr_w = static_cast<float>(w);
 
     for (uint8_t btn = NORMAL; btn < MERGE+1; btn++) {

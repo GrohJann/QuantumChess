@@ -1,14 +1,11 @@
 #include <iostream>
-#include "../Spiel_Logik/Springer.h"
-#include "../Structs.h"
+#include "../Model/Springer.h"
+#include "Structs.h"
 #include <vector>
 #include <array>
 using namespace std;
 
-vector <Moegliches_Feld> Springer::Get_Moegliche_Felder() {
 
-	return moegliche_felder;
-}
 
 void Springer::Set_Moegliche_Felder(Brett spielfeld) {// bearbeiten
 

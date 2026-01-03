@@ -2,13 +2,13 @@
 #ifndef QUANTUMCHESS_GAMELOGIC_H
 #define QUANTUMCHESS_GAMELOGIC_H
 
-#include "Structs.h"
-#include "Spiel_Logik/Turm.h"
-#include "Spiel_Logik/Springer.h"
-#include "Spiel_Logik/Laeufer.h"
-#include "Spiel_Logik/Dame.h"
-#include "Spiel_Logik/Koenig.h"
-#include "Spiel_Logik/Bauer.h"
+#include "../Model/Structs.h"
+#include "../Model/Turm.h"
+#include "../Model/Springer.h"
+#include "../Model/Laeufer.h"
+#include "../Model/Dame.h"
+#include "../Model/Koenig.h"
+#include "../Model/Bauer.h"
 
 class GameLogic {
 

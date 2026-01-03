@@ -4,12 +4,8 @@
 #include <vector>
 #include <array>
 using namespace std;
-class Turm : public Figuren
-{
-private:
-	//vector <Moegliches_Feld>  moegliche_felder;
-public:
+class Laeufer : public Figuren {
 
-	//vector <Moegliches_Feld> Get_Moegliche_Felder() override;
+public:
 	void Set_Moegliche_Felder(Brett spielfeld) override;
 };

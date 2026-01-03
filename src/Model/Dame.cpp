@@ -1,14 +1,7 @@
-#include "../Spiel_Logik/Dame.h"
-//#include "Brett.h"
-#include "../Structs.h"
+#include "../Model/Dame.h"
+#include "Structs.h"
 #include <vector>
 using namespace std;
-
-
-vector <Moegliches_Feld> Dame::Get_Moegliche_Felder() {
-
-	return moegliche_felder;
-}
 
 
 void Dame::Set_Moegliche_Felder(Brett spielfeld) {

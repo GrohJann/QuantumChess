@@ -3,13 +3,13 @@
 #include <iostream>
 #include <SDL3/SDL.h>
 #include "Brett.h"
-#include "Figuren.h"
-#include "Bauer.h"
-#include "Dame.h"
-#include "Koenig.h"
-#include "Laeufer.h"
-#include "Springer.h"
-#include "Turm.h"
+#include "../Spiel_Logik/Figuren.h"
+#include "../Spiel_Logik/Bauer.h"
+#include "../Spiel_Logik/Dame.h"
+#include "../Spiel_Logik/Koenig.h"
+#include "../Spiel_Logik/Laeufer.h"
+#include "../Spiel_Logik/Springer.h"
+#include "../Spiel_Logik/Turm.h"
 
 
 
@@ -230,7 +230,7 @@ void Startaufstellung_Koenige(vector <Koenig>& koenige, Brett& spielfeld) {
 
 // vielleicht muss man noch nach jedem Zug die Pointer nue definieren, aber eigentlich nich da sich die Vektoren nicht veraendern
 // wenn dann im Quantenschach neue Figuren dazukommen und sich der Vektor erweitert ist das jedoch wichtig
-// Oder im normalen schach für die Umwandlung
+// Oder im normalen schach fï¿½r die Umwandlung
 void Set_Ptr_Bauern(vector <Bauer>& bauern, Brett& spielfeld) {
 	for (int i = 0; i < bauern.size(); i++) {
 		if (!spielfeld.Felder[bauern[i].Get_Spalte() - 1][bauern[i].Get_Zeile() - 1]->Get_Geschlagen())
@@ -373,7 +373,7 @@ int main()
 			}			
 		}
 		cout << endl;
-	} // nur zum überprüfen
+	} // nur zum ï¿½berprï¿½fen
 
 	bool weiss_am_zug = true;
 	bool schachmatt = false;
@@ -384,9 +384,9 @@ int main()
 		// bis jetzt isses nur so dass die farben im Wechsel bewegt werden muessen, der selbe Spieler kann trotzdem beide bewegen
 		
 		int z_1 = -1; // hier muss eine Funktion die Zeile des ersten angeklickten Feldes uebertragen  (SDL)
-		int s_1 = -1; // dasselbe für die Spalte (SDL)
+		int s_1 = -1; // dasselbe fï¿½r die Spalte (SDL)
 
-		cin >> s_1; // Platzhalter für die Funktion
+		cin >> s_1; // Platzhalter fï¿½r die Funktion
 		cin >> z_1; // "..."
 		if (Erstes_Feld(s_1, z_1, Spielfeld, weiss_am_zug, moegliche_Felder)) {
 

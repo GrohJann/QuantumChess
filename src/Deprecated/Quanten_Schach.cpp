@@ -1,14 +1,14 @@
 
 
 #include <iostream>
-#include "Quanten_Schach.h"
-#include "Figuren.h"
-#include "Bauer.h"
-#include "Dame.h"
-#include "Koenig.h"
-#include "Laeufer.h"
-#include "Springer.h"
-#include "Turm.h"
+#include "../Spiel_Logik/Quanten_Schach.h"
+#include "../Spiel_Logik/Figuren.h"
+#include "../Spiel_Logik/Bauer.h"
+#include "../Spiel_Logik/Dame.h"
+#include "../Spiel_Logik/Koenig.h"
+#include "../Spiel_Logik/Laeufer.h"
+#include "../Spiel_Logik/Springer.h"
+#include "../Spiel_Logik/Turm.h"
 
 using namespace std; 
 

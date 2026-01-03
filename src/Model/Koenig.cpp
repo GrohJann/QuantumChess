@@ -1,13 +1,7 @@
-#include "../Spiel_Logik/Koenig.h"
-//#include "Brett.h"
-#include "../Structs.h"
+#include "../Model/Koenig.h"
+#include "Structs.h"
 #include <vector>
 using namespace std;
-
-vector <Moegliches_Feld> Koenig::Get_Moegliche_Felder() {
-
-	return moegliche_felder;
-}
 
 
 void Koenig::Set_Moegliche_Felder(Brett spielfeld) {

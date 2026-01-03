@@ -8,7 +8,7 @@
 #include "Brett.h"
 #include <iostream>
 #include <SDL3/SDL.h>
-#include "SDL_Test.h"
+#include "../GUI/SDL_Test.h"
 #include <string>
 #include <vector>
 
@@ -117,7 +117,7 @@ int drawChessboard(SDL_Window* window, SDL_Renderer* renderer) {
             SDL_FRect rect = { col * squareSize, row * squareSize, squareSize, squareSize };
 
             SDL_RenderFillRect(renderer, &rect);
-
+            
         }
     }
 
@@ -186,8 +186,8 @@ void createTexture(void* appstate, Brett& Spielfeld) {
             }
         }
     }
-
-
+ 
+    
     // set texture
 }
 
@@ -209,7 +209,7 @@ void loadTextureWithSDL3(vector<figures>& InfoFigures, void* appstate) {
         SDL_DestroySurface(surface);
     }
 
-
+    
 }
 
 */
@@ -222,7 +222,7 @@ void calculateFieldFromCoordinates(void* appstate, const float& mouseX, const fl
     float squareSize = w / static_cast<float>(boardFields);     //da Feld quadratisch egal ob Breite oder H�he
     *selectedRow = 8 - (static_cast<int>(mouseY / squareSize));
     *selectedCol = (static_cast<int>(mouseX / squareSize))+1;
-
+ 
 }
 
 
@@ -289,7 +289,7 @@ int run(Brett& Spielfeld) {
     SDL_AppResult result = AppInit(&appstate);
     if (result == SDL_APP_CONTINUE) {
 
-
+       
         createTexture(appstate,Spielfeld);                //Datenpfad in Textur
 
         // main loop
@@ -324,13 +324,13 @@ int run(Brett& Spielfeld) {
             }
 
             // calculate on wich field the mouseclick was
-            calculateFieldFromCoordinates(appstate, mouseX, mouseY, &selectedRow, &selectedCol);
-
-            // If left mouse click on different field:
-            if (a != selectedRow || b != selectedCol) {
+            calculateFieldFromCoordinates(appstate, mouseX, mouseY, &selectedRow, &selectedCol);  
+            
+            // If left mouse click on different field: 
+            if (a != selectedRow || b != selectedCol) {                 
                 cout << "Ausgewaehlte Reihe: " << selectedRow << endl;
                 cout << "Ausgewaehlte Spalte: " << selectedCol << endl;
-
+             
                 for (int i = 0; i < Vector_Moegliche_felder.size(); i++) {
                     if (Vector_Moegliche_felder[i].spalte == selectedCol && Vector_Moegliche_felder[i].zeile == selectedRow) {
                         Spielfeld.Felder[b - 1][a - 1]->Set_Spalte(selectedCol);  // set new Col of the choosen piece

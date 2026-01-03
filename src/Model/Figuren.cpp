@@ -1,6 +1,6 @@
 //#include "Brett.h"
-#include "../Structs.h"
-#include "../Spiel_Logik/Figuren.h"
+#include "Structs.h"
+#include "../Model/Figuren.h"
 
 #include <vector>
 #include <string>

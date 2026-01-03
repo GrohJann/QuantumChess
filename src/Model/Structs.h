@@ -12,7 +12,7 @@
 
 #include <memory>
 
-#include "Spiel_Logik/Figuren.h"
+#include "Figuren.h"
 
 enum MoveMode : uint8_t {
     NORMAL,

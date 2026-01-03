@@ -1,7 +1,6 @@
 
-#include "GameLogic.h"
+#include "../Logic/GameLogic.h"
 
-#include "Spiel_Logik/Koenig.h"
 
 
 Brett GameLogic::InitGameBoard() {
