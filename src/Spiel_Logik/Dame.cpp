@@ -1,15 +1,18 @@
-#include "../Dame.h"
+#include "Dame.h"
 #include "Brett.h"
 #include <vector>
 using namespace std;
 
 
+vector <Moegliches_Feld> Dame::Get_Moegliche_Felder() {
 
+	return moegliche_felder;
+}
 
 
 void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 	// Laeufer
-	for (int i = 1; i < 8; i++) { // 45ï¿½
+	for (int i = 1; i < 8; i++) { // 45°
 		Moegliches_Feld F;
 		if (spalte + i <= 8 && zeile + i <= 8) { // feld aufm Brett
 			if (spielfeld.Felder[spalte + i - 1][zeile + i - 1] == nullptr) {
@@ -27,7 +30,7 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 			}
 		}
 	}
-	for (int i = 1; i < 8; i++) { // 225ï¿½
+	for (int i = 1; i < 8; i++) { // 225°
 		Moegliches_Feld F;
 		if (spalte - i >= 1 && zeile - i >= 1) { // feld aufm Brett
 			if (spielfeld.Felder[spalte - i - 1][zeile - i - 1] == nullptr) {
@@ -45,7 +48,7 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 			}
 		}
 	}
-	for (int i = 1; i < 8; i++) { // 135ï¿½
+	for (int i = 1; i < 8; i++) { // 135°
 		Moegliches_Feld F;
 		if (spalte - i >= 1 && zeile + i <= 8) { // feld aufm Brett
 			if (spielfeld.Felder[spalte - i - 1][zeile + i - 1] == nullptr) {
@@ -65,7 +68,7 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 			}
 		}
 	}
-	for (int i = 1; i < 8; i++) { // 315ï¿½
+	for (int i = 1; i < 8; i++) { // 315°
 		Moegliches_Feld F;
 		if (spalte + i <= 8 && zeile - i >= 1) { // feld aufm Brett
 			if (spielfeld.Felder[spalte + i - 1][zeile - i - 1] == nullptr) {
@@ -123,7 +126,7 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 		}
 	}
 	int z = zeile;
-	for (z; z < 9; z++) { //aufwï¿½rts
+	for (z; z < 9; z++) { //aufwärts
 		Moegliches_Feld F;
 		F.spalte = spalte;
 		F.zeile = z;
@@ -141,7 +144,7 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 		}
 	}
 	z = zeile;
-	for (z; z > 0; z--) { //abwï¿½rts
+	for (z; z > 0; z--) { //abwärts
 		Moegliches_Feld F;
 		F.spalte = s;
 		F.zeile = zeile;

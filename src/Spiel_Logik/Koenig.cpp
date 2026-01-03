@@ -1,4 +1,4 @@
-#include "../Koenig.h"
+#include "Koenig.h"
 #include "Brett.h"
 #include <vector>
 using namespace std;
@@ -21,7 +21,7 @@ void Koenig::Set_Moegliche_Felder(Brett spielfeld) {
 						F.zeile = zeile + z;
 						moegliche_felder.push_back(F);
 					}
-					else if (spielfeld.Felder[spalte + s - 1][zeile + z - 1]->Get_Farbe() != weiss) { // darf der Kï¿½nig da hinziehn
+					else if (spielfeld.Felder[spalte + s - 1][zeile + z - 1]->Get_Farbe() != weiss) { // darf der König da hinziehn
 						F.spalte = spalte + s;
 						F.zeile = zeile + z;
 						moegliche_felder.push_back(F);

@@ -1,13 +1,13 @@
-#include "../Turm.h"
+#include "Turm.h"
 #include "Brett.h"
 #include <vector>
 using namespace std;
 
 
-/*vector <Moegliches_Feld> Turm::Get_Moegliche_Felder() {
+vector <Moegliches_Feld> Turm::Get_Moegliche_Felder() {
 
 	return moegliche_felder;
-}*/
+}
 
 void Turm::Set_Moegliche_Felder(Brett spielfeld) {
 
@@ -48,7 +48,7 @@ void Turm::Set_Moegliche_Felder(Brett spielfeld) {
 		}
 	}
 	int z = zeile;
-	for (z; z < 9; z++) { //aufwï¿½rts
+	for (z; z < 9; z++) { //aufwärts
 		Moegliches_Feld F;
 		F.spalte = spalte;
 		F.zeile = z;
@@ -66,7 +66,7 @@ void Turm::Set_Moegliche_Felder(Brett spielfeld) {
 		}
 	}
 	z = zeile;
-	for (z; z > 0; z--) { //abwï¿½rts
+	for (z; z > 0; z--) { //abwärts
 		Moegliches_Feld F;
 		F.spalte = s;
 		F.zeile = zeile;

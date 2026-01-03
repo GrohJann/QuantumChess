@@ -1,10 +1,14 @@
 #include <iostream>
-#include "../Bauer.h"
-#include "../Brett.h"
+#include "Bauer.h"
+#include "Brett.h"
 #include <vector>
 #include <array>
 using namespace std;
 
+vector <Moegliches_Feld> Bauer::Get_Moegliche_Felder() {
+
+	return moegliche_felder;
+}
 
 
 void Bauer::Set_Moegliche_Felder(Brett spielfeld) {
