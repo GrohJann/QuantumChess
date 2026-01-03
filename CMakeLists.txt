@@ -75,5 +75,4 @@ endif()
 target_link_libraries(QuantumChess
         PRIVATE
         SDL3::SDL3
-        SDL3_image::SDL3_image
 )
