@@ -5,7 +5,10 @@
 #include <array>
 using namespace std;
 
+vector <Moegliches_Feld> Springer::Get_Moegliche_Felder() {
 
+	return moegliche_felder;
+}
 
 void Springer::Set_Moegliche_Felder(Brett spielfeld) {// bearbeiten
 

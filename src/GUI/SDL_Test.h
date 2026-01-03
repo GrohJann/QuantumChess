@@ -1,3 +1,4 @@
+
 /**
  * @file SDL_Test.h
  * @brief TODO: Add a short description of what this file does.
@@ -12,16 +13,23 @@
 #include <SDL3/SDL_video.h>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_init.h>
+#include <vector>
+using namespace std; //notwendig vor vector
 
+struct Brett;
+struct Moegliches_Feld;
 
-SDL_AppResult SDL_AppInit(void **appstate);
-SDL_AppResult AppIterate(void *appstate);
-SDL_AppResult AppEvent(void *appstate, SDL_Event* event);
-void AppQuit(void *appstate, SDL_AppResult result);
+SDL_AppResult AppInit(void** appstate);
+SDL_AppResult AppIterate(void* appstate, Brett& Spielfeld, vector <Moegliches_Feld> Vector_Moegliche_felder);
+SDL_AppResult AppEvent(void* appstate, SDL_Event* event, float* mouseX, float* mouseY);
+void AppQuit(void* appstate, SDL_AppResult result);
 
+void createTexture(void* appstate, Brett& Spielfeld);
 int drawChessboard(SDL_Window* window, SDL_Renderer* renderer);
-
-int run();
+void RenderTextures(SDL_Window* window, SDL_Renderer* renderer, Brett& Spielfeld, vector <Moegliches_Feld> Vector_Moegliche_felder);
+void calculateFieldFromCoordinates(void* appstate, const float& mouseX, const float& mouseY, int* selectedRow, int* selectedCol);
+void setPossibleFields(Brett& Spielfeld);
+int run(Brett& Spielfeld);
 
 
 #endif //QUANTUMCHESS_SDL_TEST_H
