@@ -17,9 +17,9 @@ public:
 
     static Brett InitGameBoard();
 
-    static void HandleNormalChessMoveEvent(TilePos* clicked_tile, TilePos*& selected_piece, std::vector<TilePos>& moves, Brett& board);
-    static void HandleSplitChessMoveEvent(TilePos* clicked_tile, TilePos*& selected_piece, std::vector<TilePos>& moves, Brett& board);
-    static void HandleMergeChessMoveEvent(TilePos* clicked_tile, TilePos*& selected_piece, std::vector<TilePos>& moves, Brett& board);
+    static void HandleNormalChessMoveEvent(TilePos& clicked_tile, TilePos& selected_piece, std::vector<TilePos>& moves, Brett& board);
+    static void HandleSplitChessMoveEvent(TilePos& clicked_tile, TilePos& selected_piece, std::vector<TilePos>& moves, Brett& board);
+    static void HandleMergeChessMoveEvent(TilePos& clicked_tile, TilePos& selected_piece, std::vector<TilePos>& moves, Brett& board);
 
 
 private:

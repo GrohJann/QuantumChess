@@ -52,6 +52,8 @@ struct MoveBtnTex {
 struct TilePos {
     Uint8 row;
     Uint8 col;
+
+    bool operator==(const TilePos & other) const = default;
 };
 
 #endif //QUANTUMCHESS_STRUCTS_H

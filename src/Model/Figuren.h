@@ -17,6 +17,7 @@ protected:
 	bool weiss = true;
 	bool gezogen = false; // Turm Bauer Koenig
 	char name = 'F';
+	int id = 0;
 
 	// bool gewaehlt = false;
 	float wahrscheinlichkeit = 1.0f;
@@ -44,6 +45,7 @@ public:
 	virtual string Get_Dateipfad();
 	virtual SDL_Texture* Get_Texture();
 	virtual float Get_Wahrscheinlichkeit();
+	virtual int Get_ID();
 
 	virtual void Set_Name(char neuer_name);
 	virtual void Set_Geschlagen(bool neuer_zustand);
@@ -53,6 +55,7 @@ public:
 	virtual void Set_Gezogen(bool neuer_zustand);
 	virtual void Set_Moegliche_Felder(Brett spielfeld);
 	virtual void Set_Wahrscheinlichkeit(float wahrscheinlichkeit);
+	virtual void Set_ID(int id);
 
 	// 
 	virtual void Set_Dateipfad(string neuer_dateipfad);

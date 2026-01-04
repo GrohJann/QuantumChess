@@ -50,6 +50,11 @@ std::unique_ptr<Turm> GameLogic::CreateRook(const bool geschlagen, const bool ge
     rook->Set_Name('R');
     rook->Set_Spalte(col);
     rook->Set_Wahrscheinlichkeit(1.0f);
+    rook->Set_ID(
+        (!isWhite << 31) |
+        (row << 17) |
+        col
+        );
 
     return rook;
 }
@@ -62,6 +67,11 @@ std::unique_ptr<Springer> GameLogic::CreateKnight(const bool geschlagen, const b
     knight->Set_Name('k');
     knight->Set_Spalte(col);
     knight->Set_Wahrscheinlichkeit(1.0f);
+    knight->Set_ID(
+        (!isWhite << 31) |
+        (row << 17) |
+        col
+        );
 
     return knight;
 }
@@ -74,6 +84,11 @@ std::unique_ptr<Laeufer> GameLogic::CreateBishop(const bool geschlagen, const bo
     bishop->Set_Name('B');
     bishop->Set_Spalte(col);
     bishop->Set_Wahrscheinlichkeit(1.0f);
+    bishop->Set_ID(
+        (!isWhite << 31) |
+        (row << 17) |
+        col
+        );
 
     return bishop;
 }
@@ -86,6 +101,11 @@ std::unique_ptr<Dame> GameLogic::CreateQueen(const bool geschlagen, const bool i
     queen->Set_Name('Q');
     queen->Set_Spalte(col);
     queen->Set_Wahrscheinlichkeit(1.0f);
+    queen->Set_ID(
+        (!isWhite << 31) |
+        (row << 17) |
+        col
+        );
 
     return queen;
 }
@@ -99,36 +119,50 @@ std::unique_ptr<Koenig> GameLogic::CreateKing(const bool geschlagen, const bool 
     king->Set_Name('K');
     king->Set_Spalte(col);
     king->Set_Wahrscheinlichkeit(1.0f);
+    king->Set_ID(
+        (!isWhite << 31) |
+        (row << 17) |
+        col
+        );
 
     return king;
 }
 
 std::unique_ptr<Bauer> GameLogic::CreatePawn(const bool geschlagen, const bool gezogen, const bool isWhite, const int row, const int col) {
-    auto king = std::make_unique<Bauer>();
-    king->Set_Geschlagen(geschlagen);
-    king->Set_Gezogen(gezogen);
-    king->Set_Farbe(isWhite);
-    king->Set_Zeile(row);
-    king->Set_Name('P');
-    king->Set_Spalte(col);
-    king->Set_Wahrscheinlichkeit(1.0f);
+    auto pawn = std::make_unique<Bauer>();
+    pawn->Set_Geschlagen(geschlagen);
+    pawn->Set_Gezogen(gezogen);
+    pawn->Set_Farbe(isWhite);
+    pawn->Set_Zeile(row);
+    pawn->Set_Name('P');
+    pawn->Set_Spalte(col);
+    pawn->Set_Wahrscheinlichkeit(1.0f);
+    pawn->Set_ID(
+        (!isWhite << 31) |
+        (row << 17) |
+        col
+        );
 
-    return king;
+    return pawn;
 }
 
 
 
-void GameLogic::HandleNormalChessMoveEvent(TilePos* clicked_tile, TilePos*& selected_piece, std::vector<TilePos>& moves, Brett& board) {
-    if (selected_piece == nullptr) {
+void GameLogic::HandleNormalChessMoveEvent(TilePos& clicked_tile, TilePos& selected_piece, std::vector<TilePos>& moves, Brett& board) {
+    constexpr TilePos comp{
+        255,
+        255
+    };
+    if (selected_piece == comp) {
         // first chess piece selected
-        if (board.Felder[clicked_tile->row][clicked_tile->col] != nullptr) {
+        if (board.Felder[clicked_tile.row][clicked_tile.col] != nullptr) {
             // clicked tile has a figure on it
             selected_piece = clicked_tile;
         }
     } else {
         if (clicked_tile == selected_piece) {
             //deselect tile
-            selected_piece = nullptr;
+            selected_piece = comp;
             return;
         }
         // move
@@ -140,10 +174,10 @@ void GameLogic::MoveChessPieceNormal() {
     // TODO: implement this
 }
 
-void GameLogic::HandleSplitChessMoveEvent(TilePos* clicked_tile, TilePos*& selected_piece, std::vector<TilePos>& moves, Brett& board) {
+void GameLogic::HandleSplitChessMoveEvent(TilePos& clicked_tile, TilePos& selected_piece, std::vector<TilePos>& moves, Brett& board) {
     // TODO: implement this
 }
 
-void GameLogic::HandleMergeChessMoveEvent(TilePos* clicked_tile, TilePos*& selected_piece, std::vector<TilePos>& moves, Brett& board) {
+void GameLogic::HandleMergeChessMoveEvent(TilePos& clicked_tile, TilePos& selected_piece, std::vector<TilePos>& moves, Brett& board) {
     // TODO: implement this
 }

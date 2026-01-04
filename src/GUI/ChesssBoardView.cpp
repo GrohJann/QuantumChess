@@ -64,6 +64,9 @@ void Graphics::CreateChessTextures(SDL_Renderer* renderer, Brett &Spielfeld) {
                         break;
 
                     default:
+                        std::cout << "ERROR::ChesssBoardView::MoveChessPieceNormal()" << std::endl
+                        <<"Figur auf i:" << i << ", j:" << j << "hatt keinen erkannten namen: "
+                        << Spielfeld.Felder[i][j]->Get_Name() << std::endl;
                         break;
                 }
             }
@@ -147,8 +150,8 @@ void Graphics::RenderSidebar(SDL_Renderer* renderer, ColorScheme color_scheme, c
     float sqr_w = static_cast<float>(w);
 
     for (uint8_t btn = NORMAL; btn < MERGE+1; btn++) {
+        SDL_Texture* tex = nullptr;
         Color color{};
-        SDL_Texture* tex;
         if (btn == move_mode)
              color = color_scheme.black;
         else

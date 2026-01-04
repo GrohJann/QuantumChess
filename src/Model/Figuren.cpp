@@ -37,6 +37,9 @@ vector <Moegliches_Feld> Figuren::Get_Moegliche_Felder() {
 float Figuren::Get_Wahrscheinlichkeit() {
 	return wahrscheinlichkeit;
 }
+int Figuren::Get_ID() {
+	return id;
+}
 
 void Figuren::Set_Name(char neuer_name) {
 	name = neuer_name;
@@ -70,5 +73,9 @@ void Figuren::Set_Texture(SDL_Texture* neue_texture_ptr) {
 
 void Figuren::Set_Wahrscheinlichkeit(const float wahrscheinlichkeit) {
 	this->wahrscheinlichkeit = wahrscheinlichkeit;
+}
+
+void Figuren::Set_ID(int id) {
+	this->id = id;
 }
 

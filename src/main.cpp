@@ -22,7 +22,7 @@ struct AppState {
     MoveBtnTex move_btn_tex;
     bool redraw = true;
     bool btn_down = false;
-    TilePos* selected_piece;
+    TilePos selected_piece;
     std::vector<TilePos> moves;
 };
 
@@ -55,7 +55,10 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char *argv[]) {
         {119, 149, 87, 255},
         {236, 236, 208, 255}
     };
-    state->selected_piece = nullptr;
+    state->selected_piece = {
+        255,
+        255
+    };
     if (!(state->window = SDL_CreateWindow(state->title, width, height, SDL_WINDOW_RESIZABLE)))
         return SDL_APP_FAILURE;
     //TODO: set new aspect ratio
@@ -194,13 +197,13 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event) {
                     TilePos pos = GetTileFromMousePos(event->button.x, event->button.y, &state->board_dst);
                     switch (state->move_mode) {
                         case NORMAL:
-                            GameLogic::HandleNormalChessMoveEvent(&pos, state->selected_piece, state->moves, state->game_board);
+                            GameLogic::HandleNormalChessMoveEvent(pos, state->selected_piece, state->moves, state->game_board);
                             break;
                         case SPLIT:
-                            GameLogic::HandleSplitChessMoveEvent(&pos, state->selected_piece, state->moves, state->game_board);
+                            GameLogic::HandleSplitChessMoveEvent(pos, state->selected_piece, state->moves, state->game_board);
                             break;
                         case MERGE:
-                            GameLogic::HandleMergeChessMoveEvent(&pos, state->selected_piece, state->moves, state->game_board);
+                            GameLogic::HandleMergeChessMoveEvent(pos, state->selected_piece, state->moves, state->game_board);
                             break;
                     }
                 } else if (PointInRect(&event->button.x, &event->button.y, &state->sidebar_dst)) {
