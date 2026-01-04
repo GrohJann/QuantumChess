@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file SDL_Test.cpp
  * @brief A test implementation of the chessboard gui
  *
@@ -8,7 +8,8 @@
 #include "Brett.h"
 #include <iostream>
 #include <SDL3/SDL.h>
-#include "../GUI/SDL_Test.h"
+#include "SDL_Test.h"
+#include "Spiel_Logik.h"
 #include <string>
 #include <vector>
 
@@ -36,10 +37,10 @@ struct figures {
  */
 SDL_AppResult AppInit(void** appstate) {
     // allocate memory for AppState struct
-    if (!(*appstate = SDL_malloc(sizeof(AppState)))) {     //SDL_malloc gibt Zeiger auf reservierten Speicherbreich zur�ck
-        return SDL_APP_FAILURE;                        //Wenn SDL_malloc nullpointer zur�ckgibt
+    if (!(*appstate = SDL_malloc(sizeof(AppState)))) {     //SDL_malloc gibt Zeiger auf reservierten Speicherbreich zurück
+        return SDL_APP_FAILURE;                        //Wenn SDL_malloc nullpointer zurückgibt
     }
-    auto* state = static_cast<AppState*>(*appstate);   //lokaler Zeiger , static_cast, da malloc void* zur�ckgibt
+    auto* state = static_cast<AppState*>(*appstate);   //lokaler Zeiger , static_cast, da malloc void* zurückgibt
     state->title = "Quantum Chess";
 
     if (!SDL_Init(SDL_INIT_VIDEO))
@@ -64,7 +65,7 @@ SDL_AppResult AppInit(void** appstate) {
  * @return SDL_APP_FAILURE to terminate with an error, SDL_APP_SUCCESS to
  *         terminate with success, SDL_APP_CONTINUE to continue.
  */
-SDL_AppResult AppIterate(void* appstate, Brett& Spielfeld , vector <Moegliches_Feld> Vector_Moegliche_felder) {
+SDL_AppResult AppIterate(void* appstate, Brett& Spielfeld, vector <Moegliches_Feld> Vector_Moegliche_felder) {
     auto* state = static_cast<AppState*>(appstate);
 
     if (state->redraw) {
@@ -83,7 +84,7 @@ SDL_AppResult AppIterate(void* appstate, Brett& Spielfeld , vector <Moegliches_F
         SDL_RenderPresent(state->renderer);
 
         //determine the possible fields to which a piece could be moved
-        setPossibleFields(Spielfeld);
+      //   setPossibleFields(Spielfeld);
     }
 
     return SDL_APP_CONTINUE;
@@ -107,7 +108,7 @@ int drawChessboard(SDL_Window* window, SDL_Renderer* renderer) {
 
             // Alternate colors
             if ((row + col) % 2 == 0) {
-               // SDL_SetRenderDrawColor(renderer, 240, 240, 240, 255);
+                // SDL_SetRenderDrawColor(renderer, 240, 240, 240, 255);
                 SDL_SetRenderDrawColor(renderer, 240, 217, 181, 255);      //Farbe linchess
             }
             else {
@@ -117,7 +118,7 @@ int drawChessboard(SDL_Window* window, SDL_Renderer* renderer) {
             SDL_FRect rect = { col * squareSize, row * squareSize, squareSize, squareSize };
 
             SDL_RenderFillRect(renderer, &rect);
-            
+
         }
     }
 
@@ -146,8 +147,8 @@ void RenderTextures(SDL_Window* window, SDL_Renderer* renderer, Brett& Spielfeld
         }
     }
     for (int i = 0; i < Vector_Moegliche_felder.size(); i++) {
-        col =  Vector_Moegliche_felder[i].spalte - 1;
-        row = 8 - Vector_Moegliche_felder[i].zeile ;
+        col = Vector_Moegliche_felder[i].spalte - 1;
+        row = 8 - Vector_Moegliche_felder[i].zeile;
         //cout <<"Spalte: "<<  col << "  Zeile:" << row << endl;    Nur zum Testen
         SDL_FRect rect = { col * squareSize, row * squareSize, squareSize, squareSize };
         SDL_SetRenderDrawColor(renderer, 57, 255, 20, 255);
@@ -176,7 +177,7 @@ void createTexture(void* appstate, Brett& Spielfeld) {
                 SDL_Surface* surface = SDL_LoadPNG(c_path);
                 if (!surface) {
                     cout << "Fehler beim Laden von :" << Spielfeld.Felder[i][j]->Get_Name()
-                        << " Position: "<< i << " " << j << SDL_GetError() << endl;
+                        << " Position: " << i << " " << j << SDL_GetError() << endl;
                 }
 
                 // Textur erstellen
@@ -186,8 +187,8 @@ void createTexture(void* appstate, Brett& Spielfeld) {
             }
         }
     }
- 
-    
+
+
     // set texture
 }
 
@@ -209,20 +210,20 @@ void loadTextureWithSDL3(vector<figures>& InfoFigures, void* appstate) {
         SDL_DestroySurface(surface);
     }
 
-    
+
 }
 
 */
-void calculateFieldFromCoordinates(void* appstate, const float& mouseX, const float& mouseY, int* selectedRow,int* selectedCol) {
+void calculateFieldFromCoordinates(void* appstate, const float& mouseX, const float& mouseY, int* selectedRow, int* selectedCol) {
     const auto* state = static_cast<AppState*>(appstate);
     int w, h;
     SDL_GetWindowSize(state->window, &w, &h);
     constexpr int boardFields = 8;
-
-    float squareSize = w / static_cast<float>(boardFields);     //da Feld quadratisch egal ob Breite oder H�he
+      
+    float squareSize = w / static_cast<float>(boardFields);     //da Feld quadratisch egal ob Breite oder Höhe
     *selectedRow = 8 - (static_cast<int>(mouseY / squareSize));
-    *selectedCol = (static_cast<int>(mouseX / squareSize))+1;
- 
+    *selectedCol = (static_cast<int>(mouseX / squareSize)) + 1;
+
 }
 
 
@@ -283,14 +284,41 @@ void AppQuit(void* appstate, SDL_AppResult result) {
  * Pseudo main function to run an SDL Window
  * @return error code
  */
-int run(Brett& Spielfeld) {
+int main() {
     // init SDL
     void* appstate = nullptr;
     SDL_AppResult result = AppInit(&appstate);
+
+
+
+
+
+
+
     if (result == SDL_APP_CONTINUE) {
 
-       
-        createTexture(appstate,Spielfeld);                //Datenpfad in Textur
+
+        Brett Spielfeld;
+
+        vector <Bauer> bauern;
+        vector <Springer> springer;
+        vector <Laeufer> laeufer;
+        vector <Turm> tuerme;
+        vector <Dame> damen;
+        vector <Koenig> koenige;
+
+        Spielfeld_Reset(Spielfeld);
+        Startaufstellung_Bauern(bauern, Spielfeld);
+        Startaufstellung_Springer(springer, Spielfeld);
+        Startaufstellung_Laeufer(laeufer, Spielfeld);
+        Startaufstellung_Tuerme(tuerme, Spielfeld);
+        Startaufstellung_Damen(damen, Spielfeld);
+        Startaufstellung_Koenige(koenige, Spielfeld);
+
+
+
+
+        createTexture(appstate, Spielfeld);                //Datenpfad in Textur
 
         // main loop
         //bool running = true;
@@ -305,11 +333,12 @@ int run(Brett& Spielfeld) {
         vector <Moegliches_Feld> Vector_Moegliche_felder;
 
         bool piece_moved = false;
-
+        
+        
         while (true) {
             // handle events
             while (SDL_PollEvent(&event)) {    //Holt Event und speichert in event (0 = Kein Event in Warteschlange)
-                result = AppEvent(appstate, &event, &mouseX,&mouseY);    // Events (auch Mausklick)
+                result = AppEvent(appstate, &event, &mouseX, &mouseY);    // Events (auch Mausklick)
                 switch (result) {
                 case SDL_APP_SUCCESS:
                     AppQuit(appstate, result);
@@ -324,37 +353,39 @@ int run(Brett& Spielfeld) {
             }
 
             // calculate on wich field the mouseclick was
-            calculateFieldFromCoordinates(appstate, mouseX, mouseY, &selectedRow, &selectedCol);  
+            calculateFieldFromCoordinates(appstate, mouseX, mouseY, &selectedRow, &selectedCol);
+            
+            
             
             // If left mouse click on different field: 
-            if (a != selectedRow || b != selectedCol) {                 
+            if (a != selectedRow || b != selectedCol && !Spielfeld.schachmatt) {
+                Erstes_Feld(selectedCol, selectedRow, Spielfeld);
+
+                if (Ceck_For_Promotion(Spielfeld, damen)) {
+                    createTexture(appstate, Spielfeld);
+                }
+
                 cout << "Ausgewaehlte Reihe: " << selectedRow << endl;
                 cout << "Ausgewaehlte Spalte: " << selectedCol << endl;
-             
-                for (int i = 0; i < Vector_Moegliche_felder.size(); i++) {
-                    if (Vector_Moegliche_felder[i].spalte == selectedCol && Vector_Moegliche_felder[i].zeile == selectedRow) {
-                        Spielfeld.Felder[b - 1][a - 1]->Set_Spalte(selectedCol);  // set new Col of the choosen piece
-                        Spielfeld.Felder[b - 1][a - 1]->Set_Zeile(selectedRow);   // set new Row of the choosen piece
-                        //move the choosen piece:
-                        Spielfeld.Felder[selectedCol - 1][selectedRow - 1] = Spielfeld.Felder[b - 1][a - 1];
-                        Spielfeld.Felder[b - 1][a - 1] = nullptr;
-                        cout << "Figur bewegt" << endl;
-                        piece_moved = true;
-                        Vector_Moegliche_felder.clear();  //clear vector so that there are no green fields
-                        break;
-                    }
-                }
-                if (Spielfeld.Felder[selectedCol - 1][selectedRow - 1] != nullptr && piece_moved == false) {    // then get possible fields
-                    cout << Spielfeld.Felder[selectedCol - 1][selectedRow - 1]->Get_Name() << endl;
-                    Vector_Moegliche_felder = Spielfeld.Felder[selectedCol - 1][selectedRow - 1]->Get_Moegliche_Felder();
-                }
-
-                piece_moved = false;
+                
                 a = selectedRow;
                 b = selectedCol;
+                
+                if (Spielfeld.Felder[selectedCol - 1][selectedRow - 1] != nullptr && Spielfeld.piece_selected ) {
+                    Spielfeld.Felder[selectedCol - 1][selectedRow - 1]->Set_Moegliche_Felder(Spielfeld);
+                    Vector_Moegliche_felder = Spielfeld.Felder[selectedCol - 1][selectedRow - 1]->Get_Moegliche_Felder();
+                }
+                else {
+                    Vector_Moegliche_felder.clear();
+                }
             }
-
-            AppIterate(appstate, Spielfeld, Vector_Moegliche_felder);
+            if (Spielfeld.piece_selected) {
+                AppIterate(appstate, Spielfeld, Vector_Moegliche_felder);
+            }
+            else {
+                AppIterate(appstate, Spielfeld, {});
+            }
+            
 
         }
     }

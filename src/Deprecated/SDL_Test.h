@@ -29,7 +29,7 @@ int drawChessboard(SDL_Window* window, SDL_Renderer* renderer);
 void RenderTextures(SDL_Window* window, SDL_Renderer* renderer, Brett& Spielfeld, vector <Moegliches_Feld> Vector_Moegliche_felder);
 void calculateFieldFromCoordinates(void* appstate, const float& mouseX, const float& mouseY, int* selectedRow, int* selectedCol);
 void setPossibleFields(Brett& Spielfeld);
-int run(Brett& Spielfeld);
+int run();
 
 
 #endif //QUANTUMCHESS_SDL_TEST_H
