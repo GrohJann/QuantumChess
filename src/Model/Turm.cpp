@@ -1,13 +1,18 @@
-#include "../Model/Turm.h"
-//#include "Brett.h"
+#include "Turm.h"
 #include "Structs.h"
 #include <vector>
 using namespace std;
 
-void Turm::Set_Moegliche_Felder(Brett spielfeld) {
 
+vector <Moegliches_Feld> Turm::Get_Moegliche_Felder() {
+
+	return moegliche_felder;
+}
+
+void Turm::Set_Moegliche_Felder(Brett spielfeld) {
+	moegliche_felder.clear();
 	int s = spalte;
-	for (s; s > 0; s--) { //links Bewegung
+	for (s -1; s > 0; s--) { //links Bewegung
 		Moegliches_Feld F;
 		F.spalte = s;
 		F.zeile = zeile;
@@ -25,7 +30,7 @@ void Turm::Set_Moegliche_Felder(Brett spielfeld) {
 		}
 	}
 	s = spalte;
-	for (s; s < 9; s++) { //rechts Bewegung
+	for (s +1; s < 9; s++) { //rechts Bewegung
 		Moegliches_Feld F;
 		F.spalte = s;
 		F.zeile = zeile;
@@ -43,14 +48,14 @@ void Turm::Set_Moegliche_Felder(Brett spielfeld) {
 		}
 	}
 	int z = zeile;
-	for (z; z < 9; z++) { //aufwï¿½rts
+	for (z +1; z < 9; z++) { //aufwärts
 		Moegliches_Feld F;
 		F.spalte = spalte;
 		F.zeile = z;
 		if (spielfeld.Felder[spalte - 1][z - 1] == nullptr) {
 			moegliche_felder.push_back(F);
 		}
-		if (z != spalte && spielfeld.Felder[spalte - 1][z - 1] != nullptr) {
+		if (z != zeile && spielfeld.Felder[spalte - 1][z - 1] != nullptr) {
 			if (spielfeld.Felder[spalte - 1][z - 1]->Get_Farbe() == weiss) {
 				break;
 			}
@@ -61,14 +66,14 @@ void Turm::Set_Moegliche_Felder(Brett spielfeld) {
 		}
 	}
 	z = zeile;
-	for (z; z > 0; z--) { //abwï¿½rts
+	for (z -1 ; z > 0; z--) { //abwärts
 		Moegliches_Feld F;
-		F.spalte = s;
-		F.zeile = zeile;
+		F.spalte = spalte;
+		F.zeile = z;
 		if (spielfeld.Felder[spalte - 1][z - 1] == nullptr) {
 			moegliche_felder.push_back(F);
 		}
-		if (z != spalte && spielfeld.Felder[spalte - 1][z - 1] != nullptr) {
+		if (z != zeile && spielfeld.Felder[spalte - 1][z - 1] != nullptr) {
 			if (spielfeld.Felder[spalte - 1][z - 1]->Get_Farbe() == weiss) {
 				break;
 			}
