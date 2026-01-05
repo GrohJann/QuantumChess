@@ -1,7 +1,6 @@
 #pragma once
 #include "Structs.h"
 #include "Figuren.h"
-#include "Brett.h"
 #include <vector>
 #include <array>
 using namespace std;

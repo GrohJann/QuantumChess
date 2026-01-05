@@ -1,6 +1,5 @@
 #pragma once
 #include "Structs.h"
-#include "Brett.h"
 #include <vector>
 #include <array>
 #include "Figuren.h"

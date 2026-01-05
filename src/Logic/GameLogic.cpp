@@ -41,8 +41,8 @@ Brett GameLogic::InitGameBoard() {
     return gameBoard;
 }
 
-std::unique_ptr<Turm> GameLogic::CreateRook(const bool geschlagen, const bool gezogen, const bool isWhite, const int row, const int col) {
-    auto rook = std::make_unique<Turm>(); // allocate memory
+Turm* GameLogic::CreateRook(const bool geschlagen, const bool gezogen, const bool isWhite, const int row, const int col) {
+    const auto rook = new Turm();//std::make_unique<Turm>(); // allocate memory
     rook->Set_Geschlagen(geschlagen);
     rook->Set_Gezogen(gezogen);
     rook->Set_Farbe(isWhite);
@@ -59,8 +59,8 @@ std::unique_ptr<Turm> GameLogic::CreateRook(const bool geschlagen, const bool ge
     return rook;
 }
 
-std::unique_ptr<Springer> GameLogic::CreateKnight(const bool geschlagen, const bool isWhite, const int row, const int col) {
-    auto knight = std::make_unique<Springer>();
+Springer* GameLogic::CreateKnight(const bool geschlagen, const bool isWhite, const int row, const int col) {
+    auto knight = new Springer();
     knight->Set_Geschlagen(geschlagen);
     knight->Set_Farbe(isWhite);
     knight->Set_Zeile(row);
@@ -76,8 +76,8 @@ std::unique_ptr<Springer> GameLogic::CreateKnight(const bool geschlagen, const b
     return knight;
 }
 
-std::unique_ptr<Laeufer> GameLogic::CreateBishop(const bool geschlagen, const bool isWhite, const int row, const int col) {
-    auto bishop = std::make_unique<Laeufer>();
+Laeufer* GameLogic::CreateBishop(const bool geschlagen, const bool isWhite, const int row, const int col) {
+    auto bishop = new Laeufer();
     bishop->Set_Geschlagen(geschlagen);
     bishop->Set_Farbe(isWhite);
     bishop->Set_Zeile(row);
@@ -93,8 +93,8 @@ std::unique_ptr<Laeufer> GameLogic::CreateBishop(const bool geschlagen, const bo
     return bishop;
 }
 
-std::unique_ptr<Dame> GameLogic::CreateQueen(const bool geschlagen, const bool isWhite, const int row, const int col) {
-    auto queen = std::make_unique<Dame>();
+Dame* GameLogic::CreateQueen(const bool geschlagen, const bool isWhite, const int row, const int col) {
+    auto queen = new Dame();
     queen->Set_Geschlagen(geschlagen);
     queen->Set_Farbe(isWhite);
     queen->Set_Zeile(row);
@@ -110,8 +110,8 @@ std::unique_ptr<Dame> GameLogic::CreateQueen(const bool geschlagen, const bool i
     return queen;
 }
 
-std::unique_ptr<Koenig> GameLogic::CreateKing(const bool geschlagen, const bool gezogen, const bool isWhite, const int row, const int col) {
-    auto king = std::make_unique<Koenig>();
+Koenig* GameLogic::CreateKing(const bool geschlagen, const bool gezogen, const bool isWhite, const int row, const int col) {
+    auto king = new Koenig();
     king->Set_Geschlagen(geschlagen);
     king->Set_Gezogen(gezogen);
     king->Set_Farbe(isWhite);
@@ -128,8 +128,8 @@ std::unique_ptr<Koenig> GameLogic::CreateKing(const bool geschlagen, const bool 
     return king;
 }
 
-std::unique_ptr<Bauer> GameLogic::CreatePawn(const bool geschlagen, const bool gezogen, const bool isWhite, const int row, const int col) {
-    auto pawn = std::make_unique<Bauer>();
+Bauer* GameLogic::CreatePawn(const bool geschlagen, const bool gezogen, const bool isWhite, const int row, const int col) {
+    auto pawn = new Bauer();
     pawn->Set_Geschlagen(geschlagen);
     pawn->Set_Gezogen(gezogen);
     pawn->Set_Farbe(isWhite);

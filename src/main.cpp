@@ -233,6 +233,12 @@ void SDL_AppQuit(void* appstate, SDL_AppResult result) {
     const auto* state = static_cast<AppState*>(appstate);
     SDL_DestroyRenderer(state->renderer);
     SDL_DestroyWindow(state->window);
+    // Call deconstructor for game_board.Felder since the figures where created with new ...
+    for (auto& row: state->game_board.Felder) {
+        for (auto& col: row) {
+            delete col;
+        }
+    }
     if (result == SDL_APP_FAILURE)
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error",
             SDL_GetError(), appstate ? state->window : NULL);

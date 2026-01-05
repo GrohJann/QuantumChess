@@ -1,6 +1,6 @@
 #pragma once
-#include "Figuren.h"
-struct Brett
+#include "../Model/Figuren.h"
+struct Brett_deprecated
 {
 	Figuren* Felder[8][8];
 	/*bool scw = false;
@@ -23,8 +23,8 @@ struct Brett
 	int en_passant_zeile = -2;
 
 };
-struct Moegliches_Feld
+/*struct Moegliches_Feld
 {
 	int spalte;
 	int zeile;
-};
+};*/

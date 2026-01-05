@@ -65,7 +65,7 @@ void Graphics::CreateChessTextures(SDL_Renderer* renderer, Brett &Spielfeld) {
 
                     default:
                         std::cout << "ERROR::ChesssBoardView::MoveChessPieceNormal()" << std::endl
-                        <<"Figur auf i:" << i << ", j:" << j << "hatt keinen erkannten namen: "
+                        <<"Figur auf i:" << i << ", j:" << j << " hatt keinen erkannten namen: "
                         << Spielfeld.Felder[i][j]->Get_Name() << std::endl;
                         break;
                 }

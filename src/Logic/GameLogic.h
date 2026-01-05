@@ -23,12 +23,12 @@ public:
 
 
 private:
-    static std::unique_ptr<Turm> CreateRook(bool geschlagen, bool gezogen, bool isWhite, int row, int col);
-    static std::unique_ptr<Springer> CreateKnight(bool geschlagen, bool isWhite, int row, int col);
-    static std::unique_ptr<Laeufer> CreateBishop(bool geschlagen, bool isWhite, int row, int col);
-    static std::unique_ptr<Dame> CreateQueen(bool geschlagen, bool isWhite, int row, int col);
-    static std::unique_ptr<Koenig> CreateKing(bool geschlagen, bool gezogen, bool isWhite, int row, int col);
-    static std::unique_ptr<Bauer>CreatePawn(bool geschlagen, bool gezogen, bool isWhite, int row, int col);
+    static Turm* CreateRook(bool geschlagen, bool gezogen, bool isWhite, int row, int col);
+    static Springer* CreateKnight(bool geschlagen, bool isWhite, int row, int col);
+    static Laeufer* CreateBishop(bool geschlagen, bool isWhite, int row, int col);
+    static Dame* CreateQueen(bool geschlagen, bool isWhite, int row, int col);
+    static Koenig* CreateKing(bool geschlagen, bool gezogen, bool isWhite, int row, int col);
+    static Bauer* CreatePawn(bool geschlagen, bool gezogen, bool isWhite, int row, int col);
 
     static void MoveChessPieceNormal();
 };
