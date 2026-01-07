@@ -11,153 +11,316 @@ vector <Moegliches_Feld> Dame::Get_Moegliche_Felder() {
 
 void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 	moegliche_felder.clear();
-	// Laeufer
+	float p = 1.0;
+	vector <int> sv;
+	vector <int> zv;
+	bool moving_over_self = false;
+
+	// Hole allen alternativen Positione der Figur
+	for (int i = 0; i < spielfeld.Felder[spalte - 1][zeile - 1]->Get_Same_Piece().size(); i++) {
+		int s = spielfeld.Felder[spalte - 1][zeile - 1]->Get_Same_Piece()[i]->Get_Spalte();
+		int z = spielfeld.Felder[spalte - 1][zeile - 1]->Get_Same_Piece()[i]->Get_Zeile();
+		sv.push_back(s);
+		zv.push_back(z);
+	}
+
+
+
 	for (int i = 1; i < 8; i++) { // 45°
 		Moegliches_Feld F;
+		F.wahrscheinlichkeit = p;
 		if (spalte + i <= 8 && zeile + i <= 8) { // feld aufm Brett
-			if (spielfeld.Felder[spalte + i - 1][zeile + i - 1] == nullptr) {
+			// Checken, ob die ueber eine alternative Position gezogen wird
+			for (int j = 0; j < sv.size(); j++) {
+				if (sv[j] == spalte + i && zv[j] == zeile + i) {
+					moving_over_self = true;
+					break;
+				}
+			}
+
+			if (spielfeld.Felder[spalte + i - 1][zeile + i - 1] == nullptr) {// feld leer
 				F.spalte = spalte + i;
 				F.zeile = zeile + i;
 				moegliche_felder.push_back(F);
 			}
 			else {
-				if (spielfeld.Felder[spalte + i - 1][zeile + i - 1]->Get_Farbe() != weiss) {
+				if (spielfeld.Felder[spalte + i - 1][zeile + i - 1]->Get_Wahrscheinlichkeit() == 1.0 || moving_over_self) {
+					if (spielfeld.Felder[spalte + i - 1][zeile + i - 1]->Get_Farbe() != weiss) {
+						F.spalte = spalte + i;
+						F.zeile = zeile + i;
+						moegliche_felder.push_back(F);
+						break;
+					}
+					else {
+
+						break;
+					}
+				}
+				else {
+					p = 1 - spielfeld.Felder[spalte + i - 1][zeile + i - 1]->Get_Wahrscheinlichkeit();
 					F.spalte = spalte + i;
 					F.zeile = zeile + i;
 					moegliche_felder.push_back(F);
 				}
-				break;
 			}
 		}
 	}
+	p = 1.0;
+	moving_over_self = false;
 	for (int i = 1; i < 8; i++) { // 225°
 		Moegliches_Feld F;
+		F.wahrscheinlichkeit = p;
 		if (spalte - i >= 1 && zeile - i >= 1) { // feld aufm Brett
+
+
+			for (int j = 0; j < sv.size(); j++) {
+				if (sv[j] == spalte - i && zv[j] == zeile - i) {
+					moving_over_self = true;
+					break;
+				}
+			}
+
 			if (spielfeld.Felder[spalte - i - 1][zeile - i - 1] == nullptr) {
 				F.spalte = spalte - i;
 				F.zeile = zeile - i;
-				moegliche_felder.push_back(F);		
+				moegliche_felder.push_back(F);
 			}
 			else {
-				if (spielfeld.Felder[spalte - i - 1][zeile - i - 1]->Get_Farbe() != weiss) {
+				if (spielfeld.Felder[spalte - i - 1][zeile - i - 1]->Get_Wahrscheinlichkeit() == 1.0 || moving_over_self) {
+					if (spielfeld.Felder[spalte - i - 1][zeile - i - 1]->Get_Farbe() != weiss) {
+						F.spalte = spalte - i;
+						F.zeile = zeile - i;
+						moegliche_felder.push_back(F);
+						break;
+					}
+					else {
+
+						break;
+					}
+				}
+				else {
+					p = 1 - spielfeld.Felder[spalte - i - 1][zeile - i - 1]->Get_Wahrscheinlichkeit();
 					F.spalte = spalte - i;
 					F.zeile = zeile - i;
 					moegliche_felder.push_back(F);
 				}
-				break;
 			}
 		}
 	}
+	p = 1.0;
+	moving_over_self = false;
 	for (int i = 1; i < 8; i++) { // 135°
 		Moegliches_Feld F;
 		if (spalte - i >= 1 && zeile + i <= 8) { // feld aufm Brett
+
+			for (int j = 0; j < sv.size(); j++) {
+				if (sv[j] == spalte - i && zv[j] == zeile + i) {
+					moving_over_self = true;
+					break;
+				}
+			}
 			if (spielfeld.Felder[spalte - i - 1][zeile + i - 1] == nullptr) {
 				F.spalte = spalte - i;
 				F.zeile = zeile + i;
 				moegliche_felder.push_back(F);
-				
+
 			}
 			else {
-				if (spielfeld.Felder[spalte - i - 1][zeile + i - 1]->Get_Farbe() != weiss) {
+				if (spielfeld.Felder[spalte - i - 1][zeile + i - 1]->Get_Wahrscheinlichkeit() == 1.0 || moving_over_self) {
+					if (spielfeld.Felder[spalte - i - 1][zeile + i - 1]->Get_Farbe() != weiss) {
+						F.spalte = spalte - i;
+						F.zeile = zeile + i;
+						moegliche_felder.push_back(F);
+						break;
+					}
+					else {
+						break;
+					}
+				}
+				else {
+					p = 1 - spielfeld.Felder[spalte - i - 1][zeile + i - 1]->Get_Wahrscheinlichkeit();
 					F.spalte = spalte - i;
 					F.zeile = zeile + i;
 					moegliche_felder.push_back(F);
-					break;
 				}
-				break;
 			}
 		}
 	}
+	p = 1.0;
+	moving_over_self = false;
 	for (int i = 1; i < 8; i++) { // 315°
 		Moegliches_Feld F;
 		if (spalte + i <= 8 && zeile - i >= 1) { // feld aufm Brett
+
+			for (int j = 0; j < sv.size(); j++) {
+				if (sv[j] == spalte + i && zv[j] == zeile - i) {
+					moving_over_self = true;
+					break;
+				}
+			}
+
+
 			if (spielfeld.Felder[spalte + i - 1][zeile - i - 1] == nullptr) {
 				F.spalte = spalte + i;
 				F.zeile = zeile - i;
-				moegliche_felder.push_back(F);	
+				moegliche_felder.push_back(F);
 			}
 			else {
-				if (spielfeld.Felder[spalte + i - 1][zeile - i - 1]->Get_Farbe() != weiss) {
+				if (spielfeld.Felder[spalte + i - 1][zeile - i - 1]->Get_Wahrscheinlichkeit() == 1.0 || moving_over_self) {
+					if (spielfeld.Felder[spalte + i - 1][zeile - i - 1]->Get_Farbe() != weiss) {
+						F.spalte = spalte + i;
+						F.zeile = zeile - i;
+						moegliche_felder.push_back(F);
+						break;
+					}
+					else {
+						break;
+					}
+				}
+				else {
+					p = 1 - spielfeld.Felder[spalte + i - 1][zeile - i - 1]->Get_Wahrscheinlichkeit();
 					F.spalte = spalte + i;
 					F.zeile = zeile - i;
 					moegliche_felder.push_back(F);
 				}
-				break;
 			}
 		}
 	}
 
-	// Turm
+	Moegliches_Feld F;
 	int s = spalte;
+	p = 1.0;
+	moving_over_self = false;
 	for (s - 1; s > 0; s--) { //links Bewegung
-		Moegliches_Feld F;
+
 		F.spalte = s;
 		F.zeile = zeile;
+		F.wahrscheinlichkeit = p;
+		for (int j = 0; j < sv.size(); j++) {
+			if (sv[j] == s && zv[j] == zeile) {
+				moving_over_self = true;
+				break;
+			}
+		}
 		if (spielfeld.Felder[s - 1][zeile - 1] == nullptr) {
 			moegliche_felder.push_back(F);
 		}
 		if (s != spalte && spielfeld.Felder[s - 1][zeile - 1] != nullptr) {
-			if (spielfeld.Felder[s - 1][zeile - 1]->Get_Farbe() == weiss) {
-				break;
+			if (spielfeld.Felder[s - 1][zeile - 1]->Get_Wahrscheinlichkeit() == 1.0 || moving_over_self) {
+				if (spielfeld.Felder[s - 1][zeile - 1]->Get_Farbe() != weiss) {
+					moegliche_felder.push_back(F);
+					break;
+				}
+				else {
+					break;
+				}
 			}
-			else if (spielfeld.Felder[s - 1][zeile - 1]->Get_Farbe() != weiss) {
+			else {
 				moegliche_felder.push_back(F);
-				break;
+				p = 1 - spielfeld.Felder[s - 1][zeile - 1]->Get_Wahrscheinlichkeit();
 			}
 		}
 	}
 	s = spalte;
+	p = 1.0;
+	moving_over_self = false;
 	for (s + 1; s < 9; s++) { //rechts Bewegung
-		Moegliches_Feld F;
+
+		F.wahrscheinlichkeit = p;
 		F.spalte = s;
 		F.zeile = zeile;
+		for (int j = 0; j < sv.size(); j++) {
+			if (sv[j] == s && zv[j] == zeile) {
+				moving_over_self = true;
+				break;
+			}
+		}
 		if (spielfeld.Felder[s - 1][zeile - 1] == nullptr) {
 			moegliche_felder.push_back(F);
 		}
 		if (s != spalte && spielfeld.Felder[s - 1][zeile - 1] != nullptr) {
-			if (spielfeld.Felder[s - 1][zeile - 1]->Get_Farbe() == weiss) {
-				break;
+			if (spielfeld.Felder[s - 1][zeile - 1]->Get_Wahrscheinlichkeit() == 1.0 || moving_over_self) {
+				if (spielfeld.Felder[s - 1][zeile - 1]->Get_Farbe() != weiss) {
+					moegliche_felder.push_back(F);
+					break;
+				}
+				else {
+					break;
+				}
 			}
-			else if (spielfeld.Felder[s - 1][zeile - 1]->Get_Farbe() != weiss) {
+			else {
 				moegliche_felder.push_back(F);
-				break;
+				p = 1 - spielfeld.Felder[s - 1][zeile - 1]->Get_Wahrscheinlichkeit();
 			}
 		}
 	}
 	int z = zeile;
+	p = 1.0;
+	moving_over_self = false;
 	for (z + 1; z < 9; z++) { //aufwärts
-		Moegliches_Feld F;
+		F.wahrscheinlichkeit = p;
 		F.spalte = spalte;
 		F.zeile = z;
+
+		for (int j = 0; j < sv.size(); j++) {
+			if (sv[j] == spalte && zv[j] == z) {
+				moving_over_self = true;
+				break;
+			}
+		}
+
 		if (spielfeld.Felder[spalte - 1][z - 1] == nullptr) {
 			moegliche_felder.push_back(F);
 		}
 		if (z != zeile && spielfeld.Felder[spalte - 1][z - 1] != nullptr) {
-			if (spielfeld.Felder[spalte - 1][z - 1]->Get_Farbe() == weiss) {
-				break;
+			if (spielfeld.Felder[spalte - 1][z - 1]->Get_Wahrscheinlichkeit() == 1.0 || moving_over_self) {
+				if (spielfeld.Felder[spalte - 1][z - 1]->Get_Farbe() != weiss) {
+					moegliche_felder.push_back(F);
+					break;
+				}
+				else {
+					break;
+				}
 			}
-			else if (spielfeld.Felder[spalte - 1][z - 1]->Get_Farbe() != weiss) {
+			else {
 				moegliche_felder.push_back(F);
-				break;
+				p = 1 - spielfeld.Felder[spalte - 1][z - 1]->Get_Wahrscheinlichkeit();
 			}
 		}
 	}
 	z = zeile;
+	p = 1.0;
+	moving_over_self = false;
 	for (z - 1; z > 0; z--) { //abwärts
-		Moegliches_Feld F;
+
 		F.spalte = spalte;
 		F.zeile = z;
+		F.wahrscheinlichkeit = p;
+
+		for (int j = 0; j < sv.size(); j++) {
+			if (sv[j] == spalte && zv[j] == z) {
+				moving_over_self = true;
+				break;
+			}
+		}
 		if (spielfeld.Felder[spalte - 1][z - 1] == nullptr) {
 			moegliche_felder.push_back(F);
 		}
 		if (z != zeile && spielfeld.Felder[spalte - 1][z - 1] != nullptr) {
-			if (spielfeld.Felder[spalte - 1][z - 1]->Get_Farbe() == weiss) {
-				break;
+			if (spielfeld.Felder[spalte - 1][z - 1]->Get_Wahrscheinlichkeit() == 1.0 || moving_over_self) {
+				if (spielfeld.Felder[spalte - 1][z - 1]->Get_Farbe() != weiss) {
+					moegliche_felder.push_back(F);
+					break;
+				}
+				else {
+					break;
+				}
 			}
-			else if (spielfeld.Felder[spalte - 1][z - 1]->Get_Farbe() != weiss) {
+			else {
 				moegliche_felder.push_back(F);
-				break;
+				p = 1 - spielfeld.Felder[spalte - 1][z - 1]->Get_Wahrscheinlichkeit();
 			}
 		}
 	}
+	
 }

@@ -11,6 +11,19 @@ using namespace std;
 
 void Koenig::Set_Moegliche_Felder(Brett spielfeld) {
 	moegliche_felder.clear();
+	vector <int> sv;
+	vector <int> zv;
+	bool moving_over_self = false;
+
+	// Hole allen alternativen Positione der Figur
+	for (int i = 0; i < spielfeld.Felder[spalte - 1][zeile - 1]->Get_Same_Piece().size(); i++) {
+		int s = spielfeld.Felder[spalte - 1][zeile - 1]->Get_Same_Piece()[i]->Get_Spalte();
+		int z = spielfeld.Felder[spalte - 1][zeile - 1]->Get_Same_Piece()[i]->Get_Zeile();
+		sv.push_back(s);
+		zv.push_back(z);
+	}
+
+
 
 	for (int s = -1; s < 2; s++) {
 		for (int z = -1; z < 2; z++) {
@@ -18,6 +31,14 @@ void Koenig::Set_Moegliche_Felder(Brett spielfeld) {
 			if (s == 0 && z == 0) {
 				continue;
 			}
+			moving_over_self = false;
+			for (int j = 0; j < sv.size(); j++) { // Schauen ob der koenig da eine alternative position von sich selbst hat
+				if (sv[j] == spalte + s && zv[j] == zeile + z) {
+					moving_over_self = true;
+					break;
+				}
+			}
+
 			if (spalte + s >= 1 && spalte + s <= 8) {
 				if (  zeile + z >= 1 &&  zeile + z <= 8 ) { // liegt das Feld auf dem Brett
 					if (spielfeld.Felder[spalte + s - 1][zeile + z - 1] == nullptr) {
@@ -26,6 +47,11 @@ void Koenig::Set_Moegliche_Felder(Brett spielfeld) {
 						moegliche_felder.push_back(F);
 					}
 					else if (spielfeld.Felder[spalte + s - 1][zeile + z - 1]->Get_Farbe() != weiss) { // darf der König da hinziehn
+						F.spalte = spalte + s;
+						F.zeile = zeile + z;
+						moegliche_felder.push_back(F);
+					}
+					else if (spielfeld.Felder[spalte + s - 1][zeile + z - 1]->Get_Wahrscheinlichkeit() != 1.0 && !moving_over_self) {
 						F.spalte = spalte + s;
 						F.zeile = zeile + z;
 						moegliche_felder.push_back(F);

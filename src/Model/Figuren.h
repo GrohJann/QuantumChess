@@ -1,13 +1,16 @@
 #pragma once
 #include <SDL3/SDL.h>
+
 #include <vector>
 #include <array>
 #include <string>
 
+
 using namespace std;
+
 struct Brett;
 struct Moegliches_Feld;
-
+struct Structs;
 class Figuren
 {
 
@@ -17,15 +20,19 @@ protected:
 	bool weiss = true;
 	bool gezogen = false; // Turm Bauer Koenig
 	char name = 'F';
-	int id = 0;
-
+	
 	// bool gewaehlt = false;
-	float wahrscheinlichkeit = 1.0f;
-	//
 
-	vector <Moegliches_Feld> moegliche_felder;
+	float wahrscheinlichkeit = 1.0f;
+	vector <Figuren*> same_piece; // hier sind pointer auf figuren, die dieselebe Figur sind, jede "selbe Figur" hat pointer auf alle anderen selben Figuren
+	vector <int> same_piece_s;
+	vector <int> same_piece_z;
+
+	vector <Moegliches_Feld> moegliche_felder ;
 	int spalte = 0;
 	int  zeile = 0;
+	
+	
 
 	// Ausgabe:
 	string dateipfad = "leer";
@@ -33,8 +40,8 @@ protected:
 
 
 public:
-	virtual ~Figuren() = default;
-
+	
+	
 	virtual char Get_Name();
 	virtual bool Get_Geschlagen();
 	virtual bool Get_Farbe();
@@ -45,7 +52,10 @@ public:
 	virtual string Get_Dateipfad();
 	virtual SDL_Texture* Get_Texture();
 	virtual float Get_Wahrscheinlichkeit();
-	virtual int Get_ID();
+	virtual vector <Figuren*> Get_Same_Piece();
+
+	virtual vector <int> Get_Same_Piece_S();
+	virtual vector <int> Get_Same_Piece_Z();
 
 	virtual void Set_Name(char neuer_name);
 	virtual void Set_Geschlagen(bool neuer_zustand);
@@ -55,13 +65,23 @@ public:
 	virtual void Set_Gezogen(bool neuer_zustand);
 	virtual void Set_Moegliche_Felder(Brett spielfeld);
 	virtual void Set_Wahrscheinlichkeit(float wahrscheinlichkeit);
-	virtual void Set_ID(int id);
+
+	virtual void Add_Same_Pieces(vector <Figuren*> new_same_piece);
+	virtual void Add_Same_Piece(Figuren* F);
+	virtual void Clear_Same_Piece();
+
+	virtual void Add_Same_Piece_S(int s);
+	virtual void Add_Same_Piece_Z(int z);
+
+	virtual void Clear_Same_Piece_S();
+	virtual void Clear_Same_Piece_Z();
 
 	// 
 	virtual void Set_Dateipfad(string neuer_dateipfad);
 	virtual void Set_Texture(SDL_Texture* neuer_texture_ptr);
-
+	
 
 
 
 };
+

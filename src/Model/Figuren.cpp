@@ -1,7 +1,6 @@
-//#include "Brett.h"
 #include "Structs.h"
-#include "../Model/Figuren.h"
-
+#include "Figuren.h"
+#include "Brett.h"
 #include <vector>
 #include <string>
 using namespace std;
@@ -37,8 +36,14 @@ vector <Moegliches_Feld> Figuren::Get_Moegliche_Felder() {
 float Figuren::Get_Wahrscheinlichkeit() {
 	return wahrscheinlichkeit;
 }
-int Figuren::Get_ID() {
-	return id;
+vector <Figuren*> Figuren::Get_Same_Piece() {
+	return same_piece;
+}
+vector <int> Figuren::Get_Same_Piece_S() {
+	return same_piece_s;
+}
+vector <int> Figuren::Get_Same_Piece_Z() {
+	return same_piece_z;
 }
 
 void Figuren::Set_Name(char neuer_name) {
@@ -70,12 +75,35 @@ void Figuren::Set_Dateipfad(string neuer_dateipfad) {
 void Figuren::Set_Texture(SDL_Texture* neue_texture_ptr) {
 	texture_ptr = neue_texture_ptr;
 }
-
 void Figuren::Set_Wahrscheinlichkeit(const float wahrscheinlichkeit) {
 	this->wahrscheinlichkeit = wahrscheinlichkeit;
 }
 
-void Figuren::Set_ID(int id) {
-	this->id = id;
+void Figuren::Add_Same_Pieces(vector <Figuren*> new_same_piece) {
+	
+	same_piece = new_same_piece;
+}
+void Figuren::Add_Same_Piece(Figuren* F) {
+	if (F != nullptr) {
+		same_piece.push_back(F);
+	}
+}
+void Figuren::Clear_Same_Piece() {
+	same_piece.clear();
+}
+
+void Figuren::Add_Same_Piece_S(int s) {
+	same_piece_s.push_back(s);
+}
+
+void Figuren::Add_Same_Piece_Z(int z) {
+	same_piece_z.push_back(z);
+}
+
+void Figuren::Clear_Same_Piece_S() {
+	same_piece_s.clear();
+}
+void Figuren::Clear_Same_Piece_Z() {
+	same_piece_z.clear();
 }
 

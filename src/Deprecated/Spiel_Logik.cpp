@@ -1,6 +1,7 @@
 #include "Spiel_Logik.h"
+#include <random>
 
-void Erstes_Feld(int s, int z, Brett& spielfeld) {
+void Logik_normal(int s, int z, Brett& spielfeld) {
 	Check_for_Mate(spielfeld);
 	if (spielfeld.schachmatt) {
 		return;
@@ -13,13 +14,13 @@ void Erstes_Feld(int s, int z, Brett& spielfeld) {
 		if (spielfeld.Felder[s - 1][z - 1] != nullptr) {
 			if (spielfeld.Felder[s - 1][z - 1]->Get_Farbe() == spielfeld.whites_turn)
 				spielfeld.piece_selected = true;
-			spielfeld.selected_piece_s = s;
-			spielfeld.selected_piece_z = z;
-			cout << spielfeld.Felder[s - 1][z - 1]->Get_Name() << " gewaehlt" << endl;
+				spielfeld.selected_piece_s = s;
+				spielfeld.selected_piece_z = z;
+				cout << spielfeld.Felder[s - 1][z - 1]->Get_Name() << " gewaehlt" << endl;
 		}
 	}
 	else {
-		vector <Moegliches_Feld> moegliche_felder;
+		
 		spielfeld.Felder[spielfeld.selected_piece_s - 1][spielfeld.selected_piece_z - 1]->Set_Moegliche_Felder(spielfeld);
 
 		moegliche_felder = spielfeld.Felder[spielfeld.selected_piece_s - 1][spielfeld.selected_piece_z - 1]->Get_Moegliche_Felder();
@@ -37,35 +38,695 @@ void Erstes_Feld(int s, int z, Brett& spielfeld) {
 					Check_For_En_Passant(i, moegliche_felder, spielfeld);
 				}
 				Check_For_Double_Pawn(i, moegliche_felder, spielfeld);
-				Ziehen(spielfeld.selected_piece_s, spielfeld.selected_piece_z, s, z, spielfeld);
+				if (moegliche_felder[i].wahrscheinlichkeit == 1.0) {
+					Ziehen(spielfeld.selected_piece_s, spielfeld.selected_piece_z, s, z, spielfeld);
+				}
 				spielfeld.whites_turn = !spielfeld.whites_turn;
 				spielfeld.piece_selected = false;
 				break;
 			}
-			else {
-				cout << "Kein gueltiges Feld ausgewaehlt" << endl;
-			}
+			
 		}
-		spielfeld.piece_selected = false;
-		
+		spielfeld.piece_selected = false;	
 	}
 }
 
 void Ziehen (int sa, int za, int s, int z, Brett & spielfeld){
+	bool zu_schlagende_figur = true;
+	if (spielfeld.Felder[s - 1][z - 1] != nullptr) { 
+		
+		if (!Messung(s, z, spielfeld)) { // zu schlagende Figur echt ?
+			cout << "Die zu schlagende Figur ist nicht echt" << endl;
+			zu_schlagende_figur = false;
+		}
+		
+		
+		if (!Messung(sa, za, spielfeld)) { 
+			cout << "Die schlagende Figur ist nicht real" << endl;
+			return;
+		}
+		if (!zu_schlagende_figur && spielfeld.Felder[sa - 1][za - 1]->Get_Name() == 'b' &&  sa != s) {
+			return; // Wenn Figur nicht echt war, kann der Bauer nicht schlagen
+		}
+		else if (zu_schlagende_figur && spielfeld.Felder[sa - 1][za - 1]->Get_Name() == 'b' && sa == s) {
+			return; // wenn die Figur echt war, kann der Bauer da nicht hinziehen
+		}
+		else if (zu_schlagende_figur && spielfeld.Felder[sa - 1][za - 1]->Get_Farbe() == spielfeld.Felder[s - 1][z - 1]->Get_Farbe()) {
+			// Man kann keine eigenen "echten" Figuren schlagen
+			return;
+		}
+	}
+	
+	
+	Feld_Leeren(s, z, spielfeld);
 	
 	spielfeld.Felder[s - 1][z - 1] = spielfeld.Felder[sa - 1][za - 1];
 	spielfeld.Felder[s - 1][z - 1]->Set_Spalte(s);
 	spielfeld.Felder[s - 1][z - 1]->Set_Zeile(z);
 	spielfeld.Felder[s - 1][z - 1]->Set_Gezogen(true);
-
+	spielfeld.Felder[s - 1][z - 1]->Set_Wahrscheinlichkeit(spielfeld.Felder[sa - 1][za - 1]->Get_Wahrscheinlichkeit());
 	spielfeld.Felder[sa - 1][za - 1] = nullptr;
-
-
-
-	cout << "Figur gezogen" << endl;
+		cout << "Figur gezogen" << endl;
+	
 	
 }
 
+
+void Logik_Split(int s, int z, Brett& spielfeld, vector <Bauer>& bauern, vector <Springer>& springer, vector <Laeufer>& laeufer, vector <Turm>& tuerme, vector <Dame>& damen, vector <Koenig>& koenige) {
+	//, vector <Bauer>& bauern, vector <Springer>& springer, vector <Laeufer>& laeufer, vector <Turm>& tuerme, vector <Dame>& damen, vector <Koenig>& koenige
+	Check_for_Mate(spielfeld);
+	if (spielfeld.schachmatt) {
+		return;
+	}
+
+	//int spalte_ziel = s;
+	//int zeiel_ziel = z;
+	vector <Moegliches_Feld> moegliche_felder;
+	if (!spielfeld.piece_selected) {
+		if (spielfeld.Felder[s - 1][z - 1] != nullptr) {
+			if (spielfeld.Felder[s - 1][z - 1]->Get_Farbe() == spielfeld.whites_turn && spielfeld.Felder[s - 1][z - 1]->Get_Name() != 'b') // Bauer darf keine Quantenzuege ausfuehren
+				if (spielfeld.Felder[s - 1][z - 1]->Get_Gezogen() || spielfeld.Felder[s - 1][z - 1]->Get_Name() != 'K') {
+					//unbewegter Koenige kein Qunatenzug, da sonst Quanten_Rochade -> nicht moeglich
+					spielfeld.piece_selected = true;
+					spielfeld.selected_piece_s = s;
+					spielfeld.selected_piece_z = z;
+					cout << spielfeld.Felder[s - 1][z - 1]->Get_Name() << " gewaehlt" << endl;
+				}
+		}
+	}
+	else if (spielfeld.piece_selected && !spielfeld.first_field_selected){
+		
+		spielfeld.Felder[spielfeld.selected_piece_s - 1][spielfeld.selected_piece_z - 1]->Set_Moegliche_Felder(spielfeld);
+
+		moegliche_felder = spielfeld.Felder[spielfeld.selected_piece_s - 1][spielfeld.selected_piece_z - 1]->Get_Moegliche_Felder();
+		for (int i = 0; i < moegliche_felder.size(); i++) {
+			if (moegliche_felder[i].spalte == s && moegliche_felder[i].zeile == z) {
+				spielfeld.first_field_s = s;
+				spielfeld.first_field_z = z;
+				spielfeld.first_field_selected = true;
+				spielfeld.piece_selected = true;
+				cout << "Erste Feld gewaehlt" << endl;
+				break;
+			}
+
+		}
+		if (!spielfeld.first_field_selected) {
+			spielfeld.piece_selected = false;
+		}
+	}
+	else if (spielfeld.piece_selected && spielfeld.first_field_selected){
+		spielfeld.Felder[spielfeld.selected_piece_s - 1][spielfeld.selected_piece_z - 1]->Set_Moegliche_Felder(spielfeld);
+
+		moegliche_felder = spielfeld.Felder[spielfeld.selected_piece_s - 1][spielfeld.selected_piece_z - 1]->Get_Moegliche_Felder();
+		for (int i = 0; i < moegliche_felder.size(); i++) {
+			if (moegliche_felder[i].spalte == s && moegliche_felder[i].zeile == z) {
+				spielfeld.second_field_s = s;
+				spielfeld.second_field_z = z;
+				spielfeld.first_field_selected = true;
+				spielfeld.second_field_selected = true;
+				cout << "Zweites Feld gewaehlt" << endl;
+				Split_Move( spielfeld,bauern, springer, laeufer, tuerme, damen, koenige);
+
+				break;
+			}
+
+		}
+		
+			spielfeld.piece_selected = false;
+			spielfeld.first_field_selected = false;
+			spielfeld.second_field_selected = false;
+			
+			
+		
+	}
+}
+
+
+void Split_Move( Brett& spielfeld, vector <Bauer>& bauern, vector <Springer>& springer, vector <Laeufer>& laeufer, vector <Turm>& tuerme, vector <Dame>& damen, vector <Koenig>& koenige) {
+
+
+	int sa = spielfeld.selected_piece_s;
+	int za = spielfeld.selected_piece_z;
+
+	int s1 = spielfeld.first_field_s;
+	int z1 = spielfeld.first_field_z;
+	
+	int s2 = spielfeld.second_field_s;
+	int z2 = spielfeld.second_field_z;
+
+	if (spielfeld.Felder[s1 - 1][z1 - 1] == nullptr && spielfeld.Felder[s2 - 1][z2 - 1] == nullptr) {
+
+		vector <Figuren*> same_pieces;
+		float p = spielfeld.Felder[sa - 1][za - 1]->Get_Wahrscheinlichkeit() / 2;
+		spielfeld.Felder[s1 - 1][z1 - 1] = spielfeld.Felder[sa - 1][za - 1];
+		spielfeld.Felder[s1 - 1][z1 - 1]->Set_Spalte(s1);
+		spielfeld.Felder[s1 - 1][z1 - 1]->Set_Zeile(z1);
+		spielfeld.Felder[s1 - 1][z1 - 1]->Set_Gezogen(true);
+		spielfeld.Felder[s1 - 1][z1 - 1]->Add_Same_Pieces(spielfeld.Felder[sa - 1][za - 1]->Get_Same_Piece());
+		spielfeld.Felder[s1 - 1][z1 - 1]->Set_Wahrscheinlichkeit(p);
+		
+
+		switch (spielfeld.Felder[sa - 1][za - 1]->Get_Name()) {
+		
+		case 'S': Create_Springer(sa, za,s2,z2,p, springer, spielfeld);
+			break;
+		case 'L': Create_Laeufer(sa, za, s2, z2, p, laeufer, spielfeld);
+			break;
+		case 'T': Create_Turm(sa, za, s2, z2, p, tuerme, spielfeld);
+			break;
+		case 'D': Create_Dame(sa, za, s2, z2, p, damen, spielfeld);
+			break;
+		case 'K': Create_Koenig(sa, za, s2, z2, p, koenige, spielfeld);
+			break;
+
+		}
+		
+		
+		same_pieces = spielfeld.Felder[s1 - 1][z1 - 1]->Get_Same_Piece();
+
+		// Neue Versionen zu alten
+		for (int i = 0; i < same_pieces.size(); i++ ){
+			same_pieces[i]->Add_Same_Piece(spielfeld.Felder[s1 - 1][z1 - 1]);
+			same_pieces[i]->Add_Same_Piece(spielfeld.Felder[s2 - 1][z2 - 1]);
+
+		}
+
+
+		// Alte versionen zur neuen Figuren
+		spielfeld.Felder[s2 - 1][z2 - 1]->Add_Same_Pieces(same_pieces);
+		
+		
+		// Neue versionen zu neuen versionen
+		spielfeld.Felder[s1 - 1][z1 - 1]->Add_Same_Piece(spielfeld.Felder[s2 - 1][z2 - 1]);
+		spielfeld.Felder[s2 - 1][z2 - 1]->Add_Same_Piece(spielfeld.Felder[s1 - 1][z1 - 1]);
+
+
+		
+	
+		spielfeld.Felder[sa - 1][za - 1] = nullptr;
+		spielfeld.whites_turn = !spielfeld.whites_turn;
+		cout << "Figur geteilt" << endl;
+	}
+}
+
+
+
+void Logik_Merge(int s, int z, Brett& spielfeld) {
+
+	Check_for_Mate(spielfeld);
+	if (spielfeld.schachmatt) {
+		return;
+	}
+
+	//int spalte_ziel = s;
+	//int zeiel_ziel = z;
+	vector <Moegliches_Feld> moegliche_felder_1;
+	vector <Moegliches_Feld> moegliche_felder_2;
+	if (!spielfeld.first_piece_selected && !spielfeld.second_piece_selected) { // erster Click
+		if (spielfeld.Felder[s - 1][z - 1] != nullptr) {
+			if (spielfeld.Felder[s - 1][z - 1]->Get_Farbe() == spielfeld.whites_turn && spielfeld.Felder[s - 1][z - 1]->Get_Wahrscheinlichkeit() < 1) // // Figur muss aufgeteilt sein
+				spielfeld.first_piece_selected = true;
+				spielfeld.first_piece_s = s;
+				spielfeld.first_piece_z = z;
+				cout << spielfeld.Felder[s - 1][z - 1]->Get_Name() << " gewaehlt" << endl;
+				spielfeld.piece_selected = true;
+				spielfeld.selected_piece_s = s;
+				spielfeld.selected_piece_z = z;
+		}
+	}
+	else if (spielfeld.first_piece_selected && !spielfeld.second_piece_selected) { // zweiter Click
+		if (spielfeld.Felder[s - 1][z - 1] != nullptr) {
+			if (spielfeld.Felder[s - 1][z - 1]->Get_Farbe() == spielfeld.whites_turn ) { // Bauer darf keine Quantenzuege ausfuehren
+				for (int i = 0; i < spielfeld.Felder[s - 1][z - 1]->Get_Same_Piece().size(); i++) { // geht alle same pieces durch
+					if (spielfeld.Felder[s - 1][z - 1]->Get_Same_Piece()[i] == spielfeld.Felder[spielfeld.first_piece_s - 1][spielfeld.first_piece_z - 1]) { // muss "gleiche Figur sein" wie andere ausgewaehlet figur
+						spielfeld.second_piece_selected = true;
+						spielfeld.second_piece_s = s;
+						spielfeld.second_piece_z = z;
+						cout << spielfeld.Felder[s - 1][z - 1]->Get_Name() << " gewaehlt" << endl;
+						// Damit die moeglichen Felder der zweiten Figur angezeigt werden
+						spielfeld.piece_selected = true;
+						spielfeld.selected_piece_s = s;
+						spielfeld.selected_piece_z = z;
+						break;
+					}
+				}
+			}
+		}
+		if (!spielfeld.second_piece_selected) {
+			spielfeld.first_piece_selected = false;
+			spielfeld.piece_selected = false;
+		}
+	}
+	else if (spielfeld.first_piece_selected && spielfeld.second_piece_selected) { // Dritter Click
+		// Erste Figur
+		int sa1 = spielfeld.first_piece_s;
+		int za1 = spielfeld.first_piece_z;
+		// Zweite Figur
+		int sa2 = spielfeld.second_piece_s;
+		int za2 = spielfeld.second_piece_z;
+
+		spielfeld.Felder[sa1 - 1][za1 - 1]->Set_Moegliche_Felder(spielfeld);
+		spielfeld.Felder[sa2 - 1][za2 - 1]->Set_Moegliche_Felder(spielfeld);
+		
+		moegliche_felder_1 = spielfeld.Felder[sa1 - 1][za1 - 1]->Get_Moegliche_Felder();
+		moegliche_felder_2 = spielfeld.Felder[sa2 - 1][za2 - 1]->Get_Moegliche_Felder();
+
+		for (int i = 0; i < moegliche_felder_1.size(); i++) {
+			if (moegliche_felder_1[i].spalte == s && moegliche_felder_1[i].zeile == z){ 
+				for (int j = 0; j < moegliche_felder_2.size(); j++) {
+					if (moegliche_felder_2[j].spalte == s && moegliche_felder_2[j].zeile == z) { // ausgewaehltes Feld muss von beiden Figuren ein moegliches Feld sein
+						Merge_Move(s, z, spielfeld);
+						break;
+					}
+				}
+				break;
+			}
+		}
+		spielfeld.first_piece_selected = false;
+		spielfeld.second_piece_selected = false;
+		spielfeld.piece_selected = false;
+	}
+}
+
+void Merge_Move(int sz, int zz, Brett& spielfeld) {
+
+	int sa = spielfeld.first_piece_s;
+	int za = spielfeld.first_piece_z;
+
+	int s2 = spielfeld.second_piece_s;
+	int z2 = spielfeld.second_piece_z;
+
+	if (spielfeld.Felder[sz - 1][zz - 1] == nullptr) {
+
+		spielfeld.Felder[sz - 1][zz - 1] = spielfeld.Felder[sa - 1][za - 1];
+		spielfeld.Felder[sz - 1][zz - 1]->Set_Spalte(sz);
+		spielfeld.Felder[sz - 1][zz - 1]->Set_Zeile(zz);
+		spielfeld.Felder[sz - 1][zz - 1]->Set_Gezogen(true);
+		spielfeld.Felder[sz - 1][zz - 1]->Set_Wahrscheinlichkeit(spielfeld.Felder[sa - 1][za - 1]->Get_Wahrscheinlichkeit() + spielfeld.Felder[s2 - 1][z2 - 1]->Get_Wahrscheinlichkeit());
+		spielfeld.Felder[sa - 1][za - 1] = nullptr;
+		cout << "Figuren gemerged" << endl;
+
+		// Zweite ausgewaehlte Figur auf geschlagen setzen und verschwinden lassen
+		spielfeld.Felder[s2 - 1][z2 - 1]->Set_Geschlagen(true);
+		spielfeld.Felder[s2 - 1][z2 - 1] = nullptr;
+
+		spielfeld.whites_turn = !spielfeld.whites_turn;
+	}
+	
+}
+
+void No_Move(Brett& spielfeld) {
+	spielfeld.piece_selected = false;
+
+	spielfeld.first_field_selected = false;
+	spielfeld.second_field_selected = false;
+
+	spielfeld.first_piece_selected = false;
+	spielfeld.second_piece_selected = false;
+
+}
+
+bool Messung(int s, int z,Brett& spielfeld) {
+
+	if (!Zufall(spielfeld.Felder[s - 1][z - 1]->Get_Wahrscheinlichkeit())) { // ausgewahlte Figur ist nicht die echte
+		for (int i = 0; i < spielfeld.Felder[s - 1][z - 1]->Get_Same_Piece().size(); i++) { // alle anderen moeglichen durchegehn
+			if (spielfeld.Felder[s - 1][z - 1]->Get_Same_Piece()[i] != nullptr) {
+				if (Zufall(spielfeld.Felder[s - 1][z - 1]->Get_Same_Piece()[i]->Get_Wahrscheinlichkeit()) || (i == spielfeld.Felder[s - 1][z - 1]->Get_Same_Piece().size() - 1)) {
+					// wahrscheinlichkeit tritt ein, oder letzte figur erreicht
+					int s2 = spielfeld.Felder[s - 1][z - 1]->Get_Same_Piece()[i]->Get_Spalte();
+					int z2 = spielfeld.Felder[s - 1][z - 1]->Get_Same_Piece()[i]->Get_Zeile();
+					Kollpas(s2, z2, spielfeld);
+					break;
+				}
+			}
+		}
+	
+	}
+	else {
+		Kollpas(s, z, spielfeld);
+		
+		return true;
+	}
+	return false;
+}
+
+void Kollpas(int s, int z, Brett& spielfeld) {
+
+	Figuren* echteFigur = spielfeld.Felder[s - 1][z - 1];
+
+	for (int i = 0; i < echteFigur->Get_Same_Piece().size(); i++) {
+		Figuren* F = echteFigur->Get_Same_Piece()[i];
+		if (F != echteFigur && F != nullptr) {
+			int sl = F->Get_Spalte();
+			int zl = F->Get_Zeile();
+			Feld_Leeren(sl, zl, spielfeld);
+		}
+	}
+	echteFigur->Set_Wahrscheinlichkeit(1.0);
+	echteFigur->Clear_Same_Piece();
+}
+
+
+void Feld_Leeren(int s, int z, Brett& spielfeld) {
+	if (spielfeld.Felder[s - 1][z - 1] != nullptr) {
+		spielfeld.Felder[s - 1][z - 1]->Set_Geschlagen(true);
+		spielfeld.Felder[s - 1][z - 1] = nullptr;
+	}
+}
+bool Zufall(double p) {
+	   
+
+	// Sicherstellen, dass die Wahrscheinlichkeit im gültigen Bereich liegt
+	p = max(0.0, min(1.0, p));
+
+	// Zufallszahlengenerator initialisieren
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
+	static std::uniform_real_distribution<> dis(0.0, 1.0);
+
+	// Zufälligen Wert zwischen 0 und 1 generieren
+	double randomValue = dis(gen);
+
+	// True zurückgeben, wenn der Zufallswert kleiner als die Wahrscheinlichkeit ist
+	return randomValue < p;
+
+}
+
+void Create_Bauer(int su, int zu, int sn, int zn, float p, vector <Bauer>& bauern, Brett& spielfeld) {
+	
+	Bauer b;
+	b.Set_Geschlagen(false);
+	b.Set_Gezogen(false);
+	b.Set_Name('b');
+	b.Set_Spalte(sn);
+	b.Set_Zeile(zn);
+	b.Set_Farbe(spielfeld.Felder[su - 1][zu - 1]->Get_Farbe());
+	b.Set_Wahrscheinlichkeit(p);
+	b.Set_Dateipfad(spielfeld.Felder[su - 1][zu - 1]->Get_Dateipfad());
+	b.Set_Texture(spielfeld.Felder[su - 1][zu - 1]->Get_Texture());
+
+	for (int i = 0; i < bauern.size(); i++) {
+		if (!bauern[i].Get_Geschlagen()) {
+			for (int j = 0; j < bauern[i].Get_Same_Piece().size(); j++) {
+				if (bauern[i].Get_Same_Piece()[j] != nullptr) {
+					int s = bauern[i].Get_Same_Piece()[j]->Get_Spalte();
+					int z = bauern[i].Get_Same_Piece()[j]->Get_Zeile();
+
+					bauern[i].Add_Same_Piece_S(s);
+					bauern[i].Add_Same_Piece_Z(z);
+				}
+			}
+			bauern[i].Clear_Same_Piece();
+		}
+	}
+
+	bauern.push_back(b);
+	Set_Bauer_Pointer(bauern, spielfeld);
+}
+void Create_Springer(int su, int zu, int sn, int zn, float p,vector <Springer>& springer, Brett& spielfeld) {
+
+	Springer S;
+	S.Set_Geschlagen(false);
+	S.Set_Gezogen(true);
+	S.Set_Name('S');
+	S.Set_Spalte(sn);
+	S.Set_Zeile(zn);
+	S.Set_Farbe(spielfeld.Felder[su -1][zu - 1]->Get_Farbe());
+	S.Set_Wahrscheinlichkeit(p);
+	S.Set_Dateipfad(spielfeld.Felder[su - 1][zu - 1]->Get_Dateipfad());
+	S.Set_Texture(spielfeld.Felder[su - 1][zu - 1]->Get_Texture());
+	
+	for (int i = 0; i < springer.size(); i++) {
+		if (!springer[i].Get_Geschlagen()) {
+			for (int j = 0; j < springer[i].Get_Same_Piece().size(); j++) {
+				if (springer[i].Get_Same_Piece()[j] != nullptr) {
+					int s = springer[i].Get_Same_Piece()[j]->Get_Spalte();
+					int z = springer[i].Get_Same_Piece()[j]->Get_Zeile();
+
+					springer[i].Add_Same_Piece_S(s);
+					springer[i].Add_Same_Piece_Z(z);
+				}
+			}
+			springer[i].Clear_Same_Piece();
+		}
+	}
+
+	springer.push_back(S);
+	Set_Springer_Pointer(springer, spielfeld);
+}
+void Create_Laeufer(int su, int zu, int sn, int zn, float p, vector <Laeufer>& laeufer, Brett& spielfeld) {
+
+	Laeufer L;
+	L.Set_Geschlagen(false);
+	L.Set_Gezogen(false);
+	L.Set_Name('L');
+	L.Set_Spalte(sn);
+	L.Set_Zeile(zn);
+	L.Set_Farbe(spielfeld.Felder[su - 1][zu - 1]->Get_Farbe());
+	L.Set_Wahrscheinlichkeit(p);
+	L.Set_Dateipfad(spielfeld.Felder[su - 1][zu - 1]->Get_Dateipfad());
+	L.Set_Texture(spielfeld.Felder[su - 1][zu - 1]->Get_Texture());
+
+	for (int i = 0; i < laeufer.size(); i++) {
+		if (!laeufer[i].Get_Geschlagen()) {
+			for (int j = 0; j < laeufer[i].Get_Same_Piece().size(); j++) {
+				if (laeufer[i].Get_Same_Piece()[j] != nullptr) {
+					int s = laeufer[i].Get_Same_Piece()[j]->Get_Spalte();
+					int z = laeufer[i].Get_Same_Piece()[j]->Get_Zeile();
+
+					laeufer[i].Add_Same_Piece_S(s);
+					laeufer[i].Add_Same_Piece_Z(z);
+				}
+			}
+			laeufer[i].Clear_Same_Piece();
+		}
+	}
+
+	laeufer.push_back(L);
+	Set_Laeufer_Pointer(laeufer, spielfeld);
+}
+void Create_Turm(int su, int zu, int sn, int zn, float p, vector <Turm>& tuerme, Brett& spielfeld) {
+
+	Turm T;
+	T.Set_Geschlagen(false);
+	T.Set_Gezogen(false);
+	T.Set_Name('T');
+	T.Set_Spalte(sn);
+	T.Set_Zeile(zn);
+	T.Set_Farbe(spielfeld.Felder[su -1][zu - 1]->Get_Farbe());
+	T.Set_Wahrscheinlichkeit(p);
+	T.Set_Dateipfad(spielfeld.Felder[su - 1][zu - 1]->Get_Dateipfad());
+	T.Set_Texture(spielfeld.Felder[su - 1][zu - 1]->Get_Texture());
+
+	for (int i = 0; i < tuerme.size(); i++) {
+		if (!tuerme[i].Get_Geschlagen()) {
+			for (int j = 0; j < tuerme[i].Get_Same_Piece().size(); j++) {
+				if (tuerme[i].Get_Same_Piece()[j] != nullptr) {
+					int s = tuerme[i].Get_Same_Piece()[j]->Get_Spalte();
+					int z = tuerme[i].Get_Same_Piece()[j]->Get_Zeile();
+
+					tuerme[i].Add_Same_Piece_S(s);
+					tuerme[i].Add_Same_Piece_Z(z);
+				}
+			}
+			tuerme[i].Clear_Same_Piece();
+		}
+	}
+
+	tuerme.push_back(T);
+	Set_Tuerme_Pointer(tuerme, spielfeld);
+}
+void Create_Dame(int su, int zu, int sn, int zn, float p, vector <Dame>& damen, Brett& spielfeld) {
+
+	Dame D;
+	D.Set_Geschlagen(false);
+	D.Set_Gezogen(false);
+	D.Set_Name('D');
+	D.Set_Spalte(sn);
+	D.Set_Zeile(zn);
+	D.Set_Farbe(spielfeld.Felder[su - 1][zu - 1]->Get_Farbe());
+	D.Set_Wahrscheinlichkeit(p);
+	D.Set_Dateipfad(spielfeld.Felder[su - 1][zu - 1]->Get_Dateipfad());
+	D.Set_Texture(spielfeld.Felder[su - 1][zu - 1]->Get_Texture());
+
+	for (int i = 0; i < damen.size(); i++) {
+		if (!damen[i].Get_Geschlagen()) {
+			for (int j = 0; j < damen[i].Get_Same_Piece().size(); j++) {
+				if (damen[i].Get_Same_Piece()[j] != nullptr) {
+					int s = damen[i].Get_Same_Piece()[j]->Get_Spalte();
+					int z = damen[i].Get_Same_Piece()[j]->Get_Zeile();
+
+					damen[i].Add_Same_Piece_S(s);
+					damen[i].Add_Same_Piece_Z(z);
+				}
+			}
+			damen[i].Clear_Same_Piece();
+		}
+	}
+
+	damen.push_back(D);
+	Set_Damen_Pointer(damen, spielfeld);
+}
+void Create_Koenig(int su, int zu, int sn, int zn, float p, vector <Koenig>& koenige, Brett& spielfeld) {
+
+	Koenig K;
+	K.Set_Geschlagen(false);
+	K.Set_Gezogen(false);
+	K.Set_Name('K');
+	K.Set_Spalte(sn);
+	K.Set_Zeile(zn);
+	K.Set_Farbe(spielfeld.Felder[su - 1][zu - 1]->Get_Farbe());
+	K.Set_Wahrscheinlichkeit(p);
+	K.Set_Dateipfad(spielfeld.Felder[su - 1][zu - 1]->Get_Dateipfad());
+	K.Set_Texture(spielfeld.Felder[su - 1][zu - 1]->Get_Texture());
+
+	for (int i = 0; i < koenige.size(); i++) {
+		if (!koenige[i].Get_Geschlagen()) {
+			for (int j = 0; j < koenige[i].Get_Same_Piece().size(); j++) {
+				if (koenige[i].Get_Same_Piece()[j] != nullptr) {
+					int s = koenige[i].Get_Same_Piece()[j]->Get_Spalte();
+					int z = koenige[i].Get_Same_Piece()[j]->Get_Zeile();
+
+					koenige[i].Add_Same_Piece_S(s);
+					koenige[i].Add_Same_Piece_Z(z);
+				}
+			}
+			koenige[i].Clear_Same_Piece();
+		}
+	}
+	koenige.push_back(K);
+	Set_Koenige_Pointer(koenige, spielfeld);
+}
+
+
+
+void Set_Bauer_Pointer(vector <Bauer>& bauern, Brett& spielfeld) {
+	for (int i = 0; i < bauern.size(); i++) {
+		if (!bauern[i].Get_Geschlagen()) {
+			spielfeld.Felder[bauern[i].Get_Spalte() - 1][bauern[i].Get_Zeile() - 1] = &bauern[i];
+		}
+	}
+	for (int i = 0; i < bauern.size(); i++) {
+		if (!bauern[i].Get_Geschlagen()) {
+			for (int j = 0; j < bauern[i].Get_Same_Piece_S().size(); j++) {
+				int s = bauern[i].Get_Same_Piece_S()[j];
+				int z = bauern[i].Get_Same_Piece_Z()[j];
+				Figuren* F = spielfeld.Felder[s - 1][z - 1];
+				bauern[i].Add_Same_Piece(F);
+
+			}
+			bauern[i].Clear_Same_Piece_S();
+			bauern[i].Clear_Same_Piece_Z();
+		}
+	}
+}
+void Set_Springer_Pointer(vector <Springer>& springer, Brett& spielfeld) {
+
+	for (int i = 0; i < springer.size(); i++) {
+		if (!springer[i].Get_Geschlagen()) {	
+			spielfeld.Felder[springer[i].Get_Spalte() - 1][springer[i].Get_Zeile() - 1] = &springer[i]; // neue Pointer werden erzeugt
+		}   
+	}
+	// same piece wieder herstellen
+	for (int i = 0; i < springer.size(); i++) {
+		if (!springer[i].Get_Geschlagen()) {
+			for (int j = 0; j < springer[i].Get_Same_Piece_S().size(); j++) {
+				int s = springer[i].Get_Same_Piece_S()[j];
+				int z = springer[i].Get_Same_Piece_Z()[j];
+				Figuren* F = spielfeld.Felder[s - 1][z - 1];
+				springer[i].Add_Same_Piece(F);
+
+			}
+			springer[i].Clear_Same_Piece_S();
+			springer[i].Clear_Same_Piece_Z();
+		}
+	}
+}
+void Set_Laeufer_Pointer(vector <Laeufer>& laeufer, Brett& spielfeld) {
+	for (int i = 0; i < laeufer.size(); i++) {
+		if (!laeufer[i].Get_Geschlagen()) {
+			spielfeld.Felder[laeufer[i].Get_Spalte() - 1][laeufer[i].Get_Zeile() - 1] = &laeufer[i];
+		}
+	}
+	for (int i = 0; i < laeufer.size(); i++) {
+		if (!laeufer[i].Get_Geschlagen()) {
+			for (int j = 0; j < laeufer[i].Get_Same_Piece_S().size(); j++) {
+				int s = laeufer[i].Get_Same_Piece_S()[j];
+				int z = laeufer[i].Get_Same_Piece_Z()[j];
+				Figuren* F = spielfeld.Felder[s - 1][z - 1];
+				laeufer[i].Add_Same_Piece(F);
+
+			}
+			laeufer[i].Clear_Same_Piece_S();
+			laeufer[i].Clear_Same_Piece_Z();
+		}
+	}
+}
+void Set_Tuerme_Pointer(vector <Turm>& tuerme, Brett& spielfeld) {
+	for (int i = 0; i < tuerme.size(); i++) {
+		if (!tuerme[i].Get_Geschlagen()) {
+			spielfeld.Felder[tuerme[i].Get_Spalte() - 1][tuerme[i].Get_Zeile() - 1] = &tuerme[i];
+		}
+	}
+	for (int i = 0; i < tuerme.size(); i++) {
+		if (!tuerme[i].Get_Geschlagen()) {
+			for (int j = 0; j < tuerme[i].Get_Same_Piece_S().size(); j++) {
+				int s = tuerme[i].Get_Same_Piece_S()[j];
+				int z = tuerme[i].Get_Same_Piece_Z()[j];
+				Figuren* F = spielfeld.Felder[s - 1][z - 1];
+				tuerme[i].Add_Same_Piece(F);
+
+			}
+			tuerme[i].Clear_Same_Piece_S();
+			tuerme[i].Clear_Same_Piece_Z();
+		}
+	}
+}
+void Set_Damen_Pointer(vector <Dame>& damen, Brett& spielfeld) {
+	for (int i = 0; i < damen.size(); i++) {
+		if (!damen[i].Get_Geschlagen()) {
+			spielfeld.Felder[damen[i].Get_Spalte() - 1][damen[i].Get_Zeile() - 1] = &damen[i];
+		}
+	}
+	for (int i = 0; i < damen.size(); i++) {
+		if (!damen[i].Get_Geschlagen()) {
+			for (int j = 0; j < damen[i].Get_Same_Piece_S().size(); j++) {
+				int s = damen[i].Get_Same_Piece_S()[j];
+				int z = damen[i].Get_Same_Piece_Z()[j];
+				Figuren* F = spielfeld.Felder[s - 1][z - 1];
+				damen[i].Add_Same_Piece(F);
+
+			}
+			damen[i].Clear_Same_Piece_S();
+			damen[i].Clear_Same_Piece_Z();
+		}
+	}
+}
+void Set_Koenige_Pointer(vector <Koenig>& koenige, Brett& spielfeld) {
+	for (int i = 0; i < koenige.size(); i++) {
+		if (!koenige[i].Get_Geschlagen()) {
+			spielfeld.Felder[koenige[i].Get_Spalte() - 1][koenige[i].Get_Zeile() - 1] = &koenige[i];
+		}
+	}
+	for (int i = 0; i < koenige.size(); i++) {
+		if (!koenige[i].Get_Geschlagen()) {
+			for (int j = 0; j < koenige[i].Get_Same_Piece_S().size(); j++) {
+				int s = koenige[i].Get_Same_Piece_S()[j];
+				int z = koenige[i].Get_Same_Piece_Z()[j];
+				Figuren* F = spielfeld.Felder[s - 1][z - 1];
+				koenige[i].Add_Same_Piece(F);
+
+			}
+			koenige[i].Clear_Same_Piece_S();
+			koenige[i].Clear_Same_Piece_Z();
+		}
+	}
+}
+
+
+
+
+// Rochade
 bool King_selected(int s, int z, Brett& spielfeld) {
 
 	if (s == 5 && (z == 8 || z == 1)) {
@@ -120,8 +781,7 @@ bool Check_For_lcb(Brett& spielfeld) {
 		}
 	}
 	return lcb;
-}
-	
+}	
 void Check_Castle_Selected(int i, vector <Moegliches_Feld> moegliche_felder, Brett& spielfeld) {
 	bool scw = Check_For_scw(spielfeld);
 	bool lcw = Check_For_lcw(spielfeld);
@@ -194,23 +854,30 @@ void Check_Castle_Selected(int i, vector <Moegliches_Feld> moegliche_felder, Bre
 
 }
 
+// Pruefen auf Schachmatt
 void Check_for_Mate(Brett& spielfeld) {
-	int k = 0;
+	int bk = 0;
+	int wk = 0;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			if (spielfeld.Felder[i][j] != nullptr) {
 				if (spielfeld.Felder[i][j]->Get_Name() == 'K') {
-					k++;
+					if (spielfeld.Felder[i][j]->Get_Farbe()) {
+						wk++;
+					}
+					else {
+						bk++;
+					}
 				}
 			}
 		}
 	}
-	if (k != 2) {
+	if (wk == 0 || bk == 0) {
 		spielfeld.schachmatt = true;
 	}
 }
 
-
+// Umwandlung Bauer in Dame
 bool Ceck_For_Promotion(Brett& spielfeld, vector <Dame>& damen){
 
 	for (int i = 0; i < 8; i++) {
@@ -219,6 +886,7 @@ bool Ceck_For_Promotion(Brett& spielfeld, vector <Dame>& damen){
 				if (spielfeld.Felder[i][j]->Get_Name() == 'b') {
 					int z = spielfeld.Felder[i][j]->Get_Zeile();
 					if (z == 1 || z == 8) {
+						Messung(i + 1, z, spielfeld);
 						Make_Queen(i + 1, z, spielfeld, damen);
 						return true;
 					}
@@ -229,12 +897,16 @@ bool Ceck_For_Promotion(Brett& spielfeld, vector <Dame>& damen){
 	return false;
 }
 void Make_Queen(int s, int z, Brett& spielfeld, vector <Dame>& damen) {
+	
 	Dame D;
 
 	D.Set_Zeile(z);
 	D.Set_Spalte(s);
 	D.Set_Farbe(spielfeld.Felder[s - 1][z - 1]->Get_Farbe());
+	D.Set_Wahrscheinlichkeit(spielfeld.Felder[s - 1][z - 1]->Get_Wahrscheinlichkeit());
 	D.Set_Gezogen(true);
+	D.Set_Name('D');
+	D.Set_Geschlagen(false);
 
 	if (D.Get_Farbe()) {
 		D.Set_Dateipfad("C:\\Users\\Lenny\\OneDrive\\Hka\\Semester_2\\Schach_Projekt\\2x\\w_queen_2x.png");
@@ -242,35 +914,54 @@ void Make_Queen(int s, int z, Brett& spielfeld, vector <Dame>& damen) {
 	else {
 		D.Set_Dateipfad("C:\\Users\\Lenny\\OneDrive\\Hka\\Semester_2\\Schach_Projekt\\2x\\b_queen_2x.png");
 	}
-	damen.push_back(D);
 
 	for (int i = 0; i < damen.size(); i++) {
-		spielfeld.Felder[damen[i].Get_Spalte() - 1][damen[i].Get_Zeile() - 1] = &damen[i];
-	}
-	
+		if (!damen[i].Get_Geschlagen()) {
+			for (int j = 0; j < damen[i].Get_Same_Piece().size(); j++) {
+				if (damen[i].Get_Same_Piece()[j] != nullptr) {
+					int s = damen[i].Get_Same_Piece()[j]->Get_Spalte();
+					int z = damen[i].Get_Same_Piece()[j]->Get_Zeile();
 
+					damen[i].Add_Same_Piece_S(s);
+					damen[i].Add_Same_Piece_Z(z);
+				}
+			}
+			damen[i].Clear_Same_Piece();
+		}
+	}
+	damen.push_back(D);
+
+	Set_Damen_Pointer(damen, spielfeld);
 }
 
+
+// En Passant
 void Check_For_Double_Pawn(int i, vector <Moegliches_Feld> moegliche_felder, Brett& spielfeld) {
 
 	int s = spielfeld.selected_piece_s;
 	int z = spielfeld.selected_piece_z;
 
-	if (spielfeld.Felder[s-1][z-1]->Get_Name() == 'b' && !spielfeld.Felder[s - 1][z - 1]->Get_Gezogen()){
-		if (i == moegliche_felder.size() - 1) {
-			spielfeld.en_passant = true;
-			spielfeld.en_passant_spalte = moegliche_felder[i].spalte;
-			spielfeld.en_passant_zeile = moegliche_felder[i].zeile;
+	
+	
+	if (moegliche_felder[i].wahrscheinlichkeit == 1.0) {//der ziehende Bauer darf mit nix verschreankt sein
 
-		}
-		else if (i == moegliche_felder.size() - 2 && spielfeld.en_passant) {
-			spielfeld.en_passant = true;
-			spielfeld.en_passant_spalte = moegliche_felder[i].spalte;
-			spielfeld.en_passant_zeile = moegliche_felder[i].zeile;
-		}
-		else {
-			spielfeld.en_passant = false;
-			spielfeld.en_passant_spalte = -2;
+
+		if (spielfeld.Felder[s - 1][z - 1]->Get_Name() == 'b' && !spielfeld.Felder[s - 1][z - 1]->Get_Gezogen()) { // Davor in Grundstellung 
+			if (i == moegliche_felder.size() - 1) {
+				spielfeld.en_passant = true;
+				spielfeld.en_passant_spalte = moegliche_felder[i].spalte;
+				spielfeld.en_passant_zeile = moegliche_felder[i].zeile;
+
+			}
+			else if (i == moegliche_felder.size() - 2 && spielfeld.en_passant) {
+				spielfeld.en_passant = true;
+				spielfeld.en_passant_spalte = moegliche_felder[i].spalte;
+				spielfeld.en_passant_zeile = moegliche_felder[i].zeile;
+			}
+			else {
+				spielfeld.en_passant = false;
+				spielfeld.en_passant_spalte = -2;
+			}
 		}
 	}
 	else {
@@ -282,6 +973,10 @@ void Check_For_Double_Pawn(int i, vector <Moegliches_Feld> moegliche_felder, Bre
 void Check_For_En_Passant(int i, vector <Moegliches_Feld> moegliche_felder, Brett& spielfeld) {
 	int s = spielfeld.selected_piece_s;
 	int z = spielfeld.selected_piece_z;
+	if (spielfeld.Felder[s - 1][z - 1]->Get_Wahrscheinlichkeit() != 1.0) {
+		// Nur echte Bauern dürfen En Passant schlagen
+		return;
+	}
 	if (i == moegliche_felder.size() - 1 && spielfeld.en_passant && spielfeld.en_passant_spalte != -2) {
 		if (z == spielfeld.en_passant_zeile && (s == spielfeld.en_passant_spalte +1 || s == spielfeld.en_passant_spalte -1))
 
@@ -289,6 +984,8 @@ void Check_For_En_Passant(int i, vector <Moegliches_Feld> moegliche_felder, Bret
 	}
 }
 
+
+// Startaufstellung
 
 void Spielfeld_Reset(Brett& spielfeld) {
 
