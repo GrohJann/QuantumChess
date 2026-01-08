@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Bauer.h"
+#include "Brett.h"
 #include <vector>
 #include <array>
 using namespace std;
@@ -59,9 +60,14 @@ using namespace std;
 	}
 	
 }*/
-void Bauer::Set_Moegliche_Felder(Brett spielfeld) {
+void Bauer::Set_Moegliche_Felder(Brett& spielfeld) {
 
 	moegliche_felder.clear();
+
+	spielfeld.F_Im_Weg.clear();
+	spielfeld.F_Im_Weg_s.clear();
+	spielfeld.F_Im_Weg_z.clear();
+
 	int z = -1;
 	if (weiss) {
 		z = 1;
@@ -137,6 +143,9 @@ void Bauer::Set_Moegliche_Felder(Brett spielfeld) {
 			F.zeile = zeile + 2 * z;
 			F.wahrscheinlichkeit = 1.0 - spielfeld.Felder[spalte - 1][zeile + z - 1]->Get_Wahrscheinlichkeit();
 			moegliche_felder.push_back(F);
+			spielfeld.F_Im_Weg.push_back(spielfeld.Felder[spalte - 1][zeile + z - 1]);
+			spielfeld.F_Im_Weg_s.push_back(spalte);
+			spielfeld.F_Im_Weg_z.push_back(zeile + z);
 		}
 		else if (spielfeld.Felder[spalte - 1][zeile + (2 * z) - 1] != nullptr && spielfeld.Felder[spalte - 1][zeile + z - 1] == nullptr) {
 			if (spielfeld.Felder[spalte - 1][zeile + (2 * z) - 1]->Get_Wahrscheinlichkeit() != 1.0) {
@@ -154,6 +163,9 @@ void Bauer::Set_Moegliche_Felder(Brett spielfeld) {
 				F.zeile = zeile + 2 * z;
 				F.wahrscheinlichkeit = 1.0 - spielfeld.Felder[spalte - 1][zeile + z - 1]->Get_Wahrscheinlichkeit();
 				moegliche_felder.push_back(F);
+				spielfeld.F_Im_Weg.push_back(spielfeld.Felder[spalte - 1][zeile + z - 1]);
+				spielfeld.F_Im_Weg_s.push_back(spalte);
+				spielfeld.F_Im_Weg_z.push_back(zeile + z);
 			}
 		}
 

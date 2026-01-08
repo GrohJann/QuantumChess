@@ -3,13 +3,13 @@
 #include <iostream>
 #include <SDL3/SDL.h>
 #include "Brett.h"
-#include "../Spiel_Logik/Figuren.h"
-#include "../Model/Bauer.h"
-#include "../Spiel_Logik/Dame.h"
-#include "../Model/Koenig.h"
-#include "../Spiel_Logik/Laeufer.h"
-#include "../Spiel_Logik/Springer.h"
-#include "../Spiel_Logik/Turm.h"
+#include "Figuren.h"
+#include "Bauer.h"
+#include "Dame.h"
+#include "Koenig.h"
+#include "Laeufer.h"
+#include "Springer.h"
+#include "Turm.h"
 
 void Spielfeld_Reset(Brett& spielfeld) {
 

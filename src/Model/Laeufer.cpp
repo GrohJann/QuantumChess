@@ -1,5 +1,5 @@
 #include "Laeufer.h"
-#include "Structs.h"
+
 #include <vector>
 using namespace std;
 
@@ -88,8 +88,13 @@ vector <Moegliches_Feld> Laeufer::Get_Moegliche_Felder() {
 }*/
 
 
-void Laeufer::Set_Moegliche_Felder(Brett spielfeld) { // Kopie
+void Laeufer::Set_Moegliche_Felder(Brett& spielfeld) { // Kopie
 	moegliche_felder.clear();
+
+	spielfeld.F_Im_Weg.clear();
+	spielfeld.F_Im_Weg_s.clear();
+	spielfeld.F_Im_Weg_z.clear();
+
 	float p = 1.0;
 	vector <int> sv;
 	vector <int> zv;
@@ -123,26 +128,29 @@ void Laeufer::Set_Moegliche_Felder(Brett spielfeld) { // Kopie
 				moegliche_felder.push_back(F);
 			}
 			else {
-				if (spielfeld.Felder[spalte + i - 1][zeile + i - 1]->Get_Wahrscheinlichkeit() == 1.0 || moving_over_self) {			
-					if (spielfeld.Felder[spalte + i - 1][zeile + i - 1]->Get_Farbe() != weiss ) {
+				if (spielfeld.Felder[spalte + i - 1][zeile + i - 1]->Get_Wahrscheinlichkeit() == 1.0 || moving_over_self) {
+					if (spielfeld.Felder[spalte + i - 1][zeile + i - 1]->Get_Farbe() != weiss) {
 						F.spalte = spalte + i;
 						F.zeile = zeile + i;
 						moegliche_felder.push_back(F);
 						break;
 					}
 					else {
-						
+
 						break;
 					}
 				}
 				else {
-					p = 1 - spielfeld.Felder[spalte + i - 1][zeile + i - 1]->Get_Wahrscheinlichkeit();
+					p = p - p * spielfeld.Felder[spalte + i - 1][zeile + i - 1]->Get_Wahrscheinlichkeit();
 					F.spalte = spalte + i;
 					F.zeile = zeile + i;
 					moegliche_felder.push_back(F);
+					spielfeld.F_Im_Weg.push_back(spielfeld.Felder[spalte +i - 1][zeile + i - 1]);
+					spielfeld.F_Im_Weg_s.push_back(spalte + i);
+					spielfeld.F_Im_Weg_z.push_back(zeile + i);
 				}
 			}
-		}	
+		}
 	}
 	p = 1.0;
 	moving_over_self = false;
@@ -150,7 +158,7 @@ void Laeufer::Set_Moegliche_Felder(Brett spielfeld) { // Kopie
 		Moegliches_Feld F;
 		F.wahrscheinlichkeit = p;
 		if (spalte - i >= 1 && zeile - i >= 1) { // feld aufm Brett
-			  
+
 
 			for (int j = 0; j < sv.size(); j++) {
 				if (sv[j] == spalte - i && zv[j] == zeile - i) {
@@ -165,23 +173,26 @@ void Laeufer::Set_Moegliche_Felder(Brett spielfeld) { // Kopie
 				moegliche_felder.push_back(F);
 			}
 			else {
-				if (spielfeld.Felder[spalte - i - 1][zeile - i - 1]->Get_Wahrscheinlichkeit() == 1.0 || moving_over_self) {			
-					if (spielfeld.Felder[spalte - i - 1][zeile - i - 1]->Get_Farbe() != weiss ) {
+				if (spielfeld.Felder[spalte - i - 1][zeile - i - 1]->Get_Wahrscheinlichkeit() == 1.0 || moving_over_self) {
+					if (spielfeld.Felder[spalte - i - 1][zeile - i - 1]->Get_Farbe() != weiss) {
 						F.spalte = spalte - i;
 						F.zeile = zeile - i;
 						moegliche_felder.push_back(F);
 						break;
 					}
 					else {
-						
+
 						break;
 					}
 				}
 				else {
-					p = 1 - spielfeld.Felder[spalte - i - 1][zeile - i - 1]->Get_Wahrscheinlichkeit();
+					p = p - p * spielfeld.Felder[spalte - i - 1][zeile - i - 1]->Get_Wahrscheinlichkeit();
 					F.spalte = spalte - i;
 					F.zeile = zeile - i;
 					moegliche_felder.push_back(F);
+					spielfeld.F_Im_Weg.push_back(spielfeld.Felder[spalte - i - 1][zeile - i - 1]);
+					spielfeld.F_Im_Weg_s.push_back(spalte - i);
+					spielfeld.F_Im_Weg_z.push_back(zeile - i);
 				}
 			}
 		}
@@ -190,6 +201,7 @@ void Laeufer::Set_Moegliche_Felder(Brett spielfeld) { // Kopie
 	moving_over_self = false;
 	for (int i = 1; i < 8; i++) { // 135°
 		Moegliches_Feld F;
+		F.wahrscheinlichkeit = p;
 		if (spalte - i >= 1 && zeile + i <= 8) { // feld aufm Brett
 
 			for (int j = 0; j < sv.size(); j++) {
@@ -217,10 +229,13 @@ void Laeufer::Set_Moegliche_Felder(Brett spielfeld) { // Kopie
 					}
 				}
 				else {
-					p = 1 - spielfeld.Felder[spalte - i - 1][zeile + i - 1]->Get_Wahrscheinlichkeit();
+					p = p - p * spielfeld.Felder[spalte - i - 1][zeile + i - 1]->Get_Wahrscheinlichkeit();
 					F.spalte = spalte - i;
 					F.zeile = zeile + i;
 					moegliche_felder.push_back(F);
+					spielfeld.F_Im_Weg.push_back(spielfeld.Felder[spalte - i - 1][zeile + i - 1]);
+					spielfeld.F_Im_Weg_s.push_back(spalte - i);
+					spielfeld.F_Im_Weg_z.push_back(zeile + i);
 				}
 			}
 		}
@@ -229,6 +244,7 @@ void Laeufer::Set_Moegliche_Felder(Brett spielfeld) { // Kopie
 	moving_over_self = false;
 	for (int i = 1; i < 8; i++) { // 315°
 		Moegliches_Feld F;
+		F.wahrscheinlichkeit = p;
 		if (spalte + i <= 8 && zeile - i >= 1) { // feld aufm Brett
 
 			for (int j = 0; j < sv.size(); j++) {
@@ -257,10 +273,13 @@ void Laeufer::Set_Moegliche_Felder(Brett spielfeld) { // Kopie
 					}
 				}
 				else {
-					p = 1 - spielfeld.Felder[spalte + i - 1][zeile - i - 1]->Get_Wahrscheinlichkeit();
+					p = p - p * spielfeld.Felder[spalte + i - 1][zeile - i - 1]->Get_Wahrscheinlichkeit();
 					F.spalte = spalte + i;
 					F.zeile = zeile - i;
 					moegliche_felder.push_back(F);
+					spielfeld.F_Im_Weg.push_back(spielfeld.Felder[spalte + i - 1][zeile - i - 1]);
+					spielfeld.F_Im_Weg_s.push_back(spalte + i);
+					spielfeld.F_Im_Weg_z.push_back(zeile - i);
 				}
 			}
 		}

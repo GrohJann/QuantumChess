@@ -1,6 +1,6 @@
 #pragma once
-#include "../Model/Figuren.h"
-struct Brett_deprecated
+#include "Figuren.h"
+struct Brett
 {
 	Figuren* Felder[8][8];
 	
@@ -45,16 +45,19 @@ struct Brett_deprecated
 	int second_piece_s = -1;
 	int second_piece_z = -1;
 
+	// Verschraenkung
+
+	vector <Figuren*> F_Im_Weg;
+	vector <int> F_Im_Weg_s;
+	vector <int> F_Im_Weg_z;
+
 
 
 };
-/*struct Moegliches_Feld
+struct Moegliches_Feld
 {
 	int spalte;
 	int zeile;
-<<<<<<< Updated upstream
-};*/
-=======
 	float wahrscheinlichkeit = 1.0;
 };
 
@@ -81,4 +84,3 @@ struct MoveButton {
 	bool merge_move = false;
 
 };
->>>>>>> Stashed changes

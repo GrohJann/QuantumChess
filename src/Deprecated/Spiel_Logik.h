@@ -1,7 +1,6 @@
 
 
 #include <iostream>
-#include "SDL_Test.h"
 #include "SDL.h"
 #include "main_quanten.h"
 #include "Brett.h"
@@ -19,8 +18,9 @@ using namespace std; //notwendig vor vector
 struct Brett;
 struct Moegliches_Feld;
 
-void Logik_normal(int s, int z, Brett& spielfeld);
+void Logik_normal(int s, int z, Brett& spielfeld, vector <Bauer>& bauern, vector <Springer>& springer, vector <Laeufer>& laeufer, vector <Turm>& tuerme, vector <Dame>& damen, vector <Koenig>& koenige);
 void Ziehen(int sa, int za, int s, int z, Brett& spielfeld);
+void Ziehen_Ins_Ungewisse(float p, int sa, int za, int s, int z, Brett& spielfeld, vector <Bauer>& bauern, vector <Springer>& springer, vector <Laeufer>& laeufer, vector <Turm>& tuerme, vector <Dame>& damen, vector <Koenig>& koenige);
 
 void Logik_Split(int s, int z, Brett& spielfeld, vector <Bauer>& bauern, vector <Springer>& springer, vector <Laeufer>& laeufer, vector <Turm>& tuerme, vector <Dame>& damen, vector <Koenig>& koenige);
 void Split_Move(Brett& spielfeld, vector <Bauer>& bauern, vector <Springer>& springer, vector <Laeufer>& laeufer, vector <Turm>& tuerme, vector <Dame>& damen, vector <Koenig>& koenige);
@@ -36,6 +36,10 @@ bool Zufall(double p);
 void Kollpas(int s, int z, Brett& spielfeld);
 void Feld_Leeren(int s, int z, Brett& spielfeld);
 
+void Messung_Fuer_Verschraenkung(Figuren* F, Brett& spielfeld);
+void Kollpas_Verschraenkung(int s, int z, Brett& spielfeld);
+void Check_For_Kollaps_Verschraenkung( Brett& spielfeld);
+void Check_For_Single_Piece(Brett& spielfeld);
 
 void Create_Bauer(int su, int zu, int sn, int zn, float p, vector <Bauer>& bauern, Brett& spielfeld);
 void Create_Springer(int su, int zu, int sn, int zn, float p, vector <Springer>& springer, Brett& spielfeld);

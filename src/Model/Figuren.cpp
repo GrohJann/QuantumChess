@@ -1,4 +1,4 @@
-#include "Structs.h"
+
 #include "Figuren.h"
 #include "Brett.h"
 #include <vector>
@@ -46,6 +46,16 @@ vector <int> Figuren::Get_Same_Piece_Z() {
 	return same_piece_z;
 }
 
+vector <Figuren*> Figuren::Get_Connected_Piece() {
+	return connected_piece;
+}
+vector <int> Figuren::Get_Connected_Piece_S() {
+	return connected_piece_s;
+}
+vector <int> Figuren::Get_Connected_Piece_Z() {
+	return connected_piece_z;
+}
+
 void Figuren::Set_Name(char neuer_name) {
 	name = neuer_name;
 }
@@ -64,7 +74,7 @@ void Figuren::Set_Zeile(int neue_zeile) {
 void Figuren::Set_Gezogen(bool neuer_zustand) {
 	gezogen = neuer_zustand;
 }
-void Figuren::Set_Moegliche_Felder(Brett spielfeld) {
+void Figuren::Set_Moegliche_Felder(Brett& spielfeld) {
 	return;
 }
 
@@ -107,3 +117,36 @@ void Figuren::Clear_Same_Piece_Z() {
 	same_piece_z.clear();
 }
 
+void Figuren::Add_Connected_Pieces(vector <Figuren*> new_connected_piece) {
+
+	same_piece = new_connected_piece;
+}
+void Figuren::Add_Connected_Piece(Figuren* F) {
+	if (F != nullptr) {
+		connected_piece.push_back(F);
+	}
+}
+void Figuren::Replace_Connected_Piece(int i, Figuren F) {
+	Figuren* Fptr = &F;
+	
+		connected_piece[i] = Fptr;
+	
+}
+void Figuren::Clear_Connected_Piece() {
+	connected_piece.clear();
+}
+
+void Figuren::Add_Connected_Piece_S(int s) {
+	connected_piece_s.push_back(s);
+}
+
+void Figuren::Add_Connected_Piece_Z(int z) {
+	connected_piece_z.push_back(z);
+}
+
+void Figuren::Clear_Connected_Piece_S() {
+	connected_piece_s.clear();
+}
+void Figuren::Clear_Connected_Piece_Z() {
+	connected_piece_z.clear();
+}

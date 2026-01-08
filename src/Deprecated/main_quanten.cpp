@@ -9,6 +9,21 @@
 
 using namespace std;
 
+/*
+Projektarbeit 2 – Quantenschach
+Gruppe:
+[Melina Stam]
+[Kevin Kern]
+[Jannis]
+[Lenny Seeland]
+[author #5]
+Wir stimmen der Veröffentlichung unseres Source Code in anonymisierter Form zu.
+
+Copyright (C) [2026] [authors Melina Stam, Kevin Kern, Jannis, Lenny Seelan]
+SPDX-License-Identifier: MIT
+Copyright verwendeter Grafiken:
+[XXX ggf. Verweis auf KI Generator]
+*/
 struct AppState {
     const char* title;
     SDL_Window* window;
@@ -35,6 +50,7 @@ SDL_AppResult AppInit(void** appstate, Window_Configuration WindowConfigs) {
 
     if (!(state->window = SDL_CreateWindow(state->title, WindowConfigs.WindowWidth, WindowConfigs.WindowHeight, SDL_WINDOW_RESIZABLE)))
         return SDL_APP_FAILURE;
+    SDL_SetWindowMinimumSize(state->window, WindowConfigs.minWidth, WindowConfigs.minHeight);
 
     if (!(state->renderer = SDL_CreateRenderer(state->window, NULL)))
         return SDL_APP_FAILURE;
@@ -132,20 +148,28 @@ void RenderTextures(SDL_Window* window, SDL_Renderer* renderer, Brett& Spielfeld
     const float squareSize = (Game_Layout->boardSize * 1.0f) / (boardFields * 1.0f);
     int row;
     int col;
+    float probability = 1.0f;
+    float height = 7;
+    float width = squareSize;
 
     //Figuren:
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if (Spielfeld.Felder[i][j] == NULL) continue;
             else {
-                
-               row = Spielfeld.Felder[i][j]->Get_Zeile();
-               col = Spielfeld.Felder[i][j]->Get_Spalte();
-               row = 8 - row;
-               col = col - 1;
-               SDL_FRect rect = { col * squareSize, row * squareSize, squareSize, squareSize };
-               SDL_RenderTexture(renderer, Spielfeld.Felder[i][j]->Get_Texture(), NULL, &rect);
-                
+                row = Spielfeld.Felder[i][j]->Get_Zeile();
+                col = Spielfeld.Felder[i][j]->Get_Spalte();
+                row = 8 - row;
+                col = col - 1;
+                SDL_FRect rect = { col * squareSize, row * squareSize, squareSize, squareSize - 5 }; //Figur im Feld nach oben verschoben
+                SDL_RenderTexture(renderer, Spielfeld.Felder[i][j]->Get_Texture(), NULL, &rect);
+
+                //Wahrscheinlichkeitsanzeige
+                probability = Spielfeld.Felder[i][j]->Get_Wahrscheinlichkeit();
+                width = squareSize * probability;  //Länge des Balken ist abhängig von der Wahrscheinlichkeit
+                SDL_FRect probability_bar = { col * squareSize, (row * squareSize) + (squareSize - height + 2) , width, height }; //Balken unterhalb der Figur
+                SDL_SetRenderDrawColor(renderer, 0, 0, 255.0f, 0); //blau
+                SDL_RenderFillRect(renderer, &probability_bar);
             }
         }
     }
@@ -398,7 +422,7 @@ int main() {
     Window_Configuration WindowConfigs;
 
     SDL_AppResult result = AppInit(&appstate, WindowConfigs);
-    
+
 
     if (result == SDL_APP_CONTINUE) {
 
@@ -466,7 +490,7 @@ int main() {
             // If left mouse click on different field: 
             if (a != selectedRow || b != selectedCol && !Spielfeld.schachmatt) {
                 if (Button_Texture.normal_move && !Button_Texture.split_move && !Button_Texture.merge_move) {
-                    Logik_normal(selectedCol, selectedRow, Spielfeld);
+                    Logik_normal(selectedCol, selectedRow, Spielfeld, bauern, springer, laeufer, tuerme, damen, koenige);
                 }
                 else if (!Button_Texture.normal_move && Button_Texture.split_move && !Button_Texture.merge_move) {
                     Logik_Split(selectedCol, selectedRow, Spielfeld, bauern, springer, laeufer, tuerme, damen, koenige);
@@ -481,7 +505,8 @@ int main() {
                 if (Ceck_For_Promotion(Spielfeld, damen)) {
                     createTexture(appstate, Spielfeld);
                 }
-
+                //Check_For_Kollaps_Verschraenkung(Spielfeld); // zerbricht manchmal (funktioniert nur einmal
+              
                 cout << "Ausgewaehlte Reihe: " << selectedRow << endl;
                 cout << "Ausgewaehlte Spalte: " << selectedCol << endl;
 

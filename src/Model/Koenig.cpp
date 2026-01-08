@@ -1,5 +1,5 @@
 #include "Koenig.h"
-#include "Structs.h"
+
 #include <vector>
 using namespace std;
 
@@ -9,7 +9,7 @@ using namespace std;
 }
 
 
-void Koenig::Set_Moegliche_Felder(Brett spielfeld) {
+void Koenig::Set_Moegliche_Felder(Brett& spielfeld) {
 	moegliche_felder.clear();
 	vector <int> sv;
 	vector <int> zv;
@@ -106,7 +106,7 @@ bool Koenig::Check_For_lcw(Brett spielfeld) {
 	bool lcw = false;
 	if (spielfeld.Felder[5 - 1][1 - 1] != nullptr && spielfeld.Felder[1 - 1][1 - 1] != nullptr) {
 		if (!spielfeld.Felder[5 - 1][1 - 1]->Get_Gezogen() && !spielfeld.Felder[1 - 1][1 - 1]->Get_Gezogen()) {
-			if (spielfeld.Felder[2 - 1][1 - 1] == nullptr && spielfeld.Felder[3 - 1][1 - 1] == nullptr && spielfeld.Felder[4 - 1][1 - 1]) {
+			if (spielfeld.Felder[2 - 1][1 - 1] == nullptr && spielfeld.Felder[3 - 1][1 - 1] == nullptr && spielfeld.Felder[4 - 1][1 - 1] == nullptr) {
 				lcw = true;
 			}
 		}

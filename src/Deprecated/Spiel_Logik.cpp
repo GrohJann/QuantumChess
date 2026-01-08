@@ -1,7 +1,7 @@
 #include "Spiel_Logik.h"
 #include <random>
 
-void Logik_normal(int s, int z, Brett& spielfeld) {
+void Logik_normal(int s, int z, Brett& spielfeld, vector <Bauer>& bauern, vector <Springer>& springer, vector <Laeufer>& laeufer, vector <Turm>& tuerme, vector <Dame>& damen, vector <Koenig>& koenige) {
 	Check_for_Mate(spielfeld);
 	if (spielfeld.schachmatt) {
 		return;
@@ -40,6 +40,9 @@ void Logik_normal(int s, int z, Brett& spielfeld) {
 				Check_For_Double_Pawn(i, moegliche_felder, spielfeld);
 				if (moegliche_felder[i].wahrscheinlichkeit == 1.0) {
 					Ziehen(spielfeld.selected_piece_s, spielfeld.selected_piece_z, s, z, spielfeld);
+				}
+				else {
+					Ziehen_Ins_Ungewisse(moegliche_felder[i].wahrscheinlichkeit, spielfeld.selected_piece_s, spielfeld.selected_piece_z, s, z, spielfeld, bauern, springer, laeufer, tuerme, damen, koenige);
 				}
 				spielfeld.whites_turn = !spielfeld.whites_turn;
 				spielfeld.piece_selected = false;
@@ -91,6 +94,217 @@ void Ziehen (int sa, int za, int s, int z, Brett & spielfeld){
 	
 }
 
+void Ziehen_Ins_Ungewisse(float p,int sa, int za, int s, int z, Brett& spielfeld, vector <Bauer>& bauern, vector <Springer>& springer, vector <Laeufer>& laeufer, vector <Turm>& tuerme, vector <Dame>& damen, vector <Koenig>& koenige) {
+	
+	int si = 0; // si = spalte inkrement
+	int sd = 0; // sd = spalten differenz
+
+	int zi = 0; // zeile inkrement
+	int zd = 0; // zeilde differenz
+	//vector <Figuren*> abhaengig;
+	if (s > sa) {
+		si = 1;
+		sd = s - sa;
+	}
+	else if (s < sa) {
+		si = -1;
+		sd = sa - s;
+	}
+
+
+	if (z > za) {
+		zi = 1;
+		zd = z - za;
+	}
+	else if (z < za) {
+		zi = -1;
+		zd = za - z;
+	}
+	
+	if ( zd != 0 ){
+		for (int i = 1; i < zd; i++) { // Figur, die im Weg steht finden
+			int x = sa + i * si;
+			int y = za + i * zi;
+			if (x > 8 || x < 1 || y > 8 || y < 1) {
+				break;
+			}
+			if (x == s && y == z) { // End psotion erreicht
+				break;
+			}
+			for (int j = 0; j < spielfeld.F_Im_Weg.size();j++) {
+				if (x == spielfeld.F_Im_Weg_s[j] && y == spielfeld.F_Im_Weg_z[j]) {
+					//jetzt die nicht ziehende Figur mit der im Weg stehenden Figur
+					cout << "Verschraenke nicht ziehende Figur" << endl;
+					
+					spielfeld.Felder[x - 1][y - 1]->Add_Connected_Piece(spielfeld.Felder[sa - 1][za - 1]);
+					spielfeld.Felder[x - 1][y - 1]->Add_Connected_Piece_S(sa);
+					spielfeld.Felder[x - 1][y - 1]->Add_Connected_Piece_Z(za);
+
+					spielfeld.Felder[sa - 1][za - 1]->Add_Connected_Piece(spielfeld.Felder[x - 1][y - 1]);
+					spielfeld.Felder[sa - 1][za - 1]->Add_Connected_Piece_S(x);
+					spielfeld.Felder[sa - 1][za - 1]->Add_Connected_Piece_Z(y);
+					//abhaengig.push_back(spielfeld.F_Im_Weg[j]);
+				}
+			}
+		}
+	}
+	else if(sd != 0){
+		for (int i = 1; i < sd; i++) { // Figur, die im Weg steht finden
+			int x = sa + i * si;
+			int y = za + i * zi;
+			if (x > 8 || x < 1 || y > 8 || y < 1) {
+				break;
+			}
+			if (x == s && y == z) { // End psotion erreicht
+				break;
+			}
+			for (int j = 0; j < spielfeld.F_Im_Weg.size();j++) {
+				if (x == spielfeld.F_Im_Weg_s[j] && y == spielfeld.F_Im_Weg_z[j]) {
+
+					//jetzt die  ziehende Figur mit den nicht im Weg stehenden Figur
+					cout << "Verschraenke nicht ziehende Figur" << endl;
+					spielfeld.Felder[x - 1][y - 1]->Add_Connected_Piece(spielfeld.Felder[sa - 1][za - 1]);
+					spielfeld.Felder[x - 1][y - 1]->Add_Connected_Piece_S(sa);
+					spielfeld.Felder[x - 1][y - 1]->Add_Connected_Piece_Z(za);
+
+					spielfeld.Felder[sa - 1][za - 1]->Add_Connected_Piece(spielfeld.Felder[x - 1][y - 1]);
+					spielfeld.Felder[sa - 1][za - 1]->Add_Connected_Piece_S(x);
+					spielfeld.Felder[sa - 1][za - 1]->Add_Connected_Piece_Z(y);
+					//abhaengig.push_back(spielfeld.F_Im_Weg[j]);
+				}
+			}
+		}
+	}
+	
+	
+	float pa = spielfeld.Felder[sa - 1][za - 1]->Get_Wahrscheinlichkeit();
+	spielfeld.Felder[sa - 1][za - 1]->Set_Wahrscheinlichkeit( pa - (pa * p)); // wahrscheinlichkeit dass die Figur ziehen kann
+	if (spielfeld.Felder[s - 1][z - 1] != nullptr) { // Figur schlaegt was, also Messung
+		Ziehen(sa, za, s, z, spielfeld);
+		if (spielfeld.Felder[sa - 1][za - 1] != nullptr) { // Wenn die Figur nicht gezogen ist
+			spielfeld.Felder[sa - 1][za - 1]->Set_Wahrscheinlichkeit(pa); // wahrscheinlichkeit zuruecksetzen
+		}
+	}
+	else {
+		// Figur zieht auf ein leeres Feld (keine Messung)
+		vector <Figuren*> same_pieces;
+		vector <Figuren*> connected_pieces;
+		spielfeld.Felder[sa - 1][za - 1]->Set_Wahrscheinlichkeit(pa - (pa * p)); 
+		switch (spielfeld.Felder[sa - 1][za - 1]->Get_Name()) {
+		case 'b': Create_Bauer(sa, za, s, z, pa * p, bauern, spielfeld);
+			break;
+		case 'S': Create_Springer(sa, za, s, z, pa * p, springer, spielfeld);
+			break;
+		case 'L': Create_Laeufer(sa, za, s, z, pa * p, laeufer, spielfeld);
+			break;
+		case 'T': Create_Turm(sa, za, s, z, pa * p, tuerme, spielfeld);
+			break;
+		case 'D': Create_Dame(sa, za, s, z, pa * p, damen, spielfeld);
+			break;
+		case 'K': Create_Koenig(sa, za, s, z, pa * p, koenige, spielfeld);
+			break;
+		}
+		same_pieces = spielfeld.Felder[sa - 1][za - 1]->Get_Same_Piece();
+		// Connected pieces im Ausgangsafeld sind keine Endlosschleife mehr warum auch immer
+		for (int i = 0; i < spielfeld.Felder[sa - 1][za - 1]->Get_Connected_Piece().size(); i++) {
+			spielfeld.Felder[sa - 1][za - 1]->Get_Connected_Piece()[i]->Clear_Connected_Piece();
+			spielfeld.Felder[sa - 1][za - 1]->Get_Connected_Piece()[i]->Clear_Connected_Piece_S();
+			spielfeld.Felder[sa - 1][za - 1]->Get_Connected_Piece()[i]->Clear_Connected_Piece_Z();
+		}
+		spielfeld.Felder[sa - 1][za - 1]->Clear_Connected_Piece();
+		spielfeld.Felder[sa - 1][za - 1]->Clear_Connected_Piece_S();
+		spielfeld.Felder[sa - 1][za - 1]->Clear_Connected_Piece_Z();
+
+		if (zd != 0) {
+			for (int i = 1; i < zd; i++) { // Figur, die im Weg steht finden
+				int x = sa + i * si;
+				int y = za + i * zi;
+				if (x > 8 || x < 1 || y > 8 || y < 1) {
+					break;
+				}
+				if (x == s && y == z) { // End psotion erreicht
+					break;
+				}
+				for (int j = 0; j < spielfeld.F_Im_Weg.size();j++) {
+					if (x == spielfeld.F_Im_Weg_s[j] && y == spielfeld.F_Im_Weg_z[j]) {
+						//jetzt die nicht ziehende Figur mit der im Weg stehenden Figur
+						cout << "Verschraenke nicht ziehende Figur" << endl;
+
+						spielfeld.Felder[x - 1][y - 1]->Add_Connected_Piece(spielfeld.Felder[sa - 1][za - 1]);
+						spielfeld.Felder[x - 1][y - 1]->Add_Connected_Piece_S(sa);
+						spielfeld.Felder[x - 1][y - 1]->Add_Connected_Piece_Z(za);
+
+						spielfeld.Felder[sa - 1][za - 1]->Add_Connected_Piece(spielfeld.Felder[x - 1][y - 1]);
+						spielfeld.Felder[sa - 1][za - 1]->Add_Connected_Piece_S(x);
+						spielfeld.Felder[sa - 1][za - 1]->Add_Connected_Piece_Z(y);
+						//abhaengig.push_back(spielfeld.F_Im_Weg[j]);
+					}
+				}
+			}
+		}
+		else if (sd != 0) {
+			for (int i = 1; i < sd; i++) { // Figur, die im Weg steht finden
+				int x = sa + i * si;
+				int y = za + i * zi;
+				if (x > 8 || x < 1 || y > 8 || y < 1) {
+					break;
+				}
+				if (x == s && y == z) { // End psotion erreicht
+					break;
+				}
+				for (int j = 0; j < spielfeld.F_Im_Weg.size();j++) {
+					if (x == spielfeld.F_Im_Weg_s[j] && y == spielfeld.F_Im_Weg_z[j]) {
+
+						//jetzt die  ziehende Figur mit den nicht im Weg stehenden Figur
+						cout << "Verschraenke nicht ziehende Figur" << endl;
+						spielfeld.Felder[x - 1][y - 1]->Add_Connected_Piece(spielfeld.Felder[sa - 1][za - 1]);
+						spielfeld.Felder[x - 1][y - 1]->Add_Connected_Piece_S(sa);
+						spielfeld.Felder[x - 1][y - 1]->Add_Connected_Piece_Z(za);
+
+						spielfeld.Felder[sa - 1][za - 1]->Add_Connected_Piece(spielfeld.Felder[x - 1][y - 1]);
+						spielfeld.Felder[sa - 1][za - 1]->Add_Connected_Piece_S(x);
+						spielfeld.Felder[sa - 1][za - 1]->Add_Connected_Piece_Z(y);
+						//abhaengig.push_back(spielfeld.F_Im_Weg[j]);
+					}
+				}
+			}
+		}
+
+
+		connected_pieces = spielfeld.Felder[sa - 1][za - 1]->Get_Connected_Piece();
+
+		// Neue Versionen zu alten
+		for (int i = 0; i < same_pieces.size(); i++) {
+			same_pieces[i]->Add_Same_Piece(spielfeld.Felder[s - 1][z - 1]);
+			//same_pieces[i]->Add_Same_Piece(spielfeld.Felder[s2 - 1][z2 - 1]);
+
+		}
+
+
+		// Alte versionen zur neuen Figuren
+		spielfeld.Felder[s - 1][z - 1]->Add_Same_Pieces(same_pieces);
+
+
+		// Neue versionen zu neuen versionen
+		spielfeld.Felder[sa - 1][za - 1]->Add_Same_Piece(spielfeld.Felder[s - 1][z - 1]);
+		spielfeld.Felder[s - 1][z - 1]->Add_Same_Piece(spielfeld.Felder[sa - 1][za - 1]);
+
+
+		// Alternative Positionen der im weg stehenden Figur mit der gezogenen verschraenken
+		for (int j = 0; j < connected_pieces.size(); j++) {
+			for (int i = 0; i < connected_pieces[j]->Get_Same_Piece().size(); i++) {
+				cout << "Verschraenke  ziehende Figur" << endl;
+				Figuren* F = connected_pieces[j]->Get_Same_Piece()[i];
+				spielfeld.Felder[s - 1][z - 1]->Add_Connected_Piece(F);
+				spielfeld.Felder[s - 1][z - 1]->Add_Connected_Piece_S(F->Get_Spalte());
+				spielfeld.Felder[s - 1][z - 1]->Add_Connected_Piece_Z(F->Get_Zeile());
+				F->Add_Connected_Piece(spielfeld.Felder[s - 1][z - 1]);
+				F->Add_Connected_Piece_S(s);
+				F->Add_Connected_Piece_Z(z);
+			}
+		}
+	}
+}
 
 void Logik_Split(int s, int z, Brett& spielfeld, vector <Bauer>& bauern, vector <Springer>& springer, vector <Laeufer>& laeufer, vector <Turm>& tuerme, vector <Dame>& damen, vector <Koenig>& koenige) {
 	//, vector <Bauer>& bauern, vector <Springer>& springer, vector <Laeufer>& laeufer, vector <Turm>& tuerme, vector <Dame>& damen, vector <Koenig>& koenige
@@ -120,7 +334,7 @@ void Logik_Split(int s, int z, Brett& spielfeld, vector <Bauer>& bauern, vector 
 
 		moegliche_felder = spielfeld.Felder[spielfeld.selected_piece_s - 1][spielfeld.selected_piece_z - 1]->Get_Moegliche_Felder();
 		for (int i = 0; i < moegliche_felder.size(); i++) {
-			if (moegliche_felder[i].spalte == s && moegliche_felder[i].zeile == z) {
+			if (moegliche_felder[i].spalte == s && moegliche_felder[i].zeile == z && moegliche_felder[i].wahrscheinlichkeit == 1.0) {
 				spielfeld.first_field_s = s;
 				spielfeld.first_field_z = z;
 				spielfeld.first_field_selected = true;
@@ -139,12 +353,13 @@ void Logik_Split(int s, int z, Brett& spielfeld, vector <Bauer>& bauern, vector 
 
 		moegliche_felder = spielfeld.Felder[spielfeld.selected_piece_s - 1][spielfeld.selected_piece_z - 1]->Get_Moegliche_Felder();
 		for (int i = 0; i < moegliche_felder.size(); i++) {
-			if (moegliche_felder[i].spalte == s && moegliche_felder[i].zeile == z) {
+			if (moegliche_felder[i].spalte == s && moegliche_felder[i].zeile == z && moegliche_felder[i].wahrscheinlichkeit == 1.0) {
 				spielfeld.second_field_s = s;
 				spielfeld.second_field_z = z;
 				spielfeld.first_field_selected = true;
 				spielfeld.second_field_selected = true;
 				cout << "Zweites Feld gewaehlt" << endl;
+				
 				Split_Move( spielfeld,bauern, springer, laeufer, tuerme, damen, koenige);
 
 				break;
@@ -292,9 +507,9 @@ void Logik_Merge(int s, int z, Brett& spielfeld) {
 		moegliche_felder_2 = spielfeld.Felder[sa2 - 1][za2 - 1]->Get_Moegliche_Felder();
 
 		for (int i = 0; i < moegliche_felder_1.size(); i++) {
-			if (moegliche_felder_1[i].spalte == s && moegliche_felder_1[i].zeile == z){ 
+			if (moegliche_felder_1[i].spalte == s && moegliche_felder_1[i].zeile == z, moegliche_felder_1[i].wahrscheinlichkeit == 1.0){
 				for (int j = 0; j < moegliche_felder_2.size(); j++) {
-					if (moegliche_felder_2[j].spalte == s && moegliche_felder_2[j].zeile == z) { // ausgewaehltes Feld muss von beiden Figuren ein moegliches Feld sein
+					if (moegliche_felder_2[j].spalte == s && moegliche_felder_2[j].zeile == z, moegliche_felder_2[i].wahrscheinlichkeit == 1.0) { // ausgewaehltes Feld muss von beiden Figuren ein moegliches Feld sein
 						Merge_Move(s, z, spielfeld);
 						break;
 					}
@@ -380,10 +595,11 @@ void Kollpas(int s, int z, Brett& spielfeld) {
 			int sl = F->Get_Spalte();
 			int zl = F->Get_Zeile();
 			Feld_Leeren(sl, zl, spielfeld);
+			//F->Get_Same_Piece()[i] = nullptr;
 		}
 	}
 	echteFigur->Set_Wahrscheinlichkeit(1.0);
-	echteFigur->Clear_Same_Piece();
+	echteFigur->Clear_Same_Piece();	
 }
 
 
@@ -412,6 +628,97 @@ bool Zufall(double p) {
 
 }
 
+
+void Messung_Fuer_Verschraenkung(Figuren* F,  Brett& spielfeld) {
+	bool kollpas_erfolgt = false;
+	while (!kollpas_erfolgt) {
+		for (int i = 0; i < F->Get_Same_Piece().size(); i++) { // alle anderen moeglichen durchegehn
+			if (F->Get_Same_Piece()[i] != nullptr) {
+				if (Zufall(F->Get_Same_Piece()[i]->Get_Wahrscheinlichkeit()) || (i == F->Get_Same_Piece().size() - 1)) {
+					// wahrscheinlichkeit tritt ein, oder letzte figur erreicht
+					int s2 = F->Get_Same_Piece()[i]->Get_Spalte();
+					int z2 = F->Get_Same_Piece()[i]->Get_Zeile();
+					Kollpas(s2, z2, spielfeld);
+					spielfeld.Felder[ s2 -1][z2 -1]->Set_Wahrscheinlichkeit(1.0);
+					kollpas_erfolgt = true;
+					break;
+				}
+			}
+		}
+		if (F->Get_Same_Piece().size() == 0) {
+			F->Set_Wahrscheinlichkeit(1.0);
+			kollpas_erfolgt = true;
+		}
+		cout << "Dauerschleife" << endl;
+	}
+}
+void Kollpas_Verschraenkung(int s, int z, Brett& spielfeld) {
+	bool kollaps_erfolgt = false;
+	Figuren* Figur = spielfeld.Felder[s - 1][z - 1];
+	for (int i = 0; i < Figur->Get_Connected_Piece().size(); i++) {
+		Figuren* F = Figur->Get_Connected_Piece()[i]; // Pointer auf Figuren die mit nicht mehr existierender Figur verschraenkt sind (müssen NULL werden)
+		if (F != Figur && F != nullptr) {
+			int sl = F->Get_Spalte();
+			int zl = F->Get_Zeile();
+			while (!kollaps_erfolgt) {
+				for (int j = 0; j < F->Get_Same_Piece().size(); j++) {
+					if (Zufall(F->Get_Same_Piece()[j]->Get_Wahrscheinlichkeit())) {
+						
+						Kollpas(F->Get_Same_Piece()[j]->Get_Spalte(), F->Get_Same_Piece()[j]->Get_Zeile(), spielfeld);
+						kollaps_erfolgt = true;
+						Check_For_Single_Piece(spielfeld);
+						F->Get_Same_Piece()[j]->Clear_Connected_Piece();
+					}
+				}
+				
+			}
+			Feld_Leeren(sl, zl, spielfeld);
+			kollaps_erfolgt = false;
+		}
+	}	
+	Feld_Leeren(s, z, spielfeld);
+	
+	Check_For_Single_Piece(spielfeld);
+	
+}
+
+void Check_For_Kollaps_Verschraenkung( Brett& spielfeld) {
+	for (int s = 1; s < 9; s++) {
+		for (int z = 1; z < 9; z++) {
+			if (spielfeld.Felder[s - 1][z - 1] != nullptr) {
+				for (int i = 0; i < spielfeld.Felder[s - 1][z - 1]->Get_Connected_Piece().size(); i++) {
+					if (spielfeld.Felder[s - 1][z - 1]->Get_Connected_Piece()[i] == nullptr) {
+						
+						Kollpas_Verschraenkung(s, z, spielfeld);
+						break;
+					}
+					else if (spielfeld.Felder[s - 1][z - 1]->Get_Connected_Piece()[i]->Get_Geschlagen()) {
+						Kollpas_Verschraenkung(s, z, spielfeld);
+						break;
+					}
+				}
+			}
+		}
+	}
+	cout << "Auf Kollaps verschraenkung geprueft" << endl;
+	
+}
+
+void Check_For_Single_Piece(Brett& spielfeld) {
+	for (int s = 1; s < 9; s++) {
+		for (int z = 1; z < 9; z++) {
+			if (spielfeld.Felder[s - 1][z - 1] != nullptr) {
+				for (int i = 0; i < spielfeld.Felder[s - 1][z - 1]->Get_Same_Piece().size(); i++) {
+					if (spielfeld.Felder[s - 1][z - 1]->Get_Same_Piece()[i]->Get_Geschlagen() || spielfeld.Felder[s - 1][z - 1]->Get_Same_Piece()[i] == nullptr){
+						spielfeld.Felder[s-1][z-1]->Set_Wahrscheinlichkeit(1.0);
+						spielfeld.Felder[s - 1][z - 1]->Clear_Same_Piece();
+					}
+				}
+			}
+		}
+	}
+}
+
 void Create_Bauer(int su, int zu, int sn, int zn, float p, vector <Bauer>& bauern, Brett& spielfeld) {
 	
 	Bauer b;
@@ -436,7 +743,21 @@ void Create_Bauer(int su, int zu, int sn, int zn, float p, vector <Bauer>& bauer
 					bauern[i].Add_Same_Piece_Z(z);
 				}
 			}
-			bauern[i].Clear_Same_Piece();
+			bauern[i].Clear_Same_Piece();	
+
+			/*bauern[i].Clear_Connected_Piece_S();
+			bauern[i].Clear_Connected_Piece_Z();
+			for (int j = 0; j < bauern[i].Get_Connected_Piece().size(); j++) {
+				if (bauern[i].Get_Connected_Piece()[j] != nullptr) {
+					
+					int s = bauern[i].Get_Spalte();
+					int z = bauern[i].Get_Zeile();
+
+					bauern[i].Get_Connected_Piece()[j]->Add_Connected_Piece_S(s);
+					bauern[i].Get_Connected_Piece()[j]->Add_Connected_Piece_S(s);
+				}
+			}
+			bauern[i].Clear_Connected_Piece();*/
 		}
 	}
 
@@ -468,6 +789,20 @@ void Create_Springer(int su, int zu, int sn, int zn, float p,vector <Springer>& 
 				}
 			}
 			springer[i].Clear_Same_Piece();
+
+			/*springer[i].Clear_Connected_Piece_S();
+			springer[i].Clear_Connected_Piece_Z();
+			for (int j = 0; j < springer[i].Get_Connected_Piece().size(); j++) {
+				if (springer[i].Get_Connected_Piece()[j] != nullptr) {
+
+					int s = springer[i].Get_Spalte();
+					int z = springer[i].Get_Zeile();
+
+					springer[i].Get_Connected_Piece()[j]->Add_Connected_Piece_S(s);
+					springer[i].Get_Connected_Piece()[j]->Add_Connected_Piece_S(s);
+				}
+			}
+			springer[i].Clear_Connected_Piece();*/
 		}
 	}
 
@@ -499,6 +834,20 @@ void Create_Laeufer(int su, int zu, int sn, int zn, float p, vector <Laeufer>& l
 				}
 			}
 			laeufer[i].Clear_Same_Piece();
+
+			/*laeufer[i].Clear_Connected_Piece_S();
+			laeufer[i].Clear_Connected_Piece_Z();
+			for (int j = 0; j < laeufer[i].Get_Connected_Piece().size(); j++) {
+				if (laeufer[i].Get_Connected_Piece()[j] != nullptr) {
+
+					int s = laeufer[i].Get_Spalte();
+					int z = laeufer[i].Get_Zeile();
+
+					laeufer[i].Get_Connected_Piece()[j]->Add_Connected_Piece_S(s);
+					laeufer[i].Get_Connected_Piece()[j]->Add_Connected_Piece_S(s);
+				}
+			}
+			laeufer[i].Clear_Connected_Piece();*/
 		}
 	}
 
@@ -530,6 +879,21 @@ void Create_Turm(int su, int zu, int sn, int zn, float p, vector <Turm>& tuerme,
 				}
 			}
 			tuerme[i].Clear_Same_Piece();
+
+
+			/*tuerme[i].Clear_Connected_Piece_S();
+			tuerme[i].Clear_Connected_Piece_Z();
+			for (int j = 0; j < tuerme[i].Get_Connected_Piece().size(); j++) {
+				if (tuerme[i].Get_Connected_Piece()[j] != nullptr) {
+
+					int s = tuerme[i].Get_Spalte();
+					int z = tuerme[i].Get_Zeile();
+
+					tuerme[i].Get_Connected_Piece()[j]->Add_Connected_Piece_S(s);
+					tuerme[i].Get_Connected_Piece()[j]->Add_Connected_Piece_S(s);
+				}
+			}
+			tuerme[i].Clear_Connected_Piece();*/
 		}
 	}
 
@@ -561,6 +925,20 @@ void Create_Dame(int su, int zu, int sn, int zn, float p, vector <Dame>& damen, 
 				}
 			}
 			damen[i].Clear_Same_Piece();
+
+		/*	damen[i].Clear_Connected_Piece_S();
+			damen[i].Clear_Connected_Piece_Z();
+			for (int j = 0; j < damen[i].Get_Connected_Piece().size(); j++) {
+				if (damen[i].Get_Connected_Piece()[j] != nullptr) {
+
+					int s = damen[i].Get_Spalte();
+					int z = damen[i].Get_Zeile();
+
+					damen[i].Get_Connected_Piece()[j]->Add_Connected_Piece_S(s);
+					damen[i].Get_Connected_Piece()[j]->Add_Connected_Piece_S(s);
+				}
+			}
+			damen[i].Clear_Connected_Piece();*/
 		}
 	}
 
@@ -592,6 +970,22 @@ void Create_Koenig(int su, int zu, int sn, int zn, float p, vector <Koenig>& koe
 				}
 			}
 			koenige[i].Clear_Same_Piece();
+
+
+			/*koenige[i].Clear_Connected_Piece_S();
+			koenige[i].Clear_Connected_Piece_Z();
+			for (int j = 0; j < koenige[i].Get_Connected_Piece().size(); j++) {
+				if (koenige[i].Get_Connected_Piece()[j] != nullptr) {
+					if (koenige[i].Get_Connected_Piece()[j] == &koenige[i]) {
+						int s = koenige[i].Get_Spalte();
+						int z = koenige[i].Get_Zeile();
+
+						koenige[i].Get_Connected_Piece()[j]->Add_Connected_Piece_S(s);
+						koenige[i].Get_Connected_Piece()[j]->Add_Connected_Piece_S(s);
+					}
+				}
+			}
+			koenige[i].Clear_Connected_Piece();*/
 		}
 	}
 	koenige.push_back(K);
@@ -617,7 +1011,15 @@ void Set_Bauer_Pointer(vector <Bauer>& bauern, Brett& spielfeld) {
 			}
 			bauern[i].Clear_Same_Piece_S();
 			bauern[i].Clear_Same_Piece_Z();
+			for (int j = 0; j < bauern[i].Get_Connected_Piece().size(); j++) {
+				if (bauern[i].Get_Connected_Piece_S()[j] == bauern[i].Get_Spalte()) {
+					if (bauern[i].Get_Connected_Piece_Z()[j] == bauern[i].Get_Zeile()) {
+						bauern[i].Replace_Connected_Piece(j, bauern[i]);
+					}
+				}
+			}
 		}
+		
 	}
 }
 void Set_Springer_Pointer(vector <Springer>& springer, Brett& spielfeld) {
@@ -639,6 +1041,14 @@ void Set_Springer_Pointer(vector <Springer>& springer, Brett& spielfeld) {
 			}
 			springer[i].Clear_Same_Piece_S();
 			springer[i].Clear_Same_Piece_Z();
+
+			for (int j = 0; j < springer[i].Get_Connected_Piece().size(); j++) {
+				if (springer[i].Get_Connected_Piece_S()[j] == springer[i].Get_Spalte()) {
+					if (springer[i].Get_Connected_Piece_Z()[j] == springer[i].Get_Zeile()) {
+						springer[i].Replace_Connected_Piece(j, springer[i]);
+					}
+				}
+			}
 		}
 	}
 }
@@ -659,6 +1069,14 @@ void Set_Laeufer_Pointer(vector <Laeufer>& laeufer, Brett& spielfeld) {
 			}
 			laeufer[i].Clear_Same_Piece_S();
 			laeufer[i].Clear_Same_Piece_Z();
+
+			for (int j = 0; j < laeufer[i].Get_Connected_Piece().size(); j++) {
+				if (laeufer[i].Get_Connected_Piece_S()[j] == laeufer[i].Get_Spalte()) {
+					if (laeufer[i].Get_Connected_Piece_Z()[j] == laeufer[i].Get_Zeile()) {
+						laeufer[i].Replace_Connected_Piece(j, laeufer[i]);
+					}
+				}
+			}
 		}
 	}
 }
@@ -679,6 +1097,14 @@ void Set_Tuerme_Pointer(vector <Turm>& tuerme, Brett& spielfeld) {
 			}
 			tuerme[i].Clear_Same_Piece_S();
 			tuerme[i].Clear_Same_Piece_Z();
+
+			for (int j = 0; j < tuerme[i].Get_Connected_Piece().size(); j++) {
+				if (tuerme[i].Get_Connected_Piece_S()[j] == tuerme[i].Get_Spalte()) {
+					if (tuerme[i].Get_Connected_Piece_Z()[j] == tuerme[i].Get_Zeile()) {
+						tuerme[i].Replace_Connected_Piece(j, tuerme[i]);
+					}
+				}
+			}
 		}
 	}
 }
@@ -699,6 +1125,17 @@ void Set_Damen_Pointer(vector <Dame>& damen, Brett& spielfeld) {
 			}
 			damen[i].Clear_Same_Piece_S();
 			damen[i].Clear_Same_Piece_Z();
+
+			for (int j = 0; j < damen[i].Get_Connected_Piece().size(); j++) {
+				for (int k = 0; k < damen[i].Get_Connected_Piece()[j]->Get_Connected_Piece().size(); k++) {
+					if (damen[i].Get_Connected_Piece()[j]->Get_Connected_Piece_S()[k] ==  damen[i].Get_Spalte()) {
+						if (damen[i].Get_Connected_Piece()[j]->Get_Connected_Piece_Z()[k] == damen[i].Get_Zeile()) {
+							Figuren* F = spielfeld.Felder[damen[i].Get_Connected_Piece_S()[j] - 1][damen[i].Get_Connected_Piece_Z()[j] - 1];
+							F->Replace_Connected_Piece(k, damen[i]);
+						}
+					}
+				}
+			}
 		}
 	}
 }
@@ -719,6 +1156,14 @@ void Set_Koenige_Pointer(vector <Koenig>& koenige, Brett& spielfeld) {
 			}
 			koenige[i].Clear_Same_Piece_S();
 			koenige[i].Clear_Same_Piece_Z();
+
+			for (int j = 0; j < koenige[i].Get_Connected_Piece().size(); j++) {
+				if (koenige[i].Get_Connected_Piece_S()[j] == koenige[i].Get_Spalte()) {
+					if (koenige[i].Get_Connected_Piece_Z()[j] == koenige[i].Get_Zeile()) {
+						koenige[i].Replace_Connected_Piece(j, koenige[i]);
+					}
+				}
+			}
 		}
 	}
 }
@@ -753,7 +1198,7 @@ bool Check_For_lcw(Brett& spielfeld) {
 	bool lcw = false;
 	if (spielfeld.Felder[5 - 1][1 - 1] != nullptr && spielfeld.Felder[1 - 1][1 - 1] != nullptr) {
 		if (!spielfeld.Felder[5 - 1][1 - 1]->Get_Gezogen() && !spielfeld.Felder[1 - 1][1 - 1]->Get_Gezogen()) {
-			if (spielfeld.Felder[2 - 1][1 - 1] == nullptr && spielfeld.Felder[3 - 1][1 - 1] == nullptr && spielfeld.Felder[4 - 1][1 - 1]) {
+			if (spielfeld.Felder[2 - 1][1 - 1] == nullptr && spielfeld.Felder[3 - 1][1 - 1] == nullptr && spielfeld.Felder[4 - 1][1 - 1] == nullptr) {
 				lcw = true;
 			}
 		}
@@ -788,7 +1233,7 @@ void Check_Castle_Selected(int i, vector <Moegliches_Feld> moegliche_felder, Bre
 	bool scb = Check_For_scb(spielfeld);
 	bool lcb = Check_For_lcb(spielfeld);
 	
-	if (!scw && !lcb && !spielfeld.whites_turn) {
+	if (!scb && !lcb && !spielfeld.whites_turn) {
 		return ;
 	}
 	if (spielfeld.whites_turn) {

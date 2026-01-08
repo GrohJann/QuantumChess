@@ -1,5 +1,5 @@
 #include "Turm.h"
-#include "Structs.h"
+
 #include <vector>
 using namespace std;
 
@@ -9,8 +9,11 @@ vector <Moegliches_Feld> Turm::Get_Moegliche_Felder() {
 	return moegliche_felder;
 }
 
-void Turm::Set_Moegliche_Felder(Brett spielfeld) {
+void Turm::Set_Moegliche_Felder(Brett& spielfeld) {
 	moegliche_felder.clear();
+	spielfeld.F_Im_Weg.clear();
+	spielfeld.F_Im_Weg_s.clear();
+	spielfeld.F_Im_Weg_z.clear();
 	float p = 1.0;
 	Moegliches_Feld F;
 	
@@ -57,7 +60,10 @@ void Turm::Set_Moegliche_Felder(Brett spielfeld) {
 			}
 			else  {
 				moegliche_felder.push_back(F);
-				p = 1 - spielfeld.Felder[s - 1][zeile - 1]->Get_Wahrscheinlichkeit();
+				p = p - p * spielfeld.Felder[s - 1][zeile - 1]->Get_Wahrscheinlichkeit();
+				spielfeld.F_Im_Weg.push_back(spielfeld.Felder[s - 1][zeile - 1]);
+				spielfeld.F_Im_Weg_s.push_back(s);
+				spielfeld.F_Im_Weg_z.push_back(zeile);
 			}
 		}
 	}
@@ -90,7 +96,10 @@ void Turm::Set_Moegliche_Felder(Brett spielfeld) {
 			}
 			else {
 				moegliche_felder.push_back(F);
-				p = 1 - spielfeld.Felder[s - 1][zeile - 1]->Get_Wahrscheinlichkeit();
+				p = p - p * spielfeld.Felder[s - 1][zeile - 1]->Get_Wahrscheinlichkeit();
+				spielfeld.F_Im_Weg.push_back(spielfeld.Felder[s - 1][zeile - 1]);
+				spielfeld.F_Im_Weg_s.push_back(s);
+				spielfeld.F_Im_Weg_z.push_back(zeile);
 			}
 		}
 	}
@@ -124,7 +133,10 @@ void Turm::Set_Moegliche_Felder(Brett spielfeld) {
 			}
 			else {
 				moegliche_felder.push_back(F);
-				p = 1 - spielfeld.Felder[spalte - 1][z - 1]->Get_Wahrscheinlichkeit();
+				p = p - p* spielfeld.Felder[spalte - 1][z - 1]->Get_Wahrscheinlichkeit();
+				spielfeld.F_Im_Weg.push_back(spielfeld.Felder[spalte - 1][z - 1]);
+				spielfeld.F_Im_Weg_s.push_back(spalte);
+				spielfeld.F_Im_Weg_z.push_back(z);
 			}
 		}
 	}
@@ -158,7 +170,10 @@ void Turm::Set_Moegliche_Felder(Brett spielfeld) {
 			}
 			else {
 				moegliche_felder.push_back(F);
-				p = 1 - spielfeld.Felder[spalte - 1][z - 1]->Get_Wahrscheinlichkeit();
+				p = p - p * spielfeld.Felder[spalte - 1][z - 1]->Get_Wahrscheinlichkeit();
+				spielfeld.F_Im_Weg.push_back(spielfeld.Felder[spalte - 1][z - 1]);
+				spielfeld.F_Im_Weg_s.push_back(spalte);
+				spielfeld.F_Im_Weg_z.push_back(z);
 			}
 		}
 	}

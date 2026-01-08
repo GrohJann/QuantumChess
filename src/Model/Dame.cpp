@@ -9,8 +9,13 @@ vector <Moegliches_Feld> Dame::Get_Moegliche_Felder() {
 	return moegliche_felder;
 }
 
-void Dame::Set_Moegliche_Felder(Brett spielfeld) {
+void Dame::Set_Moegliche_Felder(Brett& spielfeld) {
 	moegliche_felder.clear();
+
+	spielfeld.F_Im_Weg.clear();
+	spielfeld.F_Im_Weg_s.clear();
+	spielfeld.F_Im_Weg_z.clear();
+
 	float p = 1.0;
 	vector <int> sv;
 	vector <int> zv;
@@ -25,7 +30,7 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 	}
 
 
-
+	// Laeufer
 	for (int i = 1; i < 8; i++) { // 45°
 		Moegliches_Feld F;
 		F.wahrscheinlichkeit = p;
@@ -57,10 +62,13 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 					}
 				}
 				else {
-					p = 1 - spielfeld.Felder[spalte + i - 1][zeile + i - 1]->Get_Wahrscheinlichkeit();
+					p = p - p * spielfeld.Felder[spalte + i - 1][zeile + i - 1]->Get_Wahrscheinlichkeit();
 					F.spalte = spalte + i;
 					F.zeile = zeile + i;
 					moegliche_felder.push_back(F);
+					spielfeld.F_Im_Weg.push_back(spielfeld.Felder[spalte + i - 1][zeile + i - 1]);
+					spielfeld.F_Im_Weg_s.push_back(spalte + i);
+					spielfeld.F_Im_Weg_z.push_back(zeile + i);
 				}
 			}
 		}
@@ -99,10 +107,13 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 					}
 				}
 				else {
-					p = 1 - spielfeld.Felder[spalte - i - 1][zeile - i - 1]->Get_Wahrscheinlichkeit();
+					p = p - p * spielfeld.Felder[spalte - i - 1][zeile - i - 1]->Get_Wahrscheinlichkeit();
 					F.spalte = spalte - i;
 					F.zeile = zeile - i;
 					moegliche_felder.push_back(F);
+					spielfeld.F_Im_Weg.push_back(spielfeld.Felder[spalte - i - 1][zeile - i - 1]);
+					spielfeld.F_Im_Weg_s.push_back(spalte - i);
+					spielfeld.F_Im_Weg_z.push_back(zeile - i);
 				}
 			}
 		}
@@ -111,6 +122,7 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 	moving_over_self = false;
 	for (int i = 1; i < 8; i++) { // 135°
 		Moegliches_Feld F;
+		F.wahrscheinlichkeit = p;
 		if (spalte - i >= 1 && zeile + i <= 8) { // feld aufm Brett
 
 			for (int j = 0; j < sv.size(); j++) {
@@ -138,10 +150,13 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 					}
 				}
 				else {
-					p = 1 - spielfeld.Felder[spalte - i - 1][zeile + i - 1]->Get_Wahrscheinlichkeit();
+					p = p - p * spielfeld.Felder[spalte - i - 1][zeile + i - 1]->Get_Wahrscheinlichkeit();
 					F.spalte = spalte - i;
 					F.zeile = zeile + i;
 					moegliche_felder.push_back(F);
+					spielfeld.F_Im_Weg.push_back(spielfeld.Felder[spalte - i - 1][zeile + i - 1]);
+					spielfeld.F_Im_Weg_s.push_back(spalte - i);
+					spielfeld.F_Im_Weg_z.push_back(zeile + i);
 				}
 			}
 		}
@@ -150,6 +165,7 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 	moving_over_self = false;
 	for (int i = 1; i < 8; i++) { // 315°
 		Moegliches_Feld F;
+		F.wahrscheinlichkeit = p;
 		if (spalte + i <= 8 && zeile - i >= 1) { // feld aufm Brett
 
 			for (int j = 0; j < sv.size(); j++) {
@@ -178,15 +194,20 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 					}
 				}
 				else {
-					p = 1 - spielfeld.Felder[spalte + i - 1][zeile - i - 1]->Get_Wahrscheinlichkeit();
+					p = p - p * spielfeld.Felder[spalte + i - 1][zeile - i - 1]->Get_Wahrscheinlichkeit();
 					F.spalte = spalte + i;
 					F.zeile = zeile - i;
 					moegliche_felder.push_back(F);
+					spielfeld.F_Im_Weg.push_back(spielfeld.Felder[spalte + i - 1][zeile - i - 1]);
+					spielfeld.F_Im_Weg_s.push_back(spalte + i);
+					spielfeld.F_Im_Weg_z.push_back(zeile - i);
 				}
 			}
 		}
 	}
 
+
+	// Turm
 	Moegliches_Feld F;
 	int s = spalte;
 	p = 1.0;
@@ -217,7 +238,10 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 			}
 			else {
 				moegliche_felder.push_back(F);
-				p = 1 - spielfeld.Felder[s - 1][zeile - 1]->Get_Wahrscheinlichkeit();
+				p = p - p * spielfeld.Felder[s - 1][zeile - 1]->Get_Wahrscheinlichkeit();
+				spielfeld.F_Im_Weg.push_back(spielfeld.Felder[s - 1][zeile - 1]);
+				spielfeld.F_Im_Weg_s.push_back(s);
+				spielfeld.F_Im_Weg_z.push_back(zeile);
 			}
 		}
 	}
@@ -250,7 +274,10 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 			}
 			else {
 				moegliche_felder.push_back(F);
-				p = 1 - spielfeld.Felder[s - 1][zeile - 1]->Get_Wahrscheinlichkeit();
+				p = p - p * spielfeld.Felder[s - 1][zeile - 1]->Get_Wahrscheinlichkeit();
+				spielfeld.F_Im_Weg.push_back(spielfeld.Felder[s - 1][zeile - 1]);
+				spielfeld.F_Im_Weg_s.push_back(s);
+				spielfeld.F_Im_Weg_z.push_back(zeile);
 			}
 		}
 	}
@@ -284,7 +311,10 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 			}
 			else {
 				moegliche_felder.push_back(F);
-				p = 1 - spielfeld.Felder[spalte - 1][z - 1]->Get_Wahrscheinlichkeit();
+				p = p - p * spielfeld.Felder[spalte - 1][z - 1]->Get_Wahrscheinlichkeit();
+				spielfeld.F_Im_Weg.push_back(spielfeld.Felder[spalte - 1][z - 1]);
+				spielfeld.F_Im_Weg_s.push_back(spalte);
+				spielfeld.F_Im_Weg_z.push_back(z);
 			}
 		}
 	}
@@ -318,7 +348,10 @@ void Dame::Set_Moegliche_Felder(Brett spielfeld) {
 			}
 			else {
 				moegliche_felder.push_back(F);
-				p = 1 - spielfeld.Felder[spalte - 1][z - 1]->Get_Wahrscheinlichkeit();
+				p = p - p * spielfeld.Felder[spalte - 1][z - 1]->Get_Wahrscheinlichkeit();
+				spielfeld.F_Im_Weg.push_back(spielfeld.Felder[spalte - 1][z - 1]);
+				spielfeld.F_Im_Weg_s.push_back(spalte);
+				spielfeld.F_Im_Weg_z.push_back(z);
 			}
 		}
 	}

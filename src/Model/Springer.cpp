@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Springer.h"
-#include "Structs.h"
+
 #include <vector>
 #include <array>
 using namespace std;
@@ -9,7 +9,7 @@ vector <Moegliches_Feld>  Springer::Get_Moegliche_Felder() {
 	return moegliche_felder;
  }
 
-void Springer::Set_Moegliche_Felder(Brett spielfeld) {// bearbeiten
+void Springer::Set_Moegliche_Felder(Brett& spielfeld) {// bearbeiten
 
 	moegliche_felder.clear();
 
@@ -28,10 +28,19 @@ void Springer::Set_Moegliche_Felder(Brett spielfeld) {// bearbeiten
 	int s[8] = { 2,2,-2,-2,1,1,-1,-1 };
 	int z[8] = { 1,-1,1,-1,2,-2,2,-2 };
 	for (int i = 0; i < 8; i++) {
+		moving_over_self = false;
 		if (spalte + s[i] >= 1 && spalte + s[i] <= 8) {
 			if (zeile + z[i] >= 1 && zeile + z[i] <= 8) {
+
+				
 				int neue_spalte = spalte + s[i];
 				int neue_zeile = zeile + z[i];
+				for (int j = 0; j < sv.size(); j++) {
+					if (sv[j] == neue_spalte && zv[j] == neue_zeile) {
+						moving_over_self = true;
+						break;
+					}
+				}
 				Moegliches_Feld F;
 				if (spielfeld.Felder[neue_spalte -1][ neue_zeile -1] == nullptr) {
 					F.spalte = neue_spalte;
