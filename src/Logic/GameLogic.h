@@ -17,9 +17,31 @@ public:
 
     static Brett InitGameBoard();
 
-    static void HandleNormalChessMoveEvent(TilePos& clicked_tile, TilePos& selected_piece, std::vector<TilePos>& moves, Brett& board);
-    static void HandleSplitChessMoveEvent(TilePos& clicked_tile, TilePos& selected_piece, std::vector<TilePos>& moves, Brett& board);
-    static void HandleMergeChessMoveEvent(TilePos& clicked_tile, TilePos& selected_piece, std::vector<TilePos>& moves, Brett& board);
+    static void HandleNormalChessMoveEvent(
+        TilePos& clicked_tile,
+        TilePos& selected_piece,
+        std::vector<TilePos>& possible_moves,
+        Brett& board,
+        bool& is_white_turn
+    );
+
+    static void HandleSplitChessMoveEvent(
+        TilePos& clicked_tile,
+        TilePos& selected_piece,
+        std::vector<TilePos>& moves,
+        std::vector<TilePos>& possible_moves,
+        Brett& board,
+        bool& is_white_turn
+    );
+
+    static void HandleMergeChessMoveEvent(
+        TilePos& clicked_tile,
+        TilePos& selected_piece,
+        std::vector<TilePos>& moves,
+        std::vector<TilePos>& possible_moves,
+        Brett& board,
+        bool& is_white_turn
+    );
 
 
 private:
@@ -30,7 +52,13 @@ private:
     static Koenig* CreateKing(bool geschlagen, bool gezogen, bool isWhite, int row, int col);
     static Bauer* CreatePawn(bool geschlagen, bool gezogen, bool isWhite, int row, int col);
 
-    static void MoveChessPieceNormal();
+    static void MoveChessPieceNormal(TilePos& clicked_tile, TilePos& selected_piece, Brett& board);
+    static void MoveChessPieceSplit(std::vector<TilePos>& moves, TilePos & selected_piece, Brett & board);
+    static void MoveChessPieceMerge(TilePos& move, std::vector<TilePos>& selected_pieces, Brett & board);
+
+    static bool CollapseQuantumState(const TilePos & selected_piece, Brett & board);
+
+    static bool PieceExists(float probability);
 };
 
 

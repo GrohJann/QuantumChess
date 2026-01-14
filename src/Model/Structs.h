@@ -33,8 +33,6 @@ struct ColorScheme {
 };
 
 struct Brett {
-    //todo: remove
-    //unique_ptr<Figuren> Felder[8][8];
     Figuren* Felder[8][8];
 
     bool piece_selected = false;
@@ -51,9 +49,19 @@ struct Brett {
     int en_passant_zeile = -2;
 };
 
+// TODO: replace usages of Moegliches_Feld with TilePos
 struct Moegliches_Feld {
     int spalte;
     int zeile;
+
+    bool operator==(const Moegliches_Feld & other) const = default;
+};
+
+struct MoeglichesFeldHash {
+    size_t operator()(const Moegliches_Feld& f) const noexcept {
+        return std::hash<int>{}(f.spalte)
+             ^ (std::hash<int>{}(f.zeile) << 1);
+    }
 };
 
 struct MoveBtnTex {

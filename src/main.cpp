@@ -22,8 +22,11 @@ struct AppState {
     MoveBtnTex move_btn_tex;
     bool redraw = true;
     bool btn_down = false;
+    bool is_white_turn = true;
+    bool win = false;
     TilePos selected_piece;
     std::vector<TilePos> moves;
+    std::vector<TilePos> possible_moves;
 };
 
 
@@ -59,6 +62,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char *argv[]) {
         255,
         255
     };
+    state->is_white_turn = true;
     if (!(state->window = SDL_CreateWindow(state->title, width, height, SDL_WINDOW_RESIZABLE)))
         return SDL_APP_FAILURE;
     //TODO: set new aspect ratio
@@ -70,7 +74,6 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char *argv[]) {
     // enable use of alpha channel
     SDL_SetRenderDrawBlendMode(state->renderer, SDL_BLENDMODE_BLEND);
 
-    //TODO: odd Rest of initialisation
     state->game_board = GameLogic::InitGameBoard();
     Graphics::CreateChessTextures(state->renderer, state->game_board);
     Graphics::CreateMoveBtnTextures(state->renderer, state->move_btn_tex);
@@ -134,7 +137,7 @@ SDL_AppResult SDL_AppIterate(void* appstate) {
         SDL_SetRenderDrawColor(state->renderer, 0, 0, 0, 255);
         SDL_RenderClear(state->renderer);
 
-        Graphics::DrawChessboard(state->renderer, state->linchess);
+        Graphics::DrawChessboard(state->renderer, state->linchess, state->possible_moves);
         Graphics::RenderChessTextures(state->renderer, state->game_board);
 
 
@@ -144,8 +147,7 @@ SDL_AppResult SDL_AppIterate(void* appstate) {
         SDL_SetRenderDrawColor(state->renderer, 0, 0, 0, 255);
         SDL_RenderClear(state->renderer);
 
-        // ... draw content for viewport 2 ...
-        //TODO: add side panel
+        // Create texture for sidebar
         Graphics::RenderSidebar(state->renderer, state->linchess, state->move_mode, state->move_btn_tex);
 
         // Render to the main window
@@ -188,7 +190,7 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event) {
                 state->btn_down = true;
             break;
         case SDL_EVENT_MOUSE_BUTTON_UP:
-            if (event->button.button == SDL_BUTTON_LEFT && state->btn_down) {
+            if (event->button.button == SDL_BUTTON_LEFT && state->btn_down && !state->win) {
                 // button pressed
                 state->btn_down = false;
                 state->redraw = true;
@@ -197,18 +199,60 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event) {
                     TilePos pos = GetTileFromMousePos(event->button.x, event->button.y, &state->board_dst);
                     switch (state->move_mode) {
                         case NORMAL:
-                            GameLogic::HandleNormalChessMoveEvent(pos, state->selected_piece, state->moves, state->game_board);
+                            GameLogic::HandleNormalChessMoveEvent(
+                                pos,
+                                state->selected_piece,
+                                state->possible_moves,
+                                state->game_board,
+                                state->is_white_turn
+                            );
                             break;
                         case SPLIT:
-                            GameLogic::HandleSplitChessMoveEvent(pos, state->selected_piece, state->moves, state->game_board);
+                            GameLogic::HandleSplitChessMoveEvent(
+                                pos,
+                                state->selected_piece,
+                                state->moves,
+                                state->possible_moves,
+                                state->game_board,
+                                state->is_white_turn
+                            );
                             break;
                         case MERGE:
-                            GameLogic::HandleMergeChessMoveEvent(pos, state->selected_piece, state->moves, state->game_board);
+                            GameLogic::HandleMergeChessMoveEvent(
+                                pos,
+                                state->selected_piece,
+                                state->moves,
+                                state->possible_moves,
+                                state->game_board,
+                                state->is_white_turn
+                            );
                             break;
                     }
                 } else if (PointInRect(&event->button.x, &event->button.y, &state->sidebar_dst)) {
                     // Click in Sidebar
-                    //TODO: handle Sidebar
+                    bool mode_changed = false;
+                    if (event->button.y >= 0 && event->button.y < state->sidebar_dst.w) {
+                        // normal move selected
+                        mode_changed = state->move_mode != NORMAL;
+                        state->move_mode = NORMAL;
+                    } else if (event->button.y >= state->sidebar_dst.w && event->button.y < 2*state->sidebar_dst.w ) {
+                        // split move selected
+                        mode_changed = state->move_mode != SPLIT;
+                        state->move_mode = SPLIT;
+                    } else if ( event->button.y >= 2*state->sidebar_dst.w && event->button.y < 3*state->sidebar_dst.w ) {
+                        // merge move selected
+                        mode_changed = state->move_mode != MERGE;
+                        state->move_mode = MERGE;
+                    }
+                    // reset moves when movement mode changes
+                    if (mode_changed) {
+                        state->selected_piece = {
+                            255,
+                            255
+                        };
+                        state->possible_moves.clear();
+                        state->moves.clear();
+                    }
                 }
             }
             break;

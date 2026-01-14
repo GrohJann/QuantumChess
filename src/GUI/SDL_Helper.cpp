@@ -35,7 +35,7 @@ TilePos GetTileFromMousePos(const float& mouseX, const float& mouseY, const SDL_
     float square_length = board->w / 8.0f;
 
     return {
-        static_cast<Uint8>(local_x / square_length),
-        static_cast<Uint8>(local_y / square_length)
+        static_cast<Uint8>(local_y / square_length),
+        static_cast<Uint8>(local_x / square_length)
     };
 }

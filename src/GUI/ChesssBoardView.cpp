@@ -89,7 +89,7 @@ SDL_Texture* Graphics::GetTextureFromImage(SDL_Renderer* renderer, const char* i
 }
 
 // TODO: add javadoc
-void Graphics::DrawChessboard(SDL_Renderer* renderer, ColorScheme color_scheme) {
+void Graphics::DrawChessboard(SDL_Renderer* renderer, ColorScheme color_scheme, vector<TilePos> possible_moves) {
     int w, h;
     constexpr int boardFields = 8;
     //SDL_GetWindowSize(window, &w, &h);
@@ -113,6 +113,12 @@ void Graphics::DrawChessboard(SDL_Renderer* renderer, ColorScheme color_scheme) 
 
             SDL_RenderFillRect(renderer, &rect);
 
+            for (auto& move: possible_moves) {
+                if ( row == move.row && col == move.col) {
+                    SDL_SetRenderDrawColor(renderer, 230, 98, 253, 150);
+                    SDL_RenderFillRect(renderer, &rect);
+                }
+            }
         }
     }
 }
@@ -130,8 +136,10 @@ void Graphics::RenderChessTextures(SDL_Renderer* renderer, Brett& Spielfeld) {
         for (int j = 0; j < boardFields; j++) {
             if (Spielfeld.Felder[i][j] == NULL) continue;
             else {
-                row = Spielfeld.Felder[i][j]->Get_Zeile()+1;
-                col = Spielfeld.Felder[i][j]->Get_Spalte()+1;
+                //row = Spielfeld.Felder[i][j]->Get_Zeile()+1;
+                //col = Spielfeld.Felder[i][j]->Get_Spalte()+1;
+                row = Spielfeld.Felder[i][j]->Get_Zeile();
+                col = Spielfeld.Felder[i][j]->Get_Spalte();
                 row = 8 - row;
                 col = col - 1;
                 int padding = 10;

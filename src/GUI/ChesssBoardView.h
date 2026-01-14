@@ -11,7 +11,7 @@ public:
 
     static void CreateChessTextures(SDL_Renderer* renderer, Brett &Spielfeld);
     static void CreateMoveBtnTextures(SDL_Renderer* renderer, MoveBtnTex &move_btn_tex);
-    static void DrawChessboard(SDL_Renderer* renderer, ColorScheme color_scheme);
+    static void DrawChessboard(SDL_Renderer* renderer, ColorScheme color_scheme, vector<TilePos> possible_moves);
     static void RenderChessTextures(SDL_Renderer* renderer, Brett& Spielfeld);
     static void RenderSidebar(SDL_Renderer *renderer, ColorScheme, MoveMode move_mode, const MoveBtnTex &move_btn_tex);
 

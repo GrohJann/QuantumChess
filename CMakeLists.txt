@@ -66,7 +66,6 @@ if (WIN32)
     add_custom_command(TARGET QuantumChess POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
             $<TARGET_FILE:SDL3::SDL3>
-            $<TARGET_FILE:SDL3_image::SDL3_image>
             $<TARGET_FILE_DIR:QuantumChess>
     )
 endif()
