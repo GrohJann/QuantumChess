@@ -1,0 +1,3 @@
+/home/ruvaak/cpp/Info2/QuantumChess/_deps/sdl3-subbuild/CMakeFiles/sdl3-populate.dir
+/home/ruvaak/cpp/Info2/QuantumChess/_deps/sdl3-subbuild/CMakeFiles/edit_cache.dir
+/home/ruvaak/cpp/Info2/QuantumChess/_deps/sdl3-subbuild/CMakeFiles/rebuild_cache.dir

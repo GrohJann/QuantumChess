@@ -352,7 +352,7 @@ void GameLogic::HandleMergeChessMoveEvent(TilePos &clicked_tile, TilePos &move, 
         255
     };
     const Uint8 actual_clicked_row = 7 - clicked_tile.row;
-    if (selected_pieces.empty() && board.Felder[clicked_tile.col][actual_clicked_row]->Get_Farbe() == is_white_turn) {
+    if (selected_pieces.empty() && board.Felder[clicked_tile.col][actual_clicked_row] != nullptr && board.Felder[clicked_tile.col][actual_clicked_row]->Get_Farbe() == is_white_turn) {
         // Todo: add first chess piece
         // first chess piece selected
 
@@ -370,7 +370,7 @@ void GameLogic::HandleMergeChessMoveEvent(TilePos &clicked_tile, TilePos &move, 
                     );
             }
         }
-    } else if (selected_pieces.size() == 1) {
+    } else if (board.Felder[clicked_tile.col][actual_clicked_row] != nullptr && selected_pieces.size() == 1) {
         for (auto it = selected_pieces.begin(); it != selected_pieces.end(); ++it) {
             if (*it == clicked_tile) {
                 // deselect tile
@@ -388,8 +388,8 @@ void GameLogic::HandleMergeChessMoveEvent(TilePos &clicked_tile, TilePos &move, 
 
             const int id = board.Felder[selected_pieces.begin()->col][actual_first_selected_row]->Get_ID();
             for (auto it = selected_pieces.begin(); it != selected_pieces.end(); ++it) {
-                if (board.Felder[it->col][it->row] == nullptr
-                    || board.Felder[it->col][it->row]->Get_ID() != id) {
+                if (board.Felder[it->col][7-it->row] == nullptr
+                    || board.Felder[it->col][7-it->row]->Get_ID() != id) {
                     selected_pieces.erase(it);
                 }
             }
@@ -465,7 +465,20 @@ void GameLogic::HandleMergeChessMoveEvent(TilePos &clicked_tile, TilePos &move, 
 }
 
 void GameLogic::MoveChessPieceMerge(TilePos &move, std::vector<TilePos> &selected_pieces, Brett &board) {
-
+    board.Felder[move.col][7 - move.row] = board.Felder[selected_pieces.back().col][7 - selected_pieces.back().row];
+    board.Felder[selected_pieces.back().col][7 - selected_pieces.back().row] = nullptr;
+    selected_pieces.pop_back();
+    for (auto& piece : selected_pieces) {
+        board.Felder[move.col][7 - move.row]->Set_Wahrscheinlichkeit(
+            board.Felder[move.col][7 - move.row]->Get_Wahrscheinlichkeit() +
+            board.Felder[piece.col][7 - piece.row]->Get_Wahrscheinlichkeit()
+        );
+        board.Felder[piece.col][7 - piece.row] = nullptr;
+    }
+    selected_pieces.clear();
+    board.Felder[move.col][7 - move.row]->Set_Zeile(7 - move.row + 1);
+    board.Felder[move.col][7 - move.row]->Set_Spalte(move.col + 1);
+    board.Felder[move.col][7 - move.row]->Set_Gezogen(true);
 }
 
 

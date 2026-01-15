@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/ruvaak/cpp/Info2/QuantumChess/_deps/sdl3-subbuild/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

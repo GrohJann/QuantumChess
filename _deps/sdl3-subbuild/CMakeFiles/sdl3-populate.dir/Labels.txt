@@ -1,0 +1,14 @@
+# Target labels
+ sdl3-populate
+# Source files and their labels
+/home/ruvaak/cpp/Info2/QuantumChess/_deps/sdl3-subbuild/CMakeFiles/sdl3-populate
+/home/ruvaak/cpp/Info2/QuantumChess/_deps/sdl3-subbuild/CMakeFiles/sdl3-populate.rule
+/home/ruvaak/cpp/Info2/QuantumChess/_deps/sdl3-subbuild/CMakeFiles/sdl3-populate-complete.rule
+/home/ruvaak/cpp/Info2/QuantumChess/_deps/sdl3-subbuild/sdl3-populate-prefix/src/sdl3-populate-stamp/sdl3-populate-build.rule
+/home/ruvaak/cpp/Info2/QuantumChess/_deps/sdl3-subbuild/sdl3-populate-prefix/src/sdl3-populate-stamp/sdl3-populate-configure.rule
+/home/ruvaak/cpp/Info2/QuantumChess/_deps/sdl3-subbuild/sdl3-populate-prefix/src/sdl3-populate-stamp/sdl3-populate-download.rule
+/home/ruvaak/cpp/Info2/QuantumChess/_deps/sdl3-subbuild/sdl3-populate-prefix/src/sdl3-populate-stamp/sdl3-populate-install.rule
+/home/ruvaak/cpp/Info2/QuantumChess/_deps/sdl3-subbuild/sdl3-populate-prefix/src/sdl3-populate-stamp/sdl3-populate-mkdir.rule
+/home/ruvaak/cpp/Info2/QuantumChess/_deps/sdl3-subbuild/sdl3-populate-prefix/src/sdl3-populate-stamp/sdl3-populate-patch_disconnected.rule
+/home/ruvaak/cpp/Info2/QuantumChess/_deps/sdl3-subbuild/sdl3-populate-prefix/src/sdl3-populate-stamp/sdl3-populate-test.rule
+/home/ruvaak/cpp/Info2/QuantumChess/_deps/sdl3-subbuild/sdl3-populate-prefix/src/sdl3-populate-stamp/sdl3-populate-update_disconnected.rule
